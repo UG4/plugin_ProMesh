@@ -13,7 +13,7 @@
 namespace ug{
 namespace promesh{
 
-VertexBase* CreateVertex(MeshObject* obj, number x, number y, number z, int subsetInd)
+VertexBase* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -24,7 +24,7 @@ VertexBase* CreateVertex(MeshObject* obj, number x, number y, number z, int subs
 	Vertex* vrt = *grid.create<Vertex>();
 
 	if(vrt){
-		aaPos[vrt] = vector3(x, y, z);
+		aaPos[vrt] = pos;
 		sel.clear();
 		sel.select(vrt);
 		sh.assign_subset(vrt, subsetInd);

@@ -19,13 +19,18 @@ class MeshObject
 {
 	public:
 		typedef APosition position_attachment_t;
-		typedef Grid::VertexAttachmentAccessor<APosition>	position_accessor_t;
+		typedef Grid::VertexAttachmentAccessor<position_attachment_t>	position_accessor_t;
+
+		typedef ANormal normal_attachment_t;
+		typedef Grid::FaceAttachmentAccessor<normal_attachment_t>	normal_accessor_t;
+
 
 		MeshObject()
 		{
 			m_grid.attach_to_vertices(aPosition);
 			m_aaPos.access(m_grid, aPosition);
 			m_grid.attach_to_faces(aNormal);
+			m_aaNorm.access(m_grid, aNormal);
 			m_subsetHandler.assign_grid(m_grid);
 			m_subsetHandler.enable_strict_inheritance(true);
 			m_creaseHandler.assign_grid(m_grid);
@@ -47,8 +52,13 @@ class MeshObject
 		vector3& pivot()						{return m_pivot;}
 		const vector3& pivot() const			{return m_pivot;}
 
-		position_accessor_t& position_accessor()	{return m_aaPos;}
+	///	returns accessor to vertex positions
+		position_accessor_t& position_accessor()		{return m_aaPos;}
 		position_attachment_t& position_attachment()	{return aPosition;}
+
+	///	returns accessor to face normals
+		normal_accessor_t& normal_accessor()		{return m_aaNorm;}
+		normal_attachment_t& normal_attachment()	{return aNormal;}
 
 	protected:
 		Grid				m_grid;
@@ -56,6 +66,7 @@ class MeshObject
 		SubsetHandler		m_creaseHandler;
 		Selector			m_selector;
 		position_accessor_t	m_aaPos;
+		normal_accessor_t	m_aaNorm;
 		vector3				m_pivot;
 
 };
