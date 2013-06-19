@@ -258,14 +258,14 @@ template <class TElem>
 size_t SelectUnconnectedVerticesHelper(Grid& grid, Selector& sel)
 {
 	using namespace ug;
-	std::vector<TElem*> elems;
+	typename Grid::traits<TElem>::secure_container	elems;
 
 	size_t numUnconnected = 0;
 	for(VertexBaseIterator iter = grid.vertices_begin();
 		iter != grid.vertices_end(); ++iter)
 	{
 		if(!sel.is_selected(*iter)){
-			CollectAssociated(elems, grid, *iter);
+			grid.associated_elements(elems, *iter);
 			if(elems.size() == 0){
 				sel.select(*iter);
 				numUnconnected++;
