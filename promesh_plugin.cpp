@@ -172,6 +172,14 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectUnorientableVolumes", &SelectUnorientableVolumes, grp)
 		.add_function("PM_SelectVolumeByIndex", &SelectVolumeByIndex, grp)
 		.add_function("PM_VolumeSelectionFill", &VolumeSelectionFill, grp);
+
+//	refinement
+	reg.add_function("PM_Refine", &Refine, grp)
+		.add_function("PM_HangingNodeRefine", &HangingNodeRefine, grp)
+		.add_function("PM_RefineSmooth", &RefineSmooth, grp)
+		.add_function("PM_RefineSmoothBoundary2D", &RefineSmoothBoundary2D, grp)
+		.add_function("PM_CreateFractal", &CreateFractal, grp)
+		.add_function("PM_InsertCenter", &InsertCenter, grp);
 }
 
 }; // end Functionality
