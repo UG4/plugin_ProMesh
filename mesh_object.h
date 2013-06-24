@@ -24,6 +24,8 @@ class MeshObject
 		typedef ANormal normal_attachment_t;
 		typedef Grid::FaceAttachmentAccessor<normal_attachment_t>	normal_accessor_t;
 
+		typedef ANumber volume_constraint_attachment_t;
+		typedef Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>	volume_constraint_accessor_t;
 
 		MeshObject()
 		{
@@ -60,6 +62,38 @@ class MeshObject
 		normal_accessor_t& normal_accessor()		{return m_aaNorm;}
 		normal_attachment_t& normal_attachment()	{return aNormal;}
 
+	///	returns accessor to volume constraints.
+		volume_constraint_accessor_t& volume_constraint_accessor()
+		{
+			volume_constraints_required();
+			return m_aaVolumeConstraint;
+		}
+
+	///	returns the volume constraint attachment
+		volume_constraint_attachment_t& volume_constraint_attachment()
+		{
+			volume_constraints_required();
+			return m_aVolumeConstraint;
+		}
+
+	///	clears the volume constraints (removes the attachment)
+		void clear_volume_constraints()
+		{
+			if(m_aaVolumeConstraint.valid()){
+				m_grid.detach_from_volumes(m_aVolumeConstraint);
+				m_aaVolumeConstraint.invalidate();
+			}
+		}
+
+	protected:
+		void volume_constraints_required()
+		{
+			if(!m_aaVolumeConstraint.valid()){
+				m_grid.attach_to_volumes(m_aVolumeConstraint);
+				m_aaVolumeConstraint.access(m_grid, m_aVolumeConstraint);
+			}
+		}
+
 	protected:
 		Grid				m_grid;
 		SubsetHandler		m_subsetHandler;
@@ -68,6 +102,8 @@ class MeshObject
 		position_accessor_t	m_aaPos;
 		normal_accessor_t	m_aaNorm;
 		vector3				m_pivot;
+		volume_constraint_attachment_t		m_aVolumeConstraint;
+		volume_constraint_accessor_t		m_aaVolumeConstraint;
 
 };
 

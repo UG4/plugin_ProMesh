@@ -6,6 +6,8 @@
 #define __H__UG__refinement_tools__
 
 #include "../mesh_object.h"
+#include "lib_grid/algorithms/refinement/regular_refinement.h"
+#include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
 
 namespace ug{
 namespace promesh{

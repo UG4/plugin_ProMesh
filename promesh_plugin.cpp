@@ -6,6 +6,10 @@
 #include "tools/grid_generation_tools.h"
 #include "tools/coordinate_transform_tools.h"
 #include "tools/selection_tools.h"
+#include "tools/refinement_tools.h"
+#include "tools/remeshing_tools.h"
+#include "tools/subset_tools.h"
+#include "tools/topology_tools.h"
 #include "bridge/util.h"
 #include "bridge/util_domain_dependent.h"
 
@@ -173,6 +177,28 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectVolumeByIndex", &SelectVolumeByIndex, grp)
 		.add_function("PM_VolumeSelectionFill", &VolumeSelectionFill, grp);
 
+//	subset tools
+	reg.add_function("PM_AssignSubset", &AssignSubset, grp)
+		.add_function("PM_SetSubsetName", &SetSubsetName, grp)
+		.add_function("PM_AssignSubsetColors", &AssignSubsetColors, grp)
+		.add_function("PM_SeparateFacesByEdgeSubsets", &SeparateFacesByEdgeSubsets, grp)
+		.add_function("PM_SeparateFacesBySelectedEdges", &SeparateFacesBySelectedEdges, grp)
+		.add_function("PM_SeparateVolumesByFaceSubsets", &SeparateVolumesByFaceSubsets, grp)
+		.add_function("PM_SeparateVolumesBySelectedFaces", &SeparateVolumesBySelectedFaces, grp)
+		.add_function("PM_SeparateIrregularManifoldSubsets", &SeparateIrregularManifoldSubsets, grp)
+		.add_function("PM_MoveSubset", &MoveSubset, grp)
+		.add_function("PM_SwapSubsets", &SwapSubsets, grp)
+		.add_function("PM_JoinSubsets", &JoinSubsets, grp)
+		.add_function("PM_EraseSubset", &EraseSubset, grp)
+		.add_function("PM_EraseEmptySubsets", &EraseEmptySubsets, grp)
+		.add_function("PM_AdjustSubsetsForUG3", &AdjustSubsetsForUG3, grp)
+		.add_function("PM_AdjustSubsetsForUG4", &AdjustSubsetsForUG4, grp)
+		.add_function("PM_SeparateFaceSubsetsByNormal", &SeparateFaceSubsetsByNormal, grp)
+		.add_function("PM_SeparateFaceSubsetByNormal", &SeparateFaceSubsetByNormal, grp)
+		.add_function("PM_AssignSubsetsByQuality", &AssignSubsetsByQuality, grp)
+		.add_function("PM_SeparateDegeneratedBoundaryFaceSubsets", &SeparateDegeneratedBoundaryFaceSubsets, grp)
+		.add_function("PM_AssignSubsetsByElementType", &AssignSubsetsByElementType, grp);
+
 //	refinement
 	reg.add_function("PM_Refine", &Refine, grp)
 		.add_function("PM_HangingNodeRefine", &HangingNodeRefine, grp)
@@ -180,6 +206,41 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_RefineSmoothBoundary2D", &RefineSmoothBoundary2D, grp)
 		.add_function("PM_CreateFractal", &CreateFractal, grp)
 		.add_function("PM_InsertCenter", &InsertCenter, grp);
+
+//	remeshing
+	reg.add_function("PM_ConvertToTriangles", &ConvertToTriangles, grp)
+		.add_function("PM_TriangleFill", &TriangleFill, grp)
+		.add_function("PM_Retriangulate", &Retriangulate, grp)
+		.add_function("PM_AdjustEdgeLength", &AdjustEdgeLength, grp)
+		.add_function("PM_AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp)
+		.add_function("PM_Tetrahedralize", &Tetrahedralize, grp)
+		.add_function("PM_AssignVolumeConstraints", &AssignVolumeConstraints, grp)
+		.add_function("PM_ClearVolumeConstraints", &ClearVolumeConstraints, grp)
+		.add_function("PM_Retetrahedralize", &Retetrahedralize, grp)
+		.add_function("PM_Duplicate", &Duplicate, grp)
+		.add_function("PM_Extrude", &Extrude, grp)
+		.add_function("PM_ExtrudeCylinders", &ExtrudeCylinders, grp);
+
+//	topology
+	reg.add_function("PM_EraseSelectedElements", &EraseSelectedElements, grp)
+		.add_function("PM_RemoveDoubles", &RemoveDoubles, grp)
+		.add_function("PM_RemoveDoubleEdges", &RemoveDoubleEdges, grp)
+		.add_function("PM_MergeAtFirst", &MergeAtFirst, grp)
+		.add_function("PM_MergeAtCenter", &MergeAtCenter, grp)
+		.add_function("PM_MergeAtLast", &MergeAtLast, grp)
+		.add_function("PM_CollapseEdge", &CollapseEdge, grp)
+		.add_function("PM_SplitEdge", &SplitEdge, grp)
+		.add_function("PM_SwapEdge", &SwapEdge, grp)
+		.add_function("PM_PlaneCut", &PlaneCut, grp)
+		.add_function("PM_AdjustEdgeOrientation", &AdjustEdgeOrientation, grp)
+		.add_function("PM_FixFaceOrientation", &FixFaceOrientation, grp)
+		.add_function("PM_FixVolumeOrientation", &FixVolumeOrientation, grp)
+		.add_function("PM_InvertFaceOrientation", &InvertFaceOrientation, grp)
+		.add_function("PM_ResolveEdgeIntersection", &ResolveEdgeIntersection, grp)
+		.add_function("PM_ResolveTriangleIntersections", &ResolveTriangleIntersections, grp)
+		.add_function("PM_ProjectVerticesToCloseEdges", &ProjectVerticesToCloseEdges, grp)
+		.add_function("PM_ProjectVerticesToCloseFaces", &ProjectVerticesToCloseFaces, grp)
+		.add_function("PM_IntersectCloseEdges", &IntersectCloseEdges, grp);
 }
 
 }; // end Functionality
@@ -208,3 +269,4 @@ InitUGPlugin_ProMesh(Registry* reg, string grp)
 }
 
 }// end of namespace
+
