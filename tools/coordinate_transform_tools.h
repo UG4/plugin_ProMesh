@@ -8,6 +8,7 @@
 #include <vector>
 #include "../mesh_object.h"
 #include "lib_grid/algorithms/subdivision/subdivision_loop.h"
+#include "lib_grid/algorithms/selection_util.h"
 
 namespace ug{
 namespace promesh{

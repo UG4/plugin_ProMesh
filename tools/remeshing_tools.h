@@ -11,6 +11,7 @@
 #include "lib_grid/algorithms/extrusion/extrusion.h"
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
 #include "lib_grid/algorithms/remeshing/grid_adaption.h"
+#include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/duplicate.h"
 
 namespace ug{

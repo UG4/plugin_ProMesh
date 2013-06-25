@@ -3,11 +3,12 @@
 // Jun 14, 2013 (d,m,y)
 
 #include "mesh_object.h"
-#include "tools/grid_generation_tools.h"
 #include "tools/coordinate_transform_tools.h"
-#include "tools/selection_tools.h"
+#include "tools/file_io_tools.h"
+#include "tools/grid_generation_tools.h"
 #include "tools/refinement_tools.h"
 #include "tools/remeshing_tools.h"
+#include "tools/selection_tools.h"
 #include "tools/subset_tools.h"
 #include "tools/topology_tools.h"
 #include "bridge/util.h"
@@ -89,19 +90,6 @@ static void Common(Registry& reg, string grp)
 		.add_method("get_pivot", &MeshObject::get_pivot, grp)
 		.set_construct_as_smart_pointer(true);
 
-//	grid generation tools
-	reg.add_function("PM_CreateVertex", &CreateVertex, grp)
-		.add_function("PM_CreateEdge", &CreateEdge, grp)
-		.add_function("PM_CreateFace", &CreateFace, grp)
-		.add_function("PM_CreateVolume", &CreateVolume, grp)
-		.add_function("PM_CreatePlane", &CreatePlane, grp)
-		.add_function("PM_CreateCircle", &CreateCircle, grp)
-		.add_function("PM_CreateBox", &CreateBox, grp)
-		.add_function("PM_CreateSphere", &CreateSphere, grp)
-		.add_function("PM_CreateTetrahedron", &CreateTetrahedron, grp)
-		.add_function("PM_CreatePyramid", &CreatePyramid, grp)
-		.add_function("PM_CreatePrism", &CreatePrism, grp);
-
 //	coordinate transform tools
 	reg.add_function("PM_GetSelectionCenter", &GetSelectionCenter, grp)
 		.add_function("PM_SetSelectionCenter", &SetSelectionCenter, grp)
@@ -118,6 +106,46 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SetPivot", &SetPivot, grp)
 		.add_function("PM_SetPivotToCenter", &SetPivotToCenter, grp)
 		.add_function("PM_FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp);
+
+//	file io
+	reg.add_function("PM_LoadMesh", &LoadMesh, grp)
+		.add_function("PM_SaveMesh", &SaveMesh, grp)
+		.add_function("PM_ExportToUG3", &ExportToUG3, grp);
+
+//	grid generation tools
+	reg.add_function("PM_CreateVertex", &CreateVertex, grp)
+		.add_function("PM_CreateEdge", &CreateEdge, grp)
+		.add_function("PM_CreateFace", &CreateFace, grp)
+		.add_function("PM_CreateVolume", &CreateVolume, grp)
+		.add_function("PM_CreatePlane", &CreatePlane, grp)
+		.add_function("PM_CreateCircle", &CreateCircle, grp)
+		.add_function("PM_CreateBox", &CreateBox, grp)
+		.add_function("PM_CreateSphere", &CreateSphere, grp)
+		.add_function("PM_CreateTetrahedron", &CreateTetrahedron, grp)
+		.add_function("PM_CreatePyramid", &CreatePyramid, grp)
+		.add_function("PM_CreatePrism", &CreatePrism, grp);
+
+//	refinement
+	reg.add_function("PM_Refine", &Refine, grp)
+		.add_function("PM_HangingNodeRefine", &HangingNodeRefine, grp)
+		.add_function("PM_RefineSmooth", &RefineSmooth, grp)
+		.add_function("PM_RefineSmoothBoundary2D", &RefineSmoothBoundary2D, grp)
+		.add_function("PM_CreateFractal", &CreateFractal, grp)
+		.add_function("PM_InsertCenter", &InsertCenter, grp);
+
+//	remeshing
+	reg.add_function("PM_ConvertToTriangles", &ConvertToTriangles, grp)
+		.add_function("PM_TriangleFill", &TriangleFill, grp)
+		.add_function("PM_Retriangulate", &Retriangulate, grp)
+		.add_function("PM_AdjustEdgeLength", &AdjustEdgeLength, grp)
+		.add_function("PM_AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp)
+		.add_function("PM_Tetrahedralize", &Tetrahedralize, grp)
+		.add_function("PM_AssignVolumeConstraints", &AssignVolumeConstraints, grp)
+		.add_function("PM_ClearVolumeConstraints", &ClearVolumeConstraints, grp)
+		.add_function("PM_Retetrahedralize", &Retetrahedralize, grp)
+		.add_function("PM_Duplicate", &Duplicate, grp)
+		.add_function("PM_Extrude", &Extrude, grp)
+		.add_function("PM_ExtrudeCylinders", &ExtrudeCylinders, grp);
 
 //	selection tools
 	reg.add_function("PM_ClearSelection", &ClearSelection, grp)
@@ -198,28 +226,6 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_AssignSubsetsByQuality", &AssignSubsetsByQuality, grp)
 		.add_function("PM_SeparateDegeneratedBoundaryFaceSubsets", &SeparateDegeneratedBoundaryFaceSubsets, grp)
 		.add_function("PM_AssignSubsetsByElementType", &AssignSubsetsByElementType, grp);
-
-//	refinement
-	reg.add_function("PM_Refine", &Refine, grp)
-		.add_function("PM_HangingNodeRefine", &HangingNodeRefine, grp)
-		.add_function("PM_RefineSmooth", &RefineSmooth, grp)
-		.add_function("PM_RefineSmoothBoundary2D", &RefineSmoothBoundary2D, grp)
-		.add_function("PM_CreateFractal", &CreateFractal, grp)
-		.add_function("PM_InsertCenter", &InsertCenter, grp);
-
-//	remeshing
-	reg.add_function("PM_ConvertToTriangles", &ConvertToTriangles, grp)
-		.add_function("PM_TriangleFill", &TriangleFill, grp)
-		.add_function("PM_Retriangulate", &Retriangulate, grp)
-		.add_function("PM_AdjustEdgeLength", &AdjustEdgeLength, grp)
-		.add_function("PM_AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp)
-		.add_function("PM_Tetrahedralize", &Tetrahedralize, grp)
-		.add_function("PM_AssignVolumeConstraints", &AssignVolumeConstraints, grp)
-		.add_function("PM_ClearVolumeConstraints", &ClearVolumeConstraints, grp)
-		.add_function("PM_Retetrahedralize", &Retetrahedralize, grp)
-		.add_function("PM_Duplicate", &Duplicate, grp)
-		.add_function("PM_Extrude", &Extrude, grp)
-		.add_function("PM_ExtrudeCylinders", &ExtrudeCylinders, grp);
 
 //	topology
 	reg.add_function("PM_EraseSelectedElements", &EraseSelectedElements, grp)
