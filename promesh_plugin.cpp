@@ -6,6 +6,7 @@
 #include "tools/coordinate_transform_tools.h"
 #include "tools/file_io_tools.h"
 #include "tools/grid_generation_tools.h"
+#include "tools/new_tools.h"
 #include "tools/refinement_tools.h"
 #include "tools/remeshing_tools.h"
 #include "tools/selection_tools.h"
@@ -247,6 +248,14 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_ProjectVerticesToCloseEdges", &ProjectVerticesToCloseEdges, grp)
 		.add_function("PM_ProjectVerticesToCloseFaces", &ProjectVerticesToCloseFaces, grp)
 		.add_function("PM_IntersectCloseEdges", &IntersectCloseEdges, grp);
+
+//	new tools
+	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<VertexBase>, grp)
+		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<EdgeBase>, grp)
+		.add_function("PM_SelectFacesInBox", &SelectElementsInBox<Face>, grp)
+		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp);
+
+	reg.add_function("PM_ScaleAroundPoint", &ScaleAroundPoint, grp);
 }
 
 }; // end Functionality
