@@ -242,7 +242,7 @@ void Duplicate(MeshObject* obj, const vector3& offset, bool deselectOld, bool se
 	ug::Duplicate(grid, sel, offset, obj->position_attachment(), deselectOld, selectNew);
 }
 
-void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps, int si,
+void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 			 bool createFaces, bool createVolumes)
 {
 	using namespace std;
@@ -267,9 +267,8 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps, int si,
 		extrusionOptions |= EO_CREATE_VOLUMES;
 
 //	we use sel to collect the newly created volumes
-	sel.clear();
-	sel.enable_autoselection(true);
-
+	bool strictInheritanceEnabled = sh.strict_inheritance_enabled();
+	sh.enable_strict_inheritance(false);
 //	mark all elements that were already in the selector.
 	for(int i = 0; i < numSteps; ++i)
 	{
@@ -277,12 +276,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps, int si,
 					extrusionOptions, obj->position_attachment());
 	}
 
-	sel.enable_autoselection(false);
-	sh.assign_subset(sel.volumes_begin(), sel.volumes_end(), si);
-	sh.assign_subset(sel.faces_begin(), sel.faces_end(), si);
-	sh.assign_subset(sel.edges_begin(), sel.edges_end(), si);
-	sh.assign_subset(sel.vertices_begin(), sel.vertices_end(), si);
-
+	sh.enable_strict_inheritance(strictInheritanceEnabled);
 
 //	select faces, edges and vertices from the new top-layer.
 	sel.clear<VertexBase>();
