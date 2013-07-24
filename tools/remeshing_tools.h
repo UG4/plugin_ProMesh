@@ -96,7 +96,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 		for(VertexBaseIterator iter = grid.vertices_begin();
 			iter != grid.vertices_end(); ++iter, ++counter)
 		{
-			aaPos[*iter] = vector3(vrts2d[counter].x, vrts2d[counter].y, 0);
+			aaPos[*iter] = vector3(vrts2d[counter].x(), vrts2d[counter].y(), 0);
 		}
 
 		SaveGridToFile(grid, ss2d.str().c_str(), obj->position_attachment());
@@ -105,7 +105,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 		for(VertexBaseIterator iter = grid.vertices_begin();
 			iter != grid.vertices_end(); ++iter, ++counter)
 		{
-			aaPos[*iter] = vector3(vrts[counter].x, vrts[counter].y, 0);
+			aaPos[*iter] = vector3(vrts[counter].x(), vrts[counter].y(), 0);
 		}
 	*/
 	// ONLY FOR DEBUGGING - END

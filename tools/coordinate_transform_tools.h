@@ -86,9 +86,9 @@ void ScaleAroundCenter(MeshObject* obj, const vector3& scale)
 	{
 		ug::vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
-		v.x *= scale.x;
-		v.y *= scale.y;
-		v.z *= scale.z;
+		v.x() *= scale.x();
+		v.y() *= scale.y();
+		v.z() *= scale.z();
 		VecAdd(v, v, center);
 	}
 }
@@ -105,9 +105,9 @@ void ScaleAroundPivot(MeshObject* obj, const vector3& scale)
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
-		v.x *= scale.x;
-		v.y *= scale.y;
-		v.z *= scale.z;
+		v.x() *= scale.x();
+		v.y() *= scale.y();
+		v.z() *= scale.z();
 		VecAdd(v, v, center);
 	}
 }
@@ -125,7 +125,7 @@ void RotateAroundCenter(MeshObject* obj, const vector3& rot)
 //	todo: combine rotation and transform matrix and use ugs build in methods.
 //	rotation matrix
 	matrix33 matRot;
-	MatRotationYawPitchRoll(matRot, rot.x, rot.y, rot.z);
+	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
 	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
@@ -148,7 +148,7 @@ void RotateAroundPivot(MeshObject* obj, const vector3& rot)
 //	todo: combine rotation and transform matrix and use ugs build in methods.
 //	rotation matrix
 	matrix33 matRot;
-	MatRotationYawPitchRoll(matRot, rot.x, rot.y, rot.z);
+	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
 	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{

@@ -299,14 +299,14 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 	for(size_t i = 0; i < 8; ++i)
 		vrts[i] = *grid.create<Vertex>();
 
-	aaPos[vrts[0]] = vector3(boxMin.x, boxMin.y, boxMin.z);
-	aaPos[vrts[1]] = vector3(boxMax.x, boxMin.y, boxMin.z);
-	aaPos[vrts[2]] = vector3(boxMax.x, boxMax.y, boxMin.z);
-	aaPos[vrts[3]] = vector3(boxMin.x, boxMax.y, boxMin.z);
-	aaPos[vrts[4]] = vector3(boxMin.x, boxMin.y, boxMax.z);
-	aaPos[vrts[5]] = vector3(boxMax.x, boxMin.y, boxMax.z);
-	aaPos[vrts[6]] = vector3(boxMax.x, boxMax.y, boxMax.z);
-	aaPos[vrts[7]] = vector3(boxMin.x, boxMax.y, boxMax.z);
+	aaPos[vrts[0]] = vector3(boxMin.x(), boxMin.y(), boxMin.z());
+	aaPos[vrts[1]] = vector3(boxMax.x(), boxMin.y(), boxMin.z());
+	aaPos[vrts[2]] = vector3(boxMax.x(), boxMax.y(), boxMin.z());
+	aaPos[vrts[3]] = vector3(boxMin.x(), boxMax.y(), boxMin.z());
+	aaPos[vrts[4]] = vector3(boxMin.x(), boxMin.y(), boxMax.z());
+	aaPos[vrts[5]] = vector3(boxMax.x(), boxMin.y(), boxMax.z());
+	aaPos[vrts[6]] = vector3(boxMax.x(), boxMax.y(), boxMax.z());
+	aaPos[vrts[7]] = vector3(boxMin.x(), boxMax.y(), boxMax.z());
 
 //	we'll use a hexahedron and let it create all faces
 	Hexahedron hexa(vrts[0], vrts[1], vrts[2], vrts[3],

@@ -24,9 +24,9 @@ void ScaleAroundPoint(MeshObject* obj, const vector3& scale, const vector3& poin
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, point);
-		v.x *= scale.x;
-		v.y *= scale.y;
-		v.z *= scale.z;
+		v.x() *= scale.x();
+		v.y() *= scale.y();
+		v.z() *= scale.z();
 		VecAdd(v, v, point);
 	}
 }
