@@ -9,7 +9,7 @@
 #include "lib_grid/common_attachments.h"
 #include "lib_grid/selector.h"
 #include "lib_grid/subset_handler.h"
-
+#include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 
 namespace ug{
 namespace promesh{
@@ -36,6 +36,9 @@ class MeshObject
 			m_subsetHandler.assign_grid(m_grid);
 			m_subsetHandler.enable_strict_inheritance(true);
 			m_creaseHandler.assign_grid(m_grid);
+			m_creaseHandler.subset_info(REM_NONE).name = "none";
+			m_creaseHandler.subset_info(REM_CREASE).name = "crease";
+			m_creaseHandler.subset_info(REM_FIXED).name = "fixed";
 			m_selector.assign_grid(m_grid);
 			m_pivot = vector3(0, 0, 0);
 		}
