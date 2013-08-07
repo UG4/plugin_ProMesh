@@ -36,7 +36,6 @@ class MeshObject
 			m_subsetHandler.assign_grid(m_grid);
 			m_subsetHandler.enable_strict_inheritance(true);
 			m_creaseHandler.assign_grid(m_grid);
-			m_creaseHandler.subset_info(REM_NONE).name = "none";
 			m_creaseHandler.subset_info(REM_CREASE).name = "crease";
 			m_creaseHandler.subset_info(REM_FIXED).name = "fixed";
 			m_selector.assign_grid(m_grid);
