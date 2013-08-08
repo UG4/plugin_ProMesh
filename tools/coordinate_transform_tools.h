@@ -79,8 +79,7 @@ void ScaleAroundCenter(MeshObject* obj, const vector3& scale)
 
 	std::vector<VertexBase*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
-	vector3 center;
-	CalculateCenter(vrts.begin(), vrts.end(), aaPos);
+	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
 	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
@@ -119,8 +118,7 @@ void RotateAroundCenter(MeshObject* obj, const vector3& rot)
 
 	std::vector<VertexBase*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
-	vector3 center;
-	CalculateCenter(vrts.begin(), vrts.end(), aaPos);
+	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
 //	todo: combine rotation and transform matrix and use ugs build in methods.
 //	rotation matrix
