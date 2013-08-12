@@ -27,7 +27,7 @@ class MeshObject
 		typedef ANumber volume_constraint_attachment_t;
 		typedef Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>	volume_constraint_accessor_t;
 
-		MeshObject()
+		MeshObject() : m_creaseHandler(SHE_VERTEX | SHE_EDGE)
 		{
 			m_grid.attach_to_vertices(aPosition);
 			m_aaPos.access(m_grid, aPosition);
