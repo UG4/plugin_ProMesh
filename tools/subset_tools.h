@@ -340,6 +340,28 @@ void AssignSubsetsByElementType(MeshObject* obj)
 	}
 }
 
+void CopySubsetIndicesToSides(MeshObject* obj, bool selectionOnly,
+							  bool toUnassignedOnly)
+{
+	SubsetHandler& sh = obj->get_subset_handler();
+
+	if(selectionOnly){
+		Selector& sel = obj->get_selector();
+		CopySubsetIndicesToSides(sh, sel.begin<Volume>(), sel.end<Volume>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.begin<Face>(), sel.end<Face>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.begin<EdgeBase>(), sel.end<EdgeBase>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.begin<VertexBase>(), sel.end<VertexBase>(), toUnassignedOnly);
+	}
+	else{
+		for(int i = 0; i < sh.num_subsets(); ++i){
+			CopySubsetIndicesToSides(sh, sh.begin<Volume>(i), sh.end<Volume>(i), toUnassignedOnly);
+			CopySubsetIndicesToSides(sh, sh.begin<Face>(i), sh.end<Face>(i), toUnassignedOnly);
+			CopySubsetIndicesToSides(sh, sh.begin<EdgeBase>(i), sh.end<EdgeBase>(i), toUnassignedOnly);
+			CopySubsetIndicesToSides(sh, sh.begin<VertexBase>(i), sh.end<VertexBase>(i), toUnassignedOnly);
+		}
+	}
+}
+
 }}// end of namespace
 
 #endif
