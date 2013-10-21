@@ -227,6 +227,16 @@ void FixFaceOrientation(MeshObject* obj)
 							sel.end<Face>());
 }
 
+void FixFaceSubsetOrientations(MeshObject* obj)
+{
+	Grid& grid = obj->get_grid();
+	SubsetHandler& sh = obj->get_subset_handler();
+
+	for(int i = 0; i < sh.num_subsets(); ++i){
+		FixFaceOrientation(grid, sh.begin<Face>(i), sh.end<Face>(i));
+	}
+}
+
 int FixVolumeOrientation(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
@@ -235,6 +245,7 @@ int FixVolumeOrientation(MeshObject* obj)
 
 	return FixOrientation(grid, sel.begin<Volume>(), sel.end<Volume>(), aaPos);
 }
+
 
 void InvertFaceOrientation(MeshObject* obj)
 {
