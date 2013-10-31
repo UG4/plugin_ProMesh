@@ -9,6 +9,7 @@
 #include "../mesh_object.h"
 #include "lib_grid/algorithms/subdivision/subdivision_loop.h"
 #include "lib_grid/algorithms/selection_util.h"
+#include "lib_grid/algorithms/smoothing/manifold_smoothing.h"
 
 namespace ug{
 namespace promesh{
@@ -197,6 +198,14 @@ void LaplacianSmooth(MeshObject* obj, number alpha, int numIterations)
 						obj->position_accessor(), alpha, numIterations);
 }
 
+void TangentialSmooth(MeshObject* obj, number alpha, int numIterations)
+{
+	std::vector<VertexBase*> vrts;
+	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+
+	ug::TangentialSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
+						 obj->position_accessor(), alpha, numIterations);
+}
 
 void ProjectToLimitPLoop(MeshObject* obj)
 {

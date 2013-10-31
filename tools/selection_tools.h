@@ -358,6 +358,14 @@ void SelectLongEdges(MeshObject* obj, number minLength)
 	}
 }
 
+void SelectCreaseEdges(MeshObject* obj, number minAngle)
+{
+	Grid& grid = obj->get_grid();
+	Selector& sel = obj->get_selector();
+	SelectCreaseEdges(sel, grid.begin<EdgeBase>(), grid.end<EdgeBase>(),
+					  minAngle, obj->position_attachment());
+}
+
 void SelectLinkedBoundaryEdges(MeshObject* obj, bool stopAtSelectedVrts)
 {
 	Grid& grid = obj->get_grid();
