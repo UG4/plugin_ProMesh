@@ -53,6 +53,35 @@ void SelectElementsInBox(MeshObject* obj, const vector3& min, const vector3& max
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+//	SELECTION
+///	Selects elements whose center lie in a cylinder
+template <class TElem>
+void SelectElementsInCylinder(MeshObject* obj, const vector3& cylBase,
+						 	  const vector3& cylTop, number radius)
+{
+	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+
+	Grid& grid = obj->get_grid();
+	Selector& sel = obj->get_selector();
+
+	vector3 from = cylBase;
+	vector3 dir;
+	VecSubtract(dir, cylTop, cylBase);
+
+	for(typename Grid::traits<TElem>::iterator iter = grid.begin<TElem>();
+		iter != grid.end<TElem>(); ++iter)
+	{
+		vector3 c = CalculateCenter(*iter, aaPos);
+		vector3 p;
+		number s = ProjectPointToRay(p, c, from, dir);
+		if((s > -SMALL) && (s < (1. + SMALL))){
+			if(VecDistanceSq(p, c) <= sq(radius))
+				sel.select(*iter);
+		}
+	}
+}
+
 }}// end of namespace
 
 #endif

@@ -256,7 +256,11 @@ static void Common(Registry& reg, string grp)
 	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<VertexBase>, grp)
 		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<EdgeBase>, grp)
 		.add_function("PM_SelectFacesInBox", &SelectElementsInBox<Face>, grp)
-		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp);
+		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp)
+		.add_function("PM_SelectVerticesInCylinder", &SelectElementsInCylinder<VertexBase>, grp)
+		.add_function("PM_SelectEdgesInCylinder", &SelectElementsInCylinder<EdgeBase>, grp)
+		.add_function("PM_SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp)
+		.add_function("PM_SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp);
 
 	reg.add_function("PM_ScaleAroundPoint", &ScaleAroundPoint, grp);
 }
