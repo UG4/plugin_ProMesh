@@ -78,8 +78,8 @@ void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	Refine(grid, sel, &refCallbackLoop);
 
 //	copy position data of selected vertices
-	CopyAttachments(grid, sel.begin<VertexBase>(),
-						sel.end<VertexBase>(),
+	CopyAttachments(grid, sel.begin<Vertex>(),
+						sel.end<Vertex>(),
 						aTmpPos, aPosition);
 
 
@@ -109,8 +109,8 @@ void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
 	sh.enable_strict_inheritance(siEnabled);
 
 //	copy position data of selected vertices
-	CopyAttachments(grid, sel.begin<VertexBase>(),
-						sel.end<VertexBase>(),
+	CopyAttachments(grid, sel.begin<Vertex>(),
+						sel.end<Vertex>(),
 						aTmpPos, aPosition);
 
 	grid.detach_from_vertices(aTmpPos);

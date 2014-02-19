@@ -160,7 +160,7 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectSelectionBoundary", &SelectSelectionBoundary, grp)
 		.add_function("PM_CloseSelection", &CloseSelection, grp)
 
-		.add_function("PM_SelectVertexByCoordinate", &SelectElemByCoordinate<VertexBase>, grp)
+		.add_function("PM_SelectVertexByCoordinate", &SelectElemByCoordinate<Vertex>, grp)
 		.add_function("PM_SelectBoundaryVertices", &SelectBoundaryVertices, grp)
 		.add_function("PM_SelectInnerVertices", &SelectInnerVertices, grp)
 		.add_function("PM_SelectAssociatedVertices", &SelectAssociatedVertices, grp)
@@ -253,11 +253,11 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_IntersectCloseEdges", &IntersectCloseEdges, grp);
 
 //	new tools
-	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<VertexBase>, grp)
+	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp)
 		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<EdgeBase>, grp)
 		.add_function("PM_SelectFacesInBox", &SelectElementsInBox<Face>, grp)
 		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp)
-		.add_function("PM_SelectVerticesInCylinder", &SelectElementsInCylinder<VertexBase>, grp)
+		.add_function("PM_SelectVerticesInCylinder", &SelectElementsInCylinder<Vertex>, grp)
 		.add_function("PM_SelectEdgesInCylinder", &SelectElementsInCylinder<EdgeBase>, grp)
 		.add_function("PM_SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp)
 		.add_function("PM_SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp);

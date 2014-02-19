@@ -19,7 +19,7 @@ void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 {
 //	adjust selection
 	Selector& sel = obj->get_selector();
-	SelectAssociatedEdges(sel, sel.begin<VertexBase>(), sel.end<VertexBase>());
+	SelectAssociatedEdges(sel, sel.begin<Vertex>(), sel.end<Vertex>());
 	SelectAssociatedFaces(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
 	SelectAssociatedVolumes(sel, sel.begin<Face>(), sel.end<Face>());
 
@@ -37,7 +37,7 @@ void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 	grid.erase(sel.begin<Volume>(), sel.end<Volume>());
 	grid.erase(sel.begin<Face>(), sel.end<Face>());
 	grid.erase(sel.begin<EdgeBase>(), sel.end<EdgeBase>());
-	grid.erase(sel.begin<VertexBase>(), sel.end<VertexBase>());
+	grid.erase(sel.begin<Vertex>(), sel.end<Vertex>());
 }
 
 ///	returns the number of removed vertices
@@ -46,10 +46,10 @@ size_t RemoveDoubles(MeshObject* obj, number threshold)
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
 
-	size_t numVrts = grid.num<VertexBase>();
-	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
+	size_t numVrts = grid.num<Vertex>();
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 	 obj->position_attachment(), threshold);
-	return numVrts - grid.num<VertexBase>();
+	return numVrts - grid.num<Vertex>();
 }
 
 size_t RemoveDoubleEdges(MeshObject* obj)
@@ -71,7 +71,7 @@ void MergeAtFirst(MeshObject* obj)
 	SelectAssociatedGridObjects(sel);
 
 	vector3 first = aaPos[*sel.vertices_begin()];
-	VertexBase* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
+	Vertex* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
 	if(vrt)
 		aaPos[vrt] = first;
 }
@@ -86,7 +86,7 @@ void MergeAtCenter(MeshObject* obj)
 
 	vector3 center;
 	CalculateCenter(center, sel, aaPos);
-	VertexBase* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
+	Vertex* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
 	if(vrt)
 		aaPos[vrt] = center;
 }
@@ -99,13 +99,13 @@ void MergeAtLast(MeshObject* obj)
 	SelectAssociatedGridObjects(sel);
 
 //	todo: This iteration shouldn't be necessary!
-	VertexBaseIterator vrtIter = sel.begin<VertexBase>();
-	VertexBase* lastVrt = *vrtIter;
-	for(; vrtIter != sel.end<VertexBase>(); ++vrtIter)
+	VertexIterator vrtIter = sel.begin<Vertex>();
+	Vertex* lastVrt = *vrtIter;
+	for(; vrtIter != sel.end<Vertex>(); ++vrtIter)
 		lastVrt = *vrtIter;
 
 	vector3 last = aaPos[lastVrt];
-	VertexBase* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
+	Vertex* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
 	if(vrt)
 		aaPos[vrt] = last;
 }
@@ -272,7 +272,7 @@ void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 	IntersectCloseEdges(grid, sel.get_grid_objects(),
 						aaPos, snapThreshold);
 //	remove doubles now
-	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
 
@@ -294,7 +294,7 @@ void ResolveTriangleIntersections(MeshObject* obj, number snapThreshold)
 								aaPos, snapThreshold);
 
 //	remove doubles now
-	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
 
@@ -308,7 +308,7 @@ void ProjectVerticesToCloseEdges(MeshObject* obj, number snapThreshold)
 								aaPos, snapThreshold);
 
 //	remove doubles now
-	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
 
@@ -322,7 +322,7 @@ void ProjectVerticesToCloseFaces(MeshObject* obj, number snapThreshold)
 								aaPos, snapThreshold);
 
 //	remove doubles now
-	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
 

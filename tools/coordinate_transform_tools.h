@@ -47,10 +47,10 @@ void MoveAlongNormal(MeshObject* obj, number offset, bool usePrecalculatedNormal
 	MeshObject::normal_accessor_t& aaNorm = obj->normal_accessor();
 
 	Grid::face_traits::secure_container faces;
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, sel);
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& p = aaPos[*iter];
 	//	calculate vertex normal by averaging face normals
@@ -78,11 +78,11 @@ void ScaleAroundCenter(MeshObject* obj, const vector3& scale)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		ug::vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -97,11 +97,11 @@ void ScaleAroundPivot(MeshObject* obj, const vector3& scale)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 	vector3 center = obj->pivot();
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -117,7 +117,7 @@ void RotateAroundCenter(MeshObject* obj, const vector3& rot)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
@@ -126,7 +126,7 @@ void RotateAroundCenter(MeshObject* obj, const vector3& rot)
 	matrix33 matRot;
 	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -140,7 +140,7 @@ void RotateAroundPivot(MeshObject* obj, const vector3& rot)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 	vector3 center = obj->pivot();
 
@@ -149,7 +149,7 @@ void RotateAroundPivot(MeshObject* obj, const vector3& rot)
 	matrix33 matRot;
 	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -164,10 +164,10 @@ void ConeTransform(MeshObject* obj, const vector3& base, const vector3& axis,
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		vector3 proj(0, 0, 0);
@@ -191,7 +191,7 @@ void ConeTransform(MeshObject* obj, const vector3& base, const vector3& axis,
 
 void LaplacianSmooth(MeshObject* obj, number alpha, int numIterations)
 {
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 
 	ug::LaplacianSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
@@ -200,7 +200,7 @@ void LaplacianSmooth(MeshObject* obj, number alpha, int numIterations)
 
 void TangentialSmooth(MeshObject* obj, number alpha, int numIterations)
 {
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 
 	ug::TangentialSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
@@ -273,10 +273,10 @@ void ProjectToPlane(MeshObject* obj, const vector3& planeCenter, const vector3& 
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		ProjectPointToPlane(aaPos[*iter], v, planeCenter, planeNormal);

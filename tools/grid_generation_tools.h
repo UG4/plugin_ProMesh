@@ -13,7 +13,7 @@
 namespace ug{
 namespace promesh{
 
-VertexBase* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
+Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -41,10 +41,10 @@ EdgeBase* CreateEdge(MeshObject* obj, int subsetInd)
 	ug::Grid& grid = obj->get_grid();
 	ug::SubsetHandler& sh = obj->get_subset_handler();
 
-	size_t numVrts = sel.num<ug::VertexBase>();
-	vector<ug::VertexBase*> vrts;
+	size_t numVrts = sel.num<ug::Vertex>();
+	vector<ug::Vertex*> vrts;
 	vrts.reserve(numVrts);
-	vrts.assign(sel.begin<ug::VertexBase>(), sel.end<ug::VertexBase>());
+	vrts.assign(sel.begin<ug::Vertex>(), sel.end<ug::Vertex>());
 
 	ug::Edge* e = NULL;
 	switch(numVrts){
@@ -76,10 +76,10 @@ Face* CreateFace(MeshObject* obj, int subsetInd)
 	Grid& grid = obj->get_grid();
 	SubsetHandler& sh = obj->get_subset_handler();
 
-	size_t numVrts = sel.num<VertexBase>();
-	vector<VertexBase*> vrts;
+	size_t numVrts = sel.num<Vertex>();
+	vector<Vertex*> vrts;
 	vrts.reserve(numVrts);
-	vrts.assign(sel.begin<VertexBase>(), sel.end<VertexBase>());
+	vrts.assign(sel.begin<Vertex>(), sel.end<Vertex>());
 
 	FaceDescriptor fd(numVrts);
 	for(size_t i = 0; i < numVrts; ++i)
@@ -120,16 +120,16 @@ Volume* CreateVolume(MeshObject* obj, int subsetInd)
 	Grid& grid = obj->get_grid();
 	SubsetHandler& sh = obj->get_subset_handler();
 
-	size_t numVrts = sel.num<VertexBase>();
+	size_t numVrts = sel.num<Vertex>();
 
 	if(numVrts < 4 || numVrts > 8){
 		UG_LOG("Bad number of vertices! Can't create a volume element from " << numVrts << " vertices.");
 		return NULL;
 	}
 
-	vector<VertexBase*> vrts;
+	vector<Vertex*> vrts;
 	vrts.reserve(numVrts);
-	vrts.assign(sel.begin<VertexBase>(), sel.end<VertexBase>());
+	vrts.assign(sel.begin<Vertex>(), sel.end<Vertex>());
 
 	VolumeDescriptor vd(numVrts);
 	for(size_t i = 0; i < numVrts; ++i)
@@ -195,7 +195,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 	sel.enable_autoselection(true);
 
 //	create the vertices
-	VertexBase* vrts[4];
+	Vertex* vrts[4];
 	for(size_t i = 0; i < 4; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
@@ -216,7 +216,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 	}
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 
@@ -239,19 +239,19 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 
 //	create the vertices
 //	create one upfront, the others in a loop
-	VertexBase* centerVrt = NULL;
+	Vertex* centerVrt = NULL;
 	if(fill){
 		centerVrt = *grid.create<RegularVertex>();
 		aaPos[centerVrt] = center;
 	}
-	VertexBase* firstVrt = *grid.create<RegularVertex>();
+	Vertex* firstVrt = *grid.create<RegularVertex>();
 	aaPos[firstVrt] = vector3(0, radius, 0);
 	VecAdd(aaPos[firstVrt], aaPos[firstVrt], center);
-	VertexBase* lastVrt = firstVrt;
+	Vertex* lastVrt = firstVrt;
 	for(int i = 1; i < numRimVertices; ++i){
 	//	create a new vertex
 		number ia = (float)i / (float)numRimVertices;
-		VertexBase* vNew = *grid.create<RegularVertex>();
+		Vertex* vNew = *grid.create<RegularVertex>();
 		aaPos[vNew] = vector3(sin(2. * PI * ia), cos(2. * PI * ia), 0);
 		VecScale(aaPos[vNew], aaPos[vNew], radius);
 		VecAdd(aaPos[vNew], aaPos[vNew], center);
@@ -273,7 +273,7 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 		grid.create<Edge>(EdgeDescriptor(lastVrt, firstVrt));
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 
@@ -295,7 +295,7 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 	sel.enable_autoselection(true);
 
 //	create the vertices
-	VertexBase* vrts[8];
+	Vertex* vrts[8];
 	for(size_t i = 0; i < 8; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
@@ -321,7 +321,7 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 		grid.create_by_cloning(&hexa, hexa, NULL);
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
@@ -342,7 +342,7 @@ void CreateSphere(MeshObject* obj, const vector3& center, number radius,
 	GenerateIcosphere(grid, center, radius, numRefinements, obj->position_attachment(), &sel);
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 }
@@ -360,7 +360,7 @@ void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 	sel.enable_autoselection(true);
 
 //	create the vertices
-	VertexBase* vrts[4];
+	Vertex* vrts[4];
 	for(size_t i = 0; i < 4; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
@@ -381,7 +381,7 @@ void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 		grid.create_by_cloning(&tet, tet, NULL);
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
@@ -403,7 +403,7 @@ void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 	sel.enable_autoselection(true);
 
 //	create the vertices
-	VertexBase* vrts[5];
+	Vertex* vrts[5];
 	for(size_t i = 0; i < 5; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
@@ -425,7 +425,7 @@ void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 		grid.create_by_cloning(&pyra, pyra, NULL);
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
@@ -447,7 +447,7 @@ void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
 	sel.enable_autoselection(true);
 
 //	create the vertices
-	VertexBase* vrts[6];
+	Vertex* vrts[6];
 	for(size_t i = 0; i < 6; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
@@ -470,7 +470,7 @@ void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
 		grid.create_by_cloning(&prism, prism, NULL);
 
 //	assign subset
-	sh.assign_subset(sel.begin<VertexBase>(), sel.end<VertexBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
 	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);

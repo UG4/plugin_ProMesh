@@ -19,8 +19,8 @@ void AssignSubset(MeshObject* obj, int newIndex)
 	Selector& sel = obj->get_selector();
 	SubsetHandler& sh = obj->get_subset_handler();
 
-	sh.assign_subset(sel.begin<VertexBase>(),
-					 sel.end<VertexBase>(), newIndex);
+	sh.assign_subset(sel.begin<Vertex>(),
+					 sel.end<Vertex>(), newIndex);
 	sh.assign_subset(sel.begin<EdgeBase>(),
 					 sel.end<EdgeBase>(), newIndex);
 	sh.assign_subset(sel.begin<Face>(),
@@ -114,7 +114,7 @@ void EraseSubset(MeshObject* obj, int si, bool eraseGeometry)
 			grid.erase(sh.begin<Volume>(si), sh.end<Volume>(si));
 			grid.erase(sh.begin<Face>(si), sh.end<Face>(si));
 			grid.erase(sh.begin<EdgeBase>(si), sh.end<EdgeBase>(si));
-			grid.erase(sh.begin<VertexBase>(si), sh.end<VertexBase>(si));
+			grid.erase(sh.begin<Vertex>(si), sh.end<Vertex>(si));
 		}
 		sh.erase_subset(si);
 	}
@@ -350,14 +350,14 @@ void CopySubsetIndicesToSides(MeshObject* obj, bool selectionOnly,
 		CopySubsetIndicesToSides(sh, sel.begin<Volume>(), sel.end<Volume>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<Face>(), sel.end<Face>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<EdgeBase>(), sel.end<EdgeBase>(), toUnassignedOnly);
-		CopySubsetIndicesToSides(sh, sel.begin<VertexBase>(), sel.end<VertexBase>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.begin<Vertex>(), sel.end<Vertex>(), toUnassignedOnly);
 	}
 	else{
 		for(int i = 0; i < sh.num_subsets(); ++i){
 			CopySubsetIndicesToSides(sh, sh.begin<Volume>(i), sh.end<Volume>(i), toUnassignedOnly);
 			CopySubsetIndicesToSides(sh, sh.begin<Face>(i), sh.end<Face>(i), toUnassignedOnly);
 			CopySubsetIndicesToSides(sh, sh.begin<EdgeBase>(i), sh.end<EdgeBase>(i), toUnassignedOnly);
-			CopySubsetIndicesToSides(sh, sh.begin<VertexBase>(i), sh.end<VertexBase>(i), toUnassignedOnly);
+			CopySubsetIndicesToSides(sh, sh.begin<Vertex>(i), sh.end<Vertex>(i), toUnassignedOnly);
 		}
 	}
 }

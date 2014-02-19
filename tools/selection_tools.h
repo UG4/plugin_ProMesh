@@ -61,7 +61,7 @@ void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 
 	if(si >= 0){
 		if(selVrts)
-			sel.select(sh.begin<VertexBase>(si), sh.end<VertexBase>(si));
+			sel.select(sh.begin<Vertex>(si), sh.end<Vertex>(si));
 		if(selEdges)
 			sel.select(sh.begin<EdgeBase>(si), sh.end<EdgeBase>(si));
 		if(selFaces)
@@ -73,7 +73,7 @@ void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 		Grid& grid = obj->get_grid();
 	//	subset -1 has to be selected. Those are not directly accessible.
 		if(selVrts){
-			for(VertexBaseIterator iter = grid.vertices_begin();
+			for(VertexIterator iter = grid.vertices_begin();
 				iter != grid.vertices_end(); ++iter)
 			{
 				if(sh.get_subset_index(*iter) == -1)
@@ -141,7 +141,7 @@ void SelectUnassignedElements(MeshObject* obj, bool selVrts, bool selEdges,
 	Selector& sel = obj->get_selector();
 
 	if(selVrts)
-		SelectUnassignedElementsHelper<VertexBase>(grid, sh, sel);
+		SelectUnassignedElementsHelper<Vertex>(grid, sh, sel);
 	if(selEdges)
 		SelectUnassignedElementsHelper<EdgeBase>(grid, sh, sel);
 	if(selFaces)
@@ -157,8 +157,8 @@ void InvertSelection(MeshObject* obj, bool invVrts, bool invEdges,
 	Selector& sel = obj->get_selector();
 
 	if(invVrts)
-		InvertSelection(sel, grid.begin<VertexBase>(),
-							grid.end<VertexBase>());
+		InvertSelection(sel, grid.begin<Vertex>(),
+							grid.end<Vertex>());
 
 	if(invEdges)
 		InvertSelection(sel, grid.begin<EdgeBase>(),
@@ -198,14 +198,14 @@ void SelectBoundaryVertices(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	ug::SelectBoundaryElements(sel, grid.begin<VertexBase>(), grid.end<VertexBase>());
+	ug::SelectBoundaryElements(sel, grid.begin<Vertex>(), grid.end<Vertex>());
 }
 
 void SelectInnerVertices(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	SelectInnerElements(sel, grid.begin<VertexBase>(), grid.end<VertexBase>());
+	SelectInnerElements(sel, grid.begin<Vertex>(), grid.end<Vertex>());
 }
 
 void SelectAssociatedVertices(MeshObject* obj)
@@ -232,8 +232,8 @@ void DeselectAllVertices(MeshObject* obj)
 void SelectMarkedVertices(MeshObject* obj)
 {
 	obj->get_selector().select(
-		obj->get_crease_handler().begin<VertexBase>(REM_FIXED),
-		obj->get_crease_handler().end<VertexBase>(REM_FIXED));
+		obj->get_crease_handler().begin<Vertex>(REM_FIXED),
+		obj->get_crease_handler().end<Vertex>(REM_FIXED));
 }
 
 bool SelectVertexByIndex(MeshObject* obj, int index)
@@ -241,8 +241,8 @@ bool SelectVertexByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	VertexBaseIterator iter = grid.begin<VertexBase>();
-	while(counter < index && iter != grid.end<VertexBase>()){
+	VertexIterator iter = grid.begin<Vertex>();
+	while(counter < index && iter != grid.end<Vertex>()){
 		++counter;
 		++iter;
 	}
@@ -261,7 +261,7 @@ size_t SelectUnconnectedVerticesHelper(Grid& grid, Selector& sel)
 	typename Grid::traits<TElem>::secure_container	elems;
 
 	size_t numUnconnected = 0;
-	for(VertexBaseIterator iter = grid.vertices_begin();
+	for(VertexIterator iter = grid.vertices_begin();
 		iter != grid.vertices_end(); ++iter)
 	{
 		if(!sel.is_selected(*iter)){
@@ -660,7 +660,7 @@ size_t SelectBentQuadrilaterals(MeshObject* obj, number dotThreshold)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	Grid::AttachmentAccessor<VertexBase, APosition> aaPos(grid, aPosition);
+	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
 
 //	iterate over all quadrilaterals and search for bent ones
 	size_t selCount = 0;
@@ -708,7 +708,7 @@ int SelectUnorientableVolumes(MeshObject* obj)
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
 
-	Grid::AttachmentAccessor<VertexBase, APosition> aaPos(grid, aPosition);
+	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
 
 	int numUnorientable = 0;
 

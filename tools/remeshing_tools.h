@@ -83,7 +83,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 		SaveGridToFile(grid, ss3d.str().c_str(), obj->position_attachment());
 	//	perform transformation to 2d and save that too.
 		std::vector<vector3> vrts;
-		for(VertexBaseIterator iter = grid.vertices_begin();
+		for(VertexIterator iter = grid.vertices_begin();
 			iter != grid.vertices_end(); ++iter)
 		{
 			vrts.push_back(aaPos[*iter]);
@@ -93,7 +93,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 							  vrts.size());
 
 		size_t counter = 0;
-		for(VertexBaseIterator iter = grid.vertices_begin();
+		for(VertexIterator iter = grid.vertices_begin();
 			iter != grid.vertices_end(); ++iter, ++counter)
 		{
 			aaPos[*iter] = vector3(vrts2d[counter].x(), vrts2d[counter].y(), 0);
@@ -102,7 +102,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 		SaveGridToFile(grid, ss2d.str().c_str(), obj->position_attachment());
 
 		counter = 0;
-		for(VertexBaseIterator iter = grid.vertices_begin();
+		for(VertexIterator iter = grid.vertices_begin();
 			iter != grid.vertices_end(); ++iter, ++counter)
 		{
 			aaPos[*iter] = vector3(vrts[counter].x(), vrts[counter].y(), 0);
@@ -161,14 +161,14 @@ void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number threshold)
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 //	store all source-vertices in a list
-	vector<VertexBase*> vrts;
-	vrts.assign(sel.begin<VertexBase>(), sel.end<VertexBase>());
+	vector<Vertex*> vrts;
+	vrts.assign(sel.begin<Vertex>(), sel.end<Vertex>());
 
 //	iterate over selected vertices
-	for(vector<VertexBase*>::iterator iter = vrts.begin();
+	for(vector<Vertex*>::iterator iter = vrts.begin();
 		iter != vrts.end(); ++iter)
 	{
-		VertexBase* vrt = *iter;
+		Vertex* vrt = *iter;
 		vector3 n;
 		CalculateVertexNormal(n, g, vrt, aaPos);
 
@@ -253,7 +253,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 	Selector& sel = obj->get_selector();
 	SubsetHandler& sh = obj->get_subset_handler();
 
-	vector<VertexBase*> vrts;
+	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
 	vector<EdgeBase*> edges;
 	edges.assign(sel.edges_begin(), sel.edges_end());
@@ -279,7 +279,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 	sh.enable_strict_inheritance(strictInheritanceEnabled);
 
 //	select faces, edges and vertices from the new top-layer.
-	sel.clear<VertexBase>();
+	sel.clear<Vertex>();
 	sel.clear<EdgeBase>();
 	sel.clear<Face>();
 	sel.select(vrts.begin(), vrts.end());
@@ -296,14 +296,14 @@ void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snap
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 //	store all source-vertices in a list
-	vector<VertexBase*> vrts;
-	vrts.assign(sel.begin<VertexBase>(), sel.end<VertexBase>());
+	vector<Vertex*> vrts;
+	vrts.assign(sel.begin<Vertex>(), sel.end<Vertex>());
 
 //	iterate over selected vertices
-	for(vector<VertexBase*>::iterator iter = vrts.begin();
+	for(vector<Vertex*>::iterator iter = vrts.begin();
 		iter != vrts.end(); ++iter)
 	{
-		VertexBase* vrt = *iter;
+		Vertex* vrt = *iter;
 		vector3 n;
 		CalculateVertexNormal(n, g, vrt, aaPos);
 

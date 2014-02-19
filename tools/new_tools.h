@@ -17,10 +17,10 @@ void ScaleAroundPoint(MeshObject* obj, const vector3& scale, const vector3& poin
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<VertexBase*> vrts;
+	std::vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->get_selector());
 
-	for(std::vector<VertexBase*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, point);
