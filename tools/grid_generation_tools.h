@@ -21,7 +21,7 @@ VertexBase* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 //	build a new vertex
-	Vertex* vrt = *grid.create<Vertex>();
+	RegularVertex* vrt = *grid.create<RegularVertex>();
 
 	if(vrt){
 		aaPos[vrt] = pos;
@@ -197,7 +197,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 //	create the vertices
 	VertexBase* vrts[4];
 	for(size_t i = 0; i < 4; ++i)
-		vrts[i] = *grid.create<Vertex>();
+		vrts[i] = *grid.create<RegularVertex>();
 
 	aaPos[vrts[0]] = upLeft;
 	aaPos[vrts[1]] = lowLeft;
@@ -241,17 +241,17 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 //	create one upfront, the others in a loop
 	VertexBase* centerVrt = NULL;
 	if(fill){
-		centerVrt = *grid.create<Vertex>();
+		centerVrt = *grid.create<RegularVertex>();
 		aaPos[centerVrt] = center;
 	}
-	VertexBase* firstVrt = *grid.create<Vertex>();
+	VertexBase* firstVrt = *grid.create<RegularVertex>();
 	aaPos[firstVrt] = vector3(0, radius, 0);
 	VecAdd(aaPos[firstVrt], aaPos[firstVrt], center);
 	VertexBase* lastVrt = firstVrt;
 	for(int i = 1; i < numRimVertices; ++i){
 	//	create a new vertex
 		number ia = (float)i / (float)numRimVertices;
-		VertexBase* vNew = *grid.create<Vertex>();
+		VertexBase* vNew = *grid.create<RegularVertex>();
 		aaPos[vNew] = vector3(sin(2. * PI * ia), cos(2. * PI * ia), 0);
 		VecScale(aaPos[vNew], aaPos[vNew], radius);
 		VecAdd(aaPos[vNew], aaPos[vNew], center);
@@ -297,7 +297,7 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 //	create the vertices
 	VertexBase* vrts[8];
 	for(size_t i = 0; i < 8; ++i)
-		vrts[i] = *grid.create<Vertex>();
+		vrts[i] = *grid.create<RegularVertex>();
 
 	aaPos[vrts[0]] = vector3(boxMin.x(), boxMin.y(), boxMin.z());
 	aaPos[vrts[1]] = vector3(boxMax.x(), boxMin.y(), boxMin.z());
@@ -362,7 +362,7 @@ void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 //	create the vertices
 	VertexBase* vrts[4];
 	for(size_t i = 0; i < 4; ++i)
-		vrts[i] = *grid.create<Vertex>();
+		vrts[i] = *grid.create<RegularVertex>();
 
 	aaPos[vrts[0]] = vector3(1, 1, 1);
 	aaPos[vrts[1]] = vector3(-1, -1, 1);
@@ -405,7 +405,7 @@ void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 //	create the vertices
 	VertexBase* vrts[5];
 	for(size_t i = 0; i < 5; ++i)
-		vrts[i] = *grid.create<Vertex>();
+		vrts[i] = *grid.create<RegularVertex>();
 
 	aaPos[vrts[0]] = vector3(-1, -1, -1);
 	aaPos[vrts[1]] = vector3(1, -1, -1);
@@ -449,7 +449,7 @@ void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
 //	create the vertices
 	VertexBase* vrts[6];
 	for(size_t i = 0; i < 6; ++i)
-		vrts[i] = *grid.create<Vertex>();
+		vrts[i] = *grid.create<RegularVertex>();
 
 	aaPos[vrts[0]] = vector3(-1, -1, -1);
 	aaPos[vrts[1]] = vector3(1, -1, -1);

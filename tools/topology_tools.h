@@ -171,7 +171,7 @@ void SplitEdge(MeshObject* obj)
 //	iterate through all edges in the vector and split them
 	for(size_t i = 0; i < vEdges.size(); ++i){
 		vector3 center = CalculateCenter(vEdges[i], aaPos);
-		Vertex* vrt = ug::SplitEdge<Vertex>(grid, vEdges[i]);
+		RegularVertex* vrt = ug::SplitEdge<RegularVertex>(grid, vEdges[i]);
 		aaPos[vrt] = center;
 	}
 }

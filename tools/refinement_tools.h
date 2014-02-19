@@ -196,7 +196,7 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 //	insert centers
 	for(size_t i = 0; i < vols.size(); ++i){
 		Volume* vol = vols[i];
-		Vertex* vrt = *grid.create<Vertex>(vol);
+		RegularVertex* vrt = *grid.create<RegularVertex>(vol);
 		aaPos[vrt] = CalculateCenter(vol, aaPos);
 		InsertCenterVertex(grid, vol, vrt, true);
 	}
@@ -204,7 +204,7 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 //	insert centers
 	for(size_t i = 0; i < faces.size(); ++i){
 		Face* f = faces[i];
-		Vertex* vrt = *grid.create<Vertex>(f);
+		RegularVertex* vrt = *grid.create<RegularVertex>(f);
 		aaPos[vrt] = CalculateCenter(f, aaPos);
 		InsertCenterVertex(grid, f, vrt, true);
 	}
@@ -213,7 +213,7 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 	for(size_t i = 0; i < edges.size(); ++i){
 		EdgeBase* e = edges[i];
 		vector3 center = CalculateCenter(e, aaPos);
-		Vertex* vrt = SplitEdge<Vertex>(grid, e);
+		RegularVertex* vrt = SplitEdge<RegularVertex>(grid, e);
 		aaPos[vrt] = center;
 	}
 
