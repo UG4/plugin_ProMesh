@@ -168,7 +168,7 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 //	access position attachment
 	Grid::VertexAttachmentAccessor<APosition> aaPos(grid, aPosition);
 
-	std::vector<EdgeBase*> edges;
+	std::vector<Edge*> edges;
 	std::vector<Face*> faces;
 	std::vector<Volume*> vols;
 	vols.assign(sel.begin<Volume>(), sel.end<Volume>());
@@ -185,13 +185,13 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 
 //todo: support insert center for all selections
 	if(grid.num<Face>() > 0){
-		if(sel.num<EdgeBase>() > 0){
+		if(sel.num<Edge>() > 0){
 			UG_LOG("InsertCenter for edges is currently not supported if"
 					" faces are present.\n");
 		}
 	}
 	else
-		edges.assign(sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+		edges.assign(sel.begin<Edge>(), sel.end<Edge>());
 
 //	insert centers
 	for(size_t i = 0; i < vols.size(); ++i){
@@ -211,7 +211,7 @@ void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 
 //	split edges
 	for(size_t i = 0; i < edges.size(); ++i){
-		EdgeBase* e = edges[i];
+		Edge* e = edges[i];
 		vector3 center = CalculateCenter(e, aaPos);
 		RegularVertex* vrt = SplitEdge<RegularVertex>(grid, e);
 		aaPos[vrt] = center;

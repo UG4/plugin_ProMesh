@@ -20,7 +20,7 @@ void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 //	adjust selection
 	Selector& sel = obj->get_selector();
 	SelectAssociatedEdges(sel, sel.begin<Vertex>(), sel.end<Vertex>());
-	SelectAssociatedFaces(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	SelectAssociatedFaces(sel, sel.begin<Edge>(), sel.end<Edge>());
 	SelectAssociatedVolumes(sel, sel.begin<Face>(), sel.end<Face>());
 
 	if(eraseUnusedFaces)
@@ -36,7 +36,7 @@ void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 	Grid& grid = obj->get_grid();
 	grid.erase(sel.begin<Volume>(), sel.end<Volume>());
 	grid.erase(sel.begin<Face>(), sel.end<Face>());
-	grid.erase(sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	grid.erase(sel.begin<Edge>(), sel.end<Edge>());
 	grid.erase(sel.begin<Vertex>(), sel.end<Vertex>());
 }
 
@@ -57,9 +57,9 @@ size_t RemoveDoubleEdges(MeshObject* obj)
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
 
-	size_t numEdges= grid.num<EdgeBase>();
-	RemoveDoubleEdges(grid, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
-	return numEdges - grid.num<EdgeBase>();
+	size_t numEdges= grid.num<Edge>();
+	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
+	return numEdges - grid.num<Edge>();
 }
 
 void MergeAtFirst(MeshObject* obj)
@@ -118,9 +118,9 @@ void CollapseEdge(MeshObject* obj)
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 	vector<Face*> vFaces;
-	vector<EdgeBase*> vEdges;
-	while(sel.num<EdgeBase>() > 0){
-		EdgeBase* e = *sel.begin<EdgeBase>();
+	vector<Edge*> vEdges;
+	while(sel.num<Edge>() > 0){
+		Edge* e = *sel.begin<Edge>();
 	//	to make sure that all selected edges are collapsed,
 	//	we have to check the adjacent triangles
 		CollectFaces(vFaces, grid, e);
@@ -161,9 +161,9 @@ void SplitEdge(MeshObject* obj)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	vector<EdgeBase*> vEdges;
-	for(EdgeBaseIterator iter = sel.begin<EdgeBase>();
-		iter != sel.end<EdgeBase>(); ++iter)
+	vector<Edge*> vEdges;
+	for(EdgeIterator iter = sel.begin<Edge>();
+		iter != sel.end<Edge>(); ++iter)
 	{
 		vEdges.push_back(*iter);
 	}
@@ -183,9 +183,9 @@ void SwapEdge(MeshObject* obj)
 //	since new edges will be automatically selected again.
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	vector<EdgeBase*> vEdges;
-	for(EdgeBaseIterator iter = sel.begin<EdgeBase>();
-		iter != sel.end<EdgeBase>(); ++iter)
+	vector<Edge*> vEdges;
+	for(EdgeIterator iter = sel.begin<Edge>();
+		iter != sel.end<Edge>(); ++iter)
 	{
 		vEdges.push_back(*iter);
 	}
@@ -214,8 +214,8 @@ void AdjustEdgeOrientation(MeshObject* obj)
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
 
-	AdjustEdgeOrientationToFaceOrientation(grid, sel.begin<EdgeBase>(),
-												sel.end<EdgeBase>());
+	AdjustEdgeOrientationToFaceOrientation(grid, sel.begin<Edge>(),
+												sel.end<Edge>());
 }
 
 void FixFaceOrientation(MeshObject* obj)
@@ -263,7 +263,7 @@ void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 
 //	the grid may now contain some degenerated triangles. We'll try to
 //	remove most of them by projecting vertices onto close edges
-	SelectAssociatedVertices(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
 
 
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),

@@ -21,8 +21,8 @@ void AssignSubset(MeshObject* obj, int newIndex)
 
 	sh.assign_subset(sel.begin<Vertex>(),
 					 sel.end<Vertex>(), newIndex);
-	sh.assign_subset(sel.begin<EdgeBase>(),
-					 sel.end<EdgeBase>(), newIndex);
+	sh.assign_subset(sel.begin<Edge>(),
+					 sel.end<Edge>(), newIndex);
 	sh.assign_subset(sel.begin<Face>(),
 					 sel.end<Face>(), newIndex);
 	sh.assign_subset(sel.begin<Volume>(),
@@ -113,7 +113,7 @@ void EraseSubset(MeshObject* obj, int si, bool eraseGeometry)
 		if(eraseGeometry){
 			grid.erase(sh.begin<Volume>(si), sh.end<Volume>(si));
 			grid.erase(sh.begin<Face>(si), sh.end<Face>(si));
-			grid.erase(sh.begin<EdgeBase>(si), sh.end<EdgeBase>(si));
+			grid.erase(sh.begin<Edge>(si), sh.end<Edge>(si));
 			grid.erase(sh.begin<Vertex>(si), sh.end<Vertex>(si));
 		}
 		sh.erase_subset(si);
@@ -199,8 +199,8 @@ void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle)
 	SubsetHandler& sh = obj->get_subset_handler();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	vector<EdgeBase*> edges;
-	vector<EdgeBase*> edges2;
+	vector<Edge*> edges;
+	vector<Edge*> edges2;
 	vector<Face*> faces;
 	vector<Face*> assembledSubset;
 	queue<Face*> queFaces;
@@ -243,7 +243,7 @@ void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle)
 					bool gotOne = false;
 				//	the first non-degenerated edge defines the direction of the face
 					for(size_t i_edge = 0; i_edge < edges.size(); ++i_edge){
-						EdgeBase* e = edges[i_edge];
+						Edge* e = edges[i_edge];
 						if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) >= SMALL*SMALL){
 							VecSubtract(dir, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
 							VecNormalize(dir, dir);
@@ -258,7 +258,7 @@ void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle)
 
 				//	now find associated degenerated faces
 					for(size_t i_edge = 0; i_edge < edges.size(); ++i_edge){
-						EdgeBase* e = edges[i_edge];
+						Edge* e = edges[i_edge];
 
 					//	we have to know whether the edge is degenerated or not.
 						bool bDegEdge = (VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) < SMALL*SMALL);
@@ -284,7 +284,7 @@ void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle)
 											bool gotOne2 = false;
 										//	the first non-degenerated edge defines the direction of the face
 											for(size_t i_edge = 0; i_edge < edges2.size(); ++i_edge){
-												EdgeBase* e = edges2[i_edge];
+												Edge* e = edges2[i_edge];
 												if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) >= SMALL*SMALL){
 													VecSubtract(dir2, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
 													VecNormalize(dir2, dir2);
@@ -349,14 +349,14 @@ void CopySubsetIndicesToSides(MeshObject* obj, bool selectionOnly,
 		Selector& sel = obj->get_selector();
 		CopySubsetIndicesToSides(sh, sel.begin<Volume>(), sel.end<Volume>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<Face>(), sel.end<Face>(), toUnassignedOnly);
-		CopySubsetIndicesToSides(sh, sel.begin<EdgeBase>(), sel.end<EdgeBase>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.begin<Edge>(), sel.end<Edge>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<Vertex>(), sel.end<Vertex>(), toUnassignedOnly);
 	}
 	else{
 		for(int i = 0; i < sh.num_subsets(); ++i){
 			CopySubsetIndicesToSides(sh, sh.begin<Volume>(i), sh.end<Volume>(i), toUnassignedOnly);
 			CopySubsetIndicesToSides(sh, sh.begin<Face>(i), sh.end<Face>(i), toUnassignedOnly);
-			CopySubsetIndicesToSides(sh, sh.begin<EdgeBase>(i), sh.end<EdgeBase>(i), toUnassignedOnly);
+			CopySubsetIndicesToSides(sh, sh.begin<Edge>(i), sh.end<Edge>(i), toUnassignedOnly);
 			CopySubsetIndicesToSides(sh, sh.begin<Vertex>(i), sh.end<Vertex>(i), toUnassignedOnly);
 		}
 	}

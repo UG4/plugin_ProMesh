@@ -170,7 +170,7 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectVertexByIndex", &SelectVertexByIndex, grp)
 		.add_function("PM_SelectUnconnectedVertices", &SelectUnconnectedVertices, grp)
 
-		.add_function("PM_SelectEdgeByCoordinate", &SelectElemByCoordinate<EdgeBase>, grp)
+		.add_function("PM_SelectEdgeByCoordinate", &SelectElemByCoordinate<Edge>, grp)
 		.add_function("PM_SelectBoundaryEdges", &SelectBoundaryEdges, grp)
 		.add_function("PM_SelectInnerEdges", &SelectInnerEdges, grp)
 		.add_function("PM_SelectNonManifoldEdges", &SelectNonManifoldEdges, grp)
@@ -254,11 +254,11 @@ static void Common(Registry& reg, string grp)
 
 //	new tools
 	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp)
-		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<EdgeBase>, grp)
+		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<Edge>, grp)
 		.add_function("PM_SelectFacesInBox", &SelectElementsInBox<Face>, grp)
 		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp)
 		.add_function("PM_SelectVerticesInCylinder", &SelectElementsInCylinder<Vertex>, grp)
-		.add_function("PM_SelectEdgesInCylinder", &SelectElementsInCylinder<EdgeBase>, grp)
+		.add_function("PM_SelectEdgesInCylinder", &SelectElementsInCylinder<Edge>, grp)
 		.add_function("PM_SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp)
 		.add_function("PM_SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp);
 

@@ -63,7 +63,7 @@ void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 		if(selVrts)
 			sel.select(sh.begin<Vertex>(si), sh.end<Vertex>(si));
 		if(selEdges)
-			sel.select(sh.begin<EdgeBase>(si), sh.end<EdgeBase>(si));
+			sel.select(sh.begin<Edge>(si), sh.end<Edge>(si));
 		if(selFaces)
 			sel.select(sh.begin<Face>(si), sh.end<Face>(si));
 		if(selVols)
@@ -81,7 +81,7 @@ void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 			}
 		}
 		if(selEdges){
-			for(EdgeBaseIterator iter = grid.edges_begin();
+			for(EdgeIterator iter = grid.edges_begin();
 				iter != grid.edges_end(); ++iter)
 			{
 				if(sh.get_subset_index(*iter) == -1)
@@ -114,7 +114,7 @@ void SelectSubsetBoundary(MeshObject* obj, int si, bool edgeBnds,
 	Selector& sel = obj->get_selector();
 
 	if(edgeBnds)
-		SelectAreaBoundary(sel, sh.begin<EdgeBase>(si), sh.end<EdgeBase>(si));
+		SelectAreaBoundary(sel, sh.begin<Edge>(si), sh.end<Edge>(si));
 	if(faceBnds)
 		SelectAreaBoundary(sel, sh.begin<Face>(si), sh.end<Face>(si));
 	if(volBnds)
@@ -143,7 +143,7 @@ void SelectUnassignedElements(MeshObject* obj, bool selVrts, bool selEdges,
 	if(selVrts)
 		SelectUnassignedElementsHelper<Vertex>(grid, sh, sel);
 	if(selEdges)
-		SelectUnassignedElementsHelper<EdgeBase>(grid, sh, sel);
+		SelectUnassignedElementsHelper<Edge>(grid, sh, sel);
 	if(selFaces)
 		SelectUnassignedElementsHelper<Face>(grid, sh, sel);
 	if(selVols)
@@ -161,8 +161,8 @@ void InvertSelection(MeshObject* obj, bool invVrts, bool invEdges,
 							grid.end<Vertex>());
 
 	if(invEdges)
-		InvertSelection(sel, grid.begin<EdgeBase>(),
-							grid.end<EdgeBase>());
+		InvertSelection(sel, grid.begin<Edge>(),
+							grid.end<Edge>());
 
 	if(invFaces)
 		InvertSelection(sel, grid.begin<Face>(),
@@ -188,7 +188,7 @@ void CloseSelection(MeshObject* obj)
 	Selector& sel = obj->get_selector();
 	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
 	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
-	SelectAssociatedVertices(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
 }
 
 
@@ -211,7 +211,7 @@ void SelectInnerVertices(MeshObject* obj)
 void SelectAssociatedVertices(MeshObject* obj)
 {
 	Selector& sel = obj->get_selector();
-	SelectAssociatedVertices(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
 	SelectAssociatedVertices(sel, sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedVertices(sel, sel.begin<Volume>(), sel.end<Volume>());
 }
@@ -282,7 +282,7 @@ size_t SelectUnconnectedVertices(MeshObject* obj, bool edgeCons, bool faceCons, 
 
 	size_t numUnconnected = 0;
 	if(edgeCons)
-		numUnconnected += SelectUnconnectedVerticesHelper<EdgeBase>(grid, sel);
+		numUnconnected += SelectUnconnectedVerticesHelper<Edge>(grid, sel);
 	if(faceCons)
 		numUnconnected += SelectUnconnectedVerticesHelper<Face>(grid, sel);
 	if(volCons)
@@ -296,14 +296,14 @@ void SelectBoundaryEdges(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	SelectBoundaryElements(sel, grid.begin<EdgeBase>(), grid.end<EdgeBase>());
+	SelectBoundaryElements(sel, grid.begin<Edge>(), grid.end<Edge>());
 }
 
 void SelectInnerEdges(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	SelectInnerElements(sel, grid.begin<EdgeBase>(), grid.end<EdgeBase>());
+	SelectInnerElements(sel, grid.begin<Edge>(), grid.end<Edge>());
 }
 
 void SelectNonManifoldEdges(MeshObject* obj)
@@ -313,7 +313,7 @@ void SelectNonManifoldEdges(MeshObject* obj)
 
 //	iterate over all edges and check how many adjacent faces each has.
 //	if there are more than 2, the edge will be selected
-	for(EdgeBaseIterator iter = grid.edges_begin();
+	for(EdgeIterator iter = grid.edges_begin();
 		iter != grid.edges_end(); ++iter)
 	{
 		if(NumAssociatedFaces(grid, *iter) != 2)
@@ -333,10 +333,10 @@ void SelectShortEdges(MeshObject* obj, number maxLength)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	for(EdgeBaseIterator iter = grid.begin<EdgeBase>();
-		iter != grid.end<EdgeBase>(); ++iter)
+	for(EdgeIterator iter = grid.begin<Edge>();
+		iter != grid.end<Edge>(); ++iter)
 	{
-		EdgeBase* e = *iter;
+		Edge* e = *iter;
 		if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) < maxLengthSq)
 			sel.select(e);
 	}
@@ -349,10 +349,10 @@ void SelectLongEdges(MeshObject* obj, number minLength)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	for(EdgeBaseIterator iter = grid.begin<EdgeBase>();
-		iter != grid.end<EdgeBase>(); ++iter)
+	for(EdgeIterator iter = grid.begin<Edge>();
+		iter != grid.end<Edge>(); ++iter)
 	{
-		EdgeBase* e = *iter;
+		Edge* e = *iter;
 		if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) > minLengthSq)
 			sel.select(e);
 	}
@@ -362,7 +362,7 @@ void SelectCreaseEdges(MeshObject* obj, number minAngle)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	SelectCreaseEdges(sel, grid.begin<EdgeBase>(), grid.end<EdgeBase>(),
+	SelectCreaseEdges(sel, grid.begin<Edge>(), grid.end<Edge>(),
 					  minAngle, obj->position_attachment());
 }
 
@@ -372,9 +372,9 @@ void SelectLinkedBoundaryEdges(MeshObject* obj, bool stopAtSelectedVrts)
 	Selector& sel = obj->get_selector();
 
 	if(stopAtSelectedVrts)
-		SelectLinkedElements<EdgeBase>(sel, IsOnBoundary(grid), IsNotSelected(sel));
+		SelectLinkedElements<Edge>(sel, IsOnBoundary(grid), IsNotSelected(sel));
 	else
-		SelectLinkedElements<EdgeBase>(sel, IsOnBoundary(grid));
+		SelectLinkedElements<Edge>(sel, IsOnBoundary(grid));
 }
 
 void SelectAssociatedEdges(MeshObject* obj)
@@ -400,8 +400,8 @@ void DeselectAllEdges(MeshObject* obj)
 void SelectMarkedEdges(MeshObject* obj)
 {
 	obj->get_selector().select(
-		obj->get_crease_handler().begin<EdgeBase>(REM_CREASE),
-		obj->get_crease_handler().end<EdgeBase>(REM_CREASE));
+		obj->get_crease_handler().begin<Edge>(REM_CREASE),
+		obj->get_crease_handler().end<Edge>(REM_CREASE));
 }
 
 bool SelectEdgeByIndex(MeshObject* obj, int index)
@@ -409,8 +409,8 @@ bool SelectEdgeByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	EdgeBaseIterator iter = grid.begin<EdgeBase>();
-	while(counter < index && iter != grid.end<EdgeBase>()){
+	EdgeIterator iter = grid.begin<Edge>();
+	while(counter < index && iter != grid.end<Edge>()){
 		++counter;
 		++iter;
 	}
@@ -425,7 +425,7 @@ bool SelectEdgeByIndex(MeshObject* obj, int index)
 void EdgeSelectionFill(MeshObject* obj)
 {
 	Selector& sel = obj->get_selector();
-	SelectionFill<EdgeBase>(sel, IsSelected(sel));
+	SelectionFill<Edge>(sel, IsSelected(sel));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -462,7 +462,7 @@ void SelectLinkedManifoldFaces(MeshObject* obj)
 //	while there are faces in the stack, get their associated edges.
 //	if those edges are adjacent to exactly two faces, then select the
 //	neighboured face and push it to the stack (if it was unselected previously)
-	std::vector<EdgeBase*> edges;
+	std::vector<Edge*> edges;
 	while(!stk.empty()){
 		Face* f = stk.top();
 		stk.pop();

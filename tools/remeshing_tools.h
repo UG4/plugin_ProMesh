@@ -41,14 +41,14 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 	Selector& sel = obj->get_selector();
 
 //	if no edges are selected, nothing can be triangulated
-	if(sel.num<EdgeBase>() < 3){
+	if(sel.num<Edge>() < 3){
 		UG_LOG("ERROR in TriangleFill: A closed outer edge-chain has to be selected.\n");
 		return;
 	}
 
 //	before triangulating, we'll make sure that no double-edges exist
 //	in the current selection.
-	RemoveDoubleEdges(grid, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
+	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
 
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 	AInt aInt;
@@ -141,8 +141,8 @@ void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeLen,
 	SubsetHandler& shCrease = obj->get_crease_handler();
 
 	if(automarkBoundaries){
-		for(EdgeBaseIterator iter = grid.begin<EdgeBase>();
-			iter != grid.end<EdgeBase>(); ++iter)
+		for(EdgeIterator iter = grid.begin<Edge>();
+			iter != grid.end<Edge>(); ++iter)
 		{
 			if(IsBoundaryEdge2D(grid, *iter))
 				shCrease.assign_subset(*iter, REM_CREASE);
@@ -255,7 +255,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 
 	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
-	vector<EdgeBase*> edges;
+	vector<Edge*> edges;
 	edges.assign(sel.edges_begin(), sel.edges_end());
 	vector<Face*> faces;
 	faces.assign(sel.faces_begin(), sel.faces_end());
@@ -280,7 +280,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 
 //	select faces, edges and vertices from the new top-layer.
 	sel.clear<Vertex>();
-	sel.clear<EdgeBase>();
+	sel.clear<Edge>();
 	sel.clear<Face>();
 	sel.select(vrts.begin(), vrts.end());
 	sel.select(edges.begin(), edges.end());

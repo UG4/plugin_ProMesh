@@ -34,7 +34,7 @@ Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 }
 
 
-EdgeBase* CreateEdge(MeshObject* obj, int subsetInd)
+Edge* CreateEdge(MeshObject* obj, int subsetInd)
 {
 	using namespace std;
 	ug::Selector& sel = obj->get_selector();
@@ -217,7 +217,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 
 //	restore selector
@@ -274,7 +274,7 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 
 //	restore selector
@@ -322,7 +322,7 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
 
@@ -343,7 +343,7 @@ void CreateSphere(MeshObject* obj, const vector3& center, number radius,
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 }
 
@@ -382,7 +382,7 @@ void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
 
@@ -426,7 +426,7 @@ void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
 
@@ -471,7 +471,7 @@ void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
-	sh.assign_subset(sel.begin<EdgeBase>(), sel.end<EdgeBase>(), subsetInd);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), subsetInd);
 	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), subsetInd);
 	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), subsetInd);
 
