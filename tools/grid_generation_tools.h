@@ -46,13 +46,13 @@ EdgeBase* CreateEdge(MeshObject* obj, int subsetInd)
 	vrts.reserve(numVrts);
 	vrts.assign(sel.begin<ug::Vertex>(), sel.end<ug::Vertex>());
 
-	ug::Edge* e = NULL;
+	ug::RegularEdge* e = NULL;
 	switch(numVrts){
 		case 2:{//	create edge
 				if(!grid.get_edge(vrts[0], vrts[1]))
-					e = *grid.create<ug::Edge>(ug::EdgeDescriptor(vrts[0], vrts[1]));
+					e = *grid.create<ug::RegularEdge>(ug::EdgeDescriptor(vrts[0], vrts[1]));
 				else{
-					UG_LOG("Can't create edge: Edge already exists.\n");
+					UG_LOG("Can't create edge: RegularEdge already exists.\n");
 				}
 			}break;
 
@@ -211,7 +211,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 		for(size_t i = 0; i < 4; ++i){
 			int i0 = i;
 			int i1 = (i + 1) % 4;
-			grid.create<Edge>(EdgeDescriptor(vrts[i0], vrts[i1]));
+			grid.create<RegularEdge>(EdgeDescriptor(vrts[i0], vrts[i1]));
 		}
 	}
 
@@ -260,7 +260,7 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 		if(fill)
 			grid.create<Triangle>(TriangleDescriptor(centerVrt, vNew, lastVrt));
 		else
-			grid.create<Edge>(EdgeDescriptor(lastVrt, vNew));
+			grid.create<RegularEdge>(EdgeDescriptor(lastVrt, vNew));
 
 	//	prepare the next iteration
 		lastVrt = vNew;
@@ -270,7 +270,7 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 	if(fill)
 		grid.create<Triangle>(TriangleDescriptor(centerVrt, firstVrt, lastVrt));
 	else
-		grid.create<Edge>(EdgeDescriptor(lastVrt, firstVrt));
+		grid.create<RegularEdge>(EdgeDescriptor(lastVrt, firstVrt));
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
