@@ -68,7 +68,7 @@ void MergeAtFirst(MeshObject* obj)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	SelectAssociatedGeometricObjects(sel);
+	SelectAssociatedGridObjects(sel);
 
 	vector3 first = aaPos[*sel.vertices_begin()];
 	VertexBase* vrt = MergeMultipleVertices(grid, sel.vertices_begin(), sel.vertices_end());
@@ -82,7 +82,7 @@ void MergeAtCenter(MeshObject* obj)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	SelectAssociatedGeometricObjects(sel);
+	SelectAssociatedGridObjects(sel);
 
 	vector3 center;
 	CalculateCenter(center, sel, aaPos);
@@ -96,7 +96,7 @@ void MergeAtLast(MeshObject* obj)
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	SelectAssociatedGeometricObjects(sel);
+	SelectAssociatedGridObjects(sel);
 
 //	todo: This iteration shouldn't be necessary!
 	VertexBaseIterator vrtIter = sel.begin<VertexBase>();
@@ -266,10 +266,10 @@ void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 	SelectAssociatedVertices(sel, sel.begin<EdgeBase>(), sel.end<EdgeBase>());
 
 
-	ProjectVerticesToCloseEdges(grid, sel.get_geometric_objects(),
+	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
 								aaPos, snapThreshold);
 
-	IntersectCloseEdges(grid, sel.get_geometric_objects(),
+	IntersectCloseEdges(grid, sel.get_grid_objects(),
 						aaPos, snapThreshold);
 //	remove doubles now
 	ug::RemoveDoubles<3>(grid, sel.begin<VertexBase>(), sel.end<VertexBase>(),
@@ -290,7 +290,7 @@ void ResolveTriangleIntersections(MeshObject* obj, number snapThreshold)
 //	remove most of them by projecting vertices onto close edges
 	SelectAssociatedVertices(sel, sel.begin<Triangle>(), sel.end<Triangle>());
 	SelectAssociatedEdges(sel, sel.begin<Triangle>(), sel.end<Triangle>());
-	ProjectVerticesToCloseEdges(grid, sel.get_geometric_objects(),
+	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
 								aaPos, snapThreshold);
 
 //	remove doubles now
@@ -304,7 +304,7 @@ void ProjectVerticesToCloseEdges(MeshObject* obj, number snapThreshold)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	ProjectVerticesToCloseEdges(grid, sel.get_geometric_objects(),
+	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
 								aaPos, snapThreshold);
 
 //	remove doubles now
@@ -318,7 +318,7 @@ void ProjectVerticesToCloseFaces(MeshObject* obj, number snapThreshold)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	ProjectVerticesToCloseFaces(grid, sel.get_geometric_objects(),
+	ProjectVerticesToCloseFaces(grid, sel.get_grid_objects(),
 								aaPos, snapThreshold);
 
 //	remove doubles now
@@ -332,7 +332,7 @@ void IntersectCloseEdges(MeshObject* obj, number snapThreshold)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	IntersectCloseEdges(grid, sel.get_geometric_objects(),
+	IntersectCloseEdges(grid, sel.get_grid_objects(),
 						aaPos, snapThreshold);
 }
 
