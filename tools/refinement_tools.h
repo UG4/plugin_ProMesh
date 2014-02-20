@@ -72,7 +72,7 @@ void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	APosition aTmpPos;
 	grid.attach_to_vertices(aTmpPos);
 
-	RefinementCallbackSubdivisionLoop<APosition>
+	SubdivisionLoopProjector<APosition>
 		refCallbackLoop(grid, aPosition, aTmpPos);
 
 	Refine(grid, sel, &refCallbackLoop);
@@ -101,7 +101,7 @@ void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
 	APosition aTmpPos;
 	grid.attach_to_vertices(aTmpPos);
 
-	RefinementCallbackSubdivBoundary<APosition>
+	SubdivisionLoopBoundaryProjector<APosition>
 		refCallbackLoopBnd(grid, aPosition, aTmpPos);
 
 	Refine(grid, sel, &refCallbackLoopBnd);
@@ -121,7 +121,7 @@ void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac)
 	Grid& grid = obj->get_grid();
 
 //	we'll use a hanging-node refiner
-	RefinementCallbackFractal refCallback(grid, scaleFac);
+	FractalProjector refCallback(grid, scaleFac);
 	HangingNodeRefiner_Grid href(grid);
 	href.set_refinement_callback(&refCallback);
 
