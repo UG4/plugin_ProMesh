@@ -8,6 +8,8 @@
 #include "../mesh_object.h"
 #include "lib_grid/algorithms/refinement/regular_refinement.h"
 #include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
+#include "lib_grid/algorithms/refinement/refinement_projectors/loop_subdivision_projectors.h"
+#include "lib_grid/algorithms/refinement/refinement_projectors/fractal_projector.h"
 
 namespace ug{
 namespace promesh{
