@@ -38,6 +38,14 @@ void Move(MeshObject* obj, const vector3& offset)
 	TranslateSelection(obj->get_selector(), offset, obj->position_accessor());
 }
 
+void MoveMeshTo(MeshObject* obj, const vector3& newPos)
+{
+	vector3 offset;
+	VecSubtract(offset, newPos, obj->pivot());
+	MoveVertices(obj->get_grid().begin<Vertex>(), obj->get_grid().end<Vertex>(),
+				 obj->position_accessor(), offset);
+	obj->set_pivot(newPos);
+}
 
 void MoveAlongNormal(MeshObject* obj, number offset, bool usePrecalculatedNormals)
 {
@@ -227,14 +235,19 @@ void SetPivot(MeshObject* obj, const vector3& pos)
 }
 
 
-void SetPivotToCenter(MeshObject* obj)
+void SetPivotToSelectionCenter(MeshObject* obj)
 {
 	vector3 center;
 	CalculateCenter(center, obj->get_selector(), obj->position_accessor());
 	obj->set_pivot(center);
-
 }
 
+void SetPivotToMeshCenter(MeshObject* obj)
+{
+	obj->set_pivot(CalculateCenter(obj->get_grid().begin<Vertex>(),
+								   obj->get_grid().end<Vertex>(),
+								   obj->position_accessor()));
+}
 
 void FlattenBentQuadrilaterals(MeshObject* obj, number stepSize, int numIterations)
 {
