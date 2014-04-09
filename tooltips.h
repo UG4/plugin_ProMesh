@@ -141,8 +141,7 @@
 
 
 //selection tools
-#define TOOLTIP_SELECT_LINKED_MANIFOLD_FACES ""
-#define	TOOLTIP_LINKED_MANIFOLD_FACES "Selects faces linked with the selection, not crossing non-manifold edges." //?
+#define	TOOLTIP_SELECT_LINKED_MANIFOLD_FACES "Selects faces linked with the selection, not crossing non-manifold edges." //?
 #define	TOOLTIP_SELECT_NON_MANIFOLD_EDGES "Selects edges with more than 2 associated faces."
 #define	TOOLTIP_CLEAR_SELECTION "Clears the selection"
 #define	TOOLTIP_SELECT_SMOOTH_EDGE_PATH "Selects a smooth edge path."

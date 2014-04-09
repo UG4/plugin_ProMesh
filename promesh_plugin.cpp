@@ -193,7 +193,7 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectFaceByCoordinate", &SelectElemByCoordinate<Face>, grp, "", "", TOOLTIP_SELECT_FACE_BY_COORDINATE) 
 		.add_function("PM_SelectBoundaryFaces", &SelectBoundaryFaces, grp, "", "", TOOLTIP_SELECT_BOUNDARY_FACES)
 		.add_function("PM_SelectInnerFaces", &SelectInnerFaces, grp, "", "", TOOLTIP_SELECT_INNER_FACES)
-		.add_function("PM_SelectLinkedManifoldFaces", &SelectLinkedManifoldFaces, grp, "", "", TOOLTIP_SELECT_LINKED_MANIFOLD_FACES) //?
+		.add_function("PM_SelectLinkedManifoldFaces", &SelectLinkedManifoldFaces, grp, "", "", TOOLTIP_SELECT_LINKED_MANIFOLD_FACES)
 		.add_function("PM_SelectLinkedBoundaryFaces", &SelectLinkedBoundaryFaces, grp, "", "", TOOLTIP_SELECT_LINKED_BOUNDARY_FACES)
 		.add_function("PM_SelectDegenerateFaces", &SelectDegenerateFaces, grp, "", "", TOOLTIP_SELECT_DEGENERATE_FACES)
 		.add_function("PM_SelectLinkedFlatFaces", &SelectLinkedFlatFaces, grp, "", "", TOOLTIP_SELECT_LINKED_FLAT_FACES)

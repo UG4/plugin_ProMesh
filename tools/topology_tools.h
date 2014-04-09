@@ -269,8 +269,8 @@ void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
 								aaPos, snapThreshold);
 
-	IntersectCloseEdges(grid, sel.get_grid_objects(),
-						aaPos, snapThreshold);
+	IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
+
 //	remove doubles now
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
@@ -332,8 +332,7 @@ void IntersectCloseEdges(MeshObject* obj, number snapThreshold)
 	Selector& sel = obj->get_selector();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	IntersectCloseEdges(grid, sel.get_grid_objects(),
-						aaPos, snapThreshold);
+	IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
 }
 
 }}// end of namespace
