@@ -267,7 +267,7 @@ void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 
 
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
-								aaPos, snapThreshold);
+								obj->position_attachment(), snapThreshold);
 
 	IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
 
@@ -280,18 +280,19 @@ void ResolveTriangleIntersections(MeshObject* obj, number snapThreshold)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	// MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 //	first we'll resolve triangle-triangle intersections
-	ug::ResolveGridIntersections(grid, sel.begin<Triangle>(),
-							 	 sel.end<Triangle>(), snapThreshold, aaPos);
+	ug::ResolveTriangleIntersections(grid, sel.begin<Triangle>(),
+							 	 sel.end<Triangle>(), snapThreshold,
+							 	 obj->position_attachment());
 
 //	the grid may now contain some degenerated triangles. We'll try to
 //	remove most of them by projecting vertices onto close edges
 	SelectAssociatedVertices(sel, sel.begin<Triangle>(), sel.end<Triangle>());
 	SelectAssociatedEdges(sel, sel.begin<Triangle>(), sel.end<Triangle>());
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
-								aaPos, snapThreshold);
+								obj->position_attachment(), snapThreshold);
 
 //	remove doubles now
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
@@ -302,10 +303,10 @@ void ProjectVerticesToCloseEdges(MeshObject* obj, number snapThreshold)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	// MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
-								aaPos, snapThreshold);
+								obj->position_attachment(), snapThreshold);
 
 //	remove doubles now
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
@@ -316,10 +317,10 @@ void ProjectVerticesToCloseFaces(MeshObject* obj, number snapThreshold)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	//MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
-	ProjectVerticesToCloseFaces(grid, sel.get_grid_objects(),
-								aaPos, snapThreshold);
+	ProjectVerticesToCloseFaces(grid, sel,
+								obj->position_attachment(), snapThreshold);
 
 //	remove doubles now
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
@@ -333,6 +334,51 @@ void IntersectCloseEdges(MeshObject* obj, number snapThreshold)
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
 	IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
+}
+
+
+void ResolveSelfIntersections(MeshObject* obj, number snapThreshold)
+{
+	Grid& grid = obj->get_grid();
+	Selector& sel = obj->get_selector();
+	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+
+	Triangulate(grid, sel.begin<Quadrilateral>(), sel.end<Quadrilateral>(), &aaPos);
+	
+	bool intersectFaces = sel.num<Face>() > 0;
+
+	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
+	SelectAssociatedVertices(sel, sel.begin<Face>(), sel.end<Face>());
+
+	if(intersectFaces)
+		ProjectVerticesToCloseFaces(grid, sel,
+									obj->position_attachment(), snapThreshold);
+
+	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
+								obj->position_attachment(), snapThreshold);
+
+//	resolve face intersections
+	if(intersectFaces){
+		ug::ResolveTriangleIntersections(grid, sel.begin<Triangle>(),
+								 	 sel.end<Triangle>(), snapThreshold,
+								 	 obj->position_attachment());
+
+	//	the grid may now contain some degenerated Faces. We'll try to
+	//	remove most of them by projecting vertices onto close edges
+		SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
+		SelectAssociatedVertices(sel, sel.begin<Face>(), sel.end<Face>());
+		ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
+									obj->position_attachment(), snapThreshold);
+	}
+	else{
+		MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+		IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
+	}
+
+
+//	remove doubles again
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
+					 obj->position_attachment(), snapThreshold);
 }
 
 }}// end of namespace

@@ -53,6 +53,7 @@
 
 
 //topology tools
+#define TOOLTIP_RESOLVE_SELF_INTERSECTIONS "Resolves self intersections of faces and edges."
 #define	TOOLTIP_RESOLVE_EDGE_INTERSECTIONS "Makes sure that all edge intersections are represented by a vertex."
 #define	TOOLTIP_RESOLVE_TRIANGLE_INTERSECTIONS "Makes sure that all triangle intersections are represented by an edge and vertices."
 #define	TOOLTIP_PROJECT_VERTICES_TO_CLOSE_EDGES "Projects selected vertices to selected close edges."
