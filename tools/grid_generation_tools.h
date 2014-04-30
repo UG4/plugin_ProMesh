@@ -77,6 +77,12 @@ Face* CreateFace(MeshObject* obj, int subsetInd)
 	SubsetHandler& sh = obj->get_subset_handler();
 
 	size_t numVrts = sel.num<Vertex>();
+
+	if(numVrts < 3 || numVrts > 4){
+		UG_LOG("Bad number of vertices! Can't create a face element from " << numVrts << " vertices.");
+		return NULL;
+	}
+
 	vector<Vertex*> vrts;
 	vrts.reserve(numVrts);
 	vrts.assign(sel.begin<Vertex>(), sel.end<Vertex>());

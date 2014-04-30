@@ -316,6 +316,60 @@ void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snap
 	}
 }
 
+/**	For each element of type TElem in obj this method creates a new element with
+ * separate corners. The new element will be scaled by 'scale'.
+ * All original elements will be deleted before the method terminates.
+ * It should thus be called for 'Volumes' first, then for 'Faces' and
+ * finally for 'Edges'.*/
+template <class TElemIter>
+void CreateShrinkElements(MeshObject* obj, number scale,
+						  TElemIter elemsBegin, TElemIter elemsEnd)
+{
+	using namespace std;
+	typedef typename TElemIter::value_type elem_ptr_t;
+	Grid& g = obj->get_grid();
+	MeshObject::position_accessor_t aaPos = obj->position_accessor();
+
+	vector<elem_ptr_t>	elems(elemsBegin, elemsEnd);
+
+	CustomVertexGroup vrts;
+	for(size_t i_elem = 0; i_elem < elems.size(); ++i_elem){
+		elem_ptr_t e = elems[i_elem];
+		vector3 c = CalculateCenter(e, aaPos);
+
+	//	create new corner-vertices first
+		vrts.clear();
+		for(size_t i = 0; i < e->num_vertices(); ++i){
+			vrts.push_back(*g.create_by_cloning(e->vertex(i), e->vertex(i)));
+			VecScaleAdd(aaPos[vrts[i]], scale, aaPos[e->vertex(i)], 1. - scale, c);
+		}
+
+	//	now clone the element
+		g.create_by_cloning(e, vrts, e);
+
+	//	finally delete the old element
+		g.erase(e);
+	}
+}
+
+/**	For each element in obj this method creates a new element with separate
+ * corners. The new element will be scaled by 'scale'.
+ * All original elements will be deleted before the method terminates.*/
+void CreateShrinkGeometry(MeshObject* obj, number scale)
+{
+	using namespace std;
+
+	Grid& g = obj->get_grid();
+	vector<Volume*>	vols(g.begin<Volume>(), g.end<Volume>());
+	vector<Face*>	faces(g.begin<Face>(), g.end<Face>());
+	vector<Edge*>	edges(g.begin<Edge>(), g.end<Edge>());
+
+	CreateShrinkElements(obj, scale, vols.begin(), vols.end());
+	CreateShrinkElements(obj, scale, faces.begin(), faces.end());
+	CreateShrinkElements(obj, scale, edges.begin(), edges.end());
+}
+
+
 }}// end of namespace
 
 #endif

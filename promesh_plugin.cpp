@@ -151,7 +151,8 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_Retetrahedralize", &Retetrahedralize, grp, "", "", TOOLTIP_RETETRAHEDRALIZE)
 		.add_function("PM_Duplicate", &Duplicate, grp, "", "", TOOLTIP_DUPLICATE)
 		.add_function("PM_Extrude", &Extrude, grp, "", "", TOOLTIP_EXTRUDE)
-		.add_function("PM_ExtrudeCylinders", &ExtrudeCylinders, grp, "", "", TOOLTIP_EXTRUDE_CYLINDERS);
+		.add_function("PM_ExtrudeCylinders", &ExtrudeCylinders, grp, "", "", TOOLTIP_EXTRUDE_CYLINDERS)
+		.add_function("PM_CreateShrinkGeometry", &CreateShrinkGeometry, grp, "", "", TOOLTIP_CREATE_SHRINK_GEOMETRY);
 
 //	selection tools
 	reg.add_function("PM_ClearSelection", &ClearSelection, grp, "", "", TOOLTIP_CLEAR_SELECTION)
