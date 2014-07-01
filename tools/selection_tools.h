@@ -241,15 +241,13 @@ bool SelectVertexByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	VertexIterator iter = grid.begin<Vertex>();
-	while(counter < index && iter != grid.end<Vertex>()){
-		++counter;
-		++iter;
-	}
-
-	if(counter == index){
-		obj->get_selector().select(*iter);
-		return true;
+	for(VertexIterator iter = grid.begin<Vertex>();
+		iter != grid.end<Vertex>(); ++iter, ++counter)
+	{
+		if(counter == index){
+			obj->get_selector().select(*iter);
+			return true;
+		}
 	}
 	return false;
 }
@@ -409,15 +407,13 @@ bool SelectEdgeByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	EdgeIterator iter = grid.begin<Edge>();
-	while(counter < index && iter != grid.end<Edge>()){
-		++counter;
-		++iter;
-	}
-
-	if(counter == index){
-		obj->get_selector().select(*iter);
-		return true;
+	for(EdgeIterator iter = grid.begin<Edge>();
+		iter != grid.end<Edge>(); ++iter, ++counter)
+	{
+		if(counter == index){
+			obj->get_selector().select(*iter);
+			return true;
+		}
 	}
 	return false;
 }
@@ -637,15 +633,13 @@ bool SelectFaceByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	FaceIterator iter = grid.begin<Face>();
-	while(counter < index && iter != grid.end<Face>()){
-		++counter;
-		++iter;
-	}
-
-	if(counter == index){
-		obj->get_selector().select(*iter);
-		return true;
+	for(FaceIterator iter = grid.begin<Face>();
+		iter != grid.end<Face>(); ++iter, ++counter)
+	{
+		if(counter == index){
+			obj->get_selector().select(*iter);
+			return true;
+		}
 	}
 	return false;
 }
@@ -740,15 +734,13 @@ bool SelectVolumeByIndex(MeshObject* obj, int index)
 	Grid& grid = obj->get_grid();
 	int counter = 0;
 
-	VolumeIterator iter = grid.begin<Volume>();
-	while(counter < index && iter != grid.end<Volume>()){
-		++counter;
-		++iter;
-	}
-
-	if(counter == index){
-		obj->get_selector().select(*iter);
-		return true;
+	for(VolumeIterator iter = grid.begin<Volume>();
+		iter != grid.end<Volume>(); ++iter, ++counter)
+	{
+		if(counter == index){
+			obj->get_selector().select(*iter);
+			return true;
+		}
 	}
 	return false;
 }
