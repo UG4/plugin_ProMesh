@@ -42,6 +42,7 @@
 #define	TOOLTIP_EXTRUDE "Extrudes selected geometry (vertices, edges, faces)."
 #define	TOOLTIP_EXTRUDE_CYLINDERS "Extrudes cylinders around selected points of a 2d manifold."
 #define TOOLTIP_CREATE_SHRINK_GEOMETRY "Creates new elements from existing ones, providing each with a unique set of corner vertices. Those corners are scaled towards the center using the given scale-parameter."
+#define TOOLTIP_EXTRUDE_FACES_WITH_TETS "Experimental function to create 'plaque'-like geometry based on extruding faces with tetrahedrons."
 
 //refinement tools
 #define	TOOLTIP_REFINE "Refines selected elements and builds a regular closure."
@@ -185,6 +186,10 @@
 #define	TOOLTIP_SELECT_EDGE_BY_COORDINATE  "Selects the edge whose center is closest to the specified coordinate."
 #define	TOOLTIP_SELECT_FACE_BY_COORDINATE "Selects the face whose center is closest to the specified coordinate."
 #define	TOOLTIP_SELECT_VOLUME_BY_COORDINATE "Selects the volume whose center is closest to the specified coordinate."
+#define	TOOLTIP_SELECT_VERTEX_BY_CYL_COORDINATE "Selects a vertex given a cylindrical coordinate."
+#define	TOOLTIP_SELECT_EDGE_BY_CYL_COORDINATE  "Selects the edge whose center is closest to the specified cylindrical coordinate."
+#define	TOOLTIP_SELECT_FACE_BY_CYL_COORDINATE "Selects the face whose center is closest to the specified cylindrical coordinate."
+#define	TOOLTIP_SELECT_VOLUME_BY_CYL_COORDINATE "Selects the volume whose center is closest to the specified cylindrical coordinate."
 #define	TOOLTIP_SELECT_UNCONNECTED_VERTICES "Selects vertices which are not connected to the given element type."
 #define	TOOLTIP_SELECT_SUBSET "Selects all elements of a subset."
 #define	TOOLTIP_SELECT_SUBSET_BOUNDARY "Selects the boundary of a subset."

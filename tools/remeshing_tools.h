@@ -27,6 +27,58 @@ void ConvertToTriangles(MeshObject* obj)
 				sel.end<Quadrilateral>(), &aaPos);
 }
 
+void ExtrudeFacesWithTets(MeshObject* obj, int si)
+{
+	UG_LOG("Extruding faces with tets...\n")
+	using namespace std;
+	Grid& grid = obj->get_grid();
+	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->get_selector();
+	SubsetHandler& sh = obj->get_subset_handler();
+
+	sel.clear();
+	bool autoselEnabled = sel.autoselection_enabled();
+	sel.enable_autoselection(true);
+
+
+	vector<Face*> faces;
+    faces.assign(grid.faces_begin(), grid.faces_end());
+    for(int i=0; i<faces.size();i++)
+    {
+       vector3 p1, p2, p3;
+       vector3 pnormal, center, top;
+       if (faces[i]->num_vertices() == 3)
+       {
+    	   p1 = aaPos[faces[i]->vertex(0)];
+    	   p2 = aaPos[faces[i]->vertex(1)];
+    	   p3 = aaPos[faces[i]->vertex(2)];
+    	   CalculateTriangleNormal(pnormal, p1, p2, p3);
+    	   RegularVertex* n = *grid.create<RegularVertex>();
+    	   vector3 center = CalculateCenter(faces[i],aaPos);
+    	   pnormal*=0.5;
+    	   UG_LOG("Face " << i << " has normal*0.5 (" << pnormal << ")\n");
+    	   UG_LOG("Face " << i << " has center (" << center << ")\n");
+    	   VecAdd(top, center, pnormal);
+    	   aaPos[n]=top;
+    	   UG_LOG("Top of new tet: " << top << "\n");
+    	   Tetrahedron tet(faces[i]->vertex(0),faces[i]->vertex(1), faces[i]->vertex(2), n);
+    	   for(size_t i = 0; i < tet.num_faces(); ++i)
+    	   		grid.register_element(tet.create_face(i));
+       } else
+       {
+    	   UG_LOG("Face with more than 3 vertices. Doesn't work yet.");
+       }
+    }
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), si);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), si);
+	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), si);
+	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), si);
+
+	//	restore selector
+	sel.enable_autoselection(autoselEnabled);
+
+}
+
 void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int si)
 {
 	if(minAngle < 0)

@@ -53,6 +53,18 @@ TElem* SelectElemByCoordinate(MeshObject* obj, const vector3& coord)
 	return e;
 }
 
+template <class TElem>
+TElem* SelectElemByCylindricalCoordinate(MeshObject* obj, number rho, number phi, number z)
+{
+	Grid& grid = obj->get_grid();
+
+	number x = rho * cos(phi);
+	number y = rho * sin(phi);
+
+	vector3 coord = vector3(x,y,z);
+	return SelectElemByCoordinate<TElem>(obj, coord);
+}
+
 void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 				  bool selFaces, bool selVols)
 {
