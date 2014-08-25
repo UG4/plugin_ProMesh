@@ -27,9 +27,8 @@ void ConvertToTriangles(MeshObject* obj)
 				sel.end<Quadrilateral>(), &aaPos);
 }
 
-void ExtrudeFacesWithTets(MeshObject* obj, int si)
+void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const number factor)
 {
-	UG_LOG("Extruding faces with tets...\n")
 	using namespace std;
 	Grid& grid = obj->get_grid();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
@@ -40,43 +39,46 @@ void ExtrudeFacesWithTets(MeshObject* obj, int si)
 	bool autoselEnabled = sel.autoselection_enabled();
 	sel.enable_autoselection(true);
 
-
 	vector<Face*> faces;
-    faces.assign(grid.faces_begin(), grid.faces_end());
-    for(int i=0; i<faces.size();i++)
-    {
-       vector3 p1, p2, p3;
-       vector3 pnormal, center, top;
-       if (faces[i]->num_vertices() == 3)
-       {
-    	   p1 = aaPos[faces[i]->vertex(0)];
-    	   p2 = aaPos[faces[i]->vertex(1)];
-    	   p3 = aaPos[faces[i]->vertex(2)];
-    	   CalculateTriangleNormal(pnormal, p1, p2, p3);
-    	   RegularVertex* n = *grid.create<RegularVertex>();
-    	   vector3 center = CalculateCenter(faces[i],aaPos);
-    	   pnormal*=0.5;
-    	   UG_LOG("Face " << i << " has normal*0.5 (" << pnormal << ")\n");
-    	   UG_LOG("Face " << i << " has center (" << center << ")\n");
-    	   VecAdd(top, center, pnormal);
-    	   aaPos[n]=top;
-    	   UG_LOG("Top of new tet: " << top << "\n");
-    	   Tetrahedron tet(faces[i]->vertex(0),faces[i]->vertex(1), faces[i]->vertex(2), n);
-    	   for(size_t i = 0; i < tet.num_faces(); ++i)
-    	   		grid.register_element(tet.create_face(i));
-       } else
-       {
-    	   UG_LOG("Face with more than 3 vertices. Doesn't work yet.");
-       }
-    }
-	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), si);
-	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), si);
-	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), si);
-	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), si);
+	faces.assign(sh.begin<Face>(fromSi), sh.end<Face>(fromSi));
+	for (int i = 0; i < faces.size(); i++)
+	{
+		Face* f = faces.at(i);
+		vector3 p1, p2, p3;
+		vector3 pnormal, center, top;
+		number scale;
+		if (f->num_vertices() == 3)
+		{
+			p1 = aaPos[f->vertex(0)];
+			p2 = aaPos[f->vertex(1)];
+			p3 = aaPos[f->vertex(2)];
+			CalculateTriangleNormal(pnormal, p1, p2, p3);
+			RegularVertex* n = *grid.create<RegularVertex>();
+			center = CalculateCenter(f, aaPos);
+			scale = FaceArea(f, aaPos);
+			pnormal *= scale * factor;
+			VecAdd(top, center, pnormal);
+			aaPos[n] = top;
+			Tetrahedron tet(f->vertex(0), f->vertex(1), f->vertex(2), n);
+			// assumption: the first face in the tet is the base one
+			for (size_t i = 1; i < tet.num_faces(); ++i)
+			{
+				grid.register_element(tet.create_face(i));
+			}
+		}
+		else
+		{
+			UG_LOG("Face with more than 3 vertices. Doesn't work yet.");
+		}
+	}
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), toSi);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), toSi);
+	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), toSi);
+	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), toSi);
 
 	//	restore selector
 	sel.enable_autoselection(autoselEnabled);
-
+	// remove doubles
 }
 
 void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int si)
