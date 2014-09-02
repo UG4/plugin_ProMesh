@@ -11,9 +11,31 @@
 namespace ug{
 namespace promesh{
 
+class Box{
+	public:
+		void set_min(const vector3& val)	{min = val;}
+		void set_max(const vector3& val)	{max = val;}
+		const vector3& get_min() const		{return min;}
+		const vector3& get_max() const		{return max;}
+
+		vector3 min;
+		vector3 max;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//	INFO
+inline SmartPtr<Box> GetBoundingBox(MeshObject* obj)
+{
+	SmartPtr<Box> box = make_sp(new Box);
+	CalculateBoundingBox(box->min, box->max, obj->get_grid().vertices_begin(),
+						 obj->get_grid().vertices_end(), obj->position_accessor());
+	return box;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	COORDINATE TRANSFORM
-void ScaleAroundPoint(MeshObject* obj, const vector3& scale, const vector3& point)
+inline void ScaleAroundPoint(MeshObject* obj, const vector3& scale, const vector3& point)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
@@ -37,7 +59,7 @@ void ScaleAroundPoint(MeshObject* obj, const vector3& scale, const vector3& poin
 //	SELECTION
 ///	Selects elements whose center lie in a box
 template <class TElem>
-void SelectElementsInBox(MeshObject* obj, const vector3& min, const vector3& max)
+inline void SelectElementsInBox(MeshObject* obj, const vector3& min, const vector3& max)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
 
@@ -57,7 +79,7 @@ void SelectElementsInBox(MeshObject* obj, const vector3& min, const vector3& max
 //	SELECTION
 ///	Selects elements whose center lie in a cylinder
 template <class TElem>
-void SelectElementsInCylinder(MeshObject* obj, const vector3& cylBase,
+inline void SelectElementsInCylinder(MeshObject* obj, const vector3& cylBase,
 						 	  const vector3& cylTop, number radius)
 {
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();

@@ -13,7 +13,7 @@
 namespace ug{
 namespace promesh{
 
-Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
+inline Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -34,7 +34,7 @@ Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 }
 
 
-Edge* CreateEdge(MeshObject* obj, int subsetInd)
+inline Edge* CreateEdge(MeshObject* obj, int subsetInd)
 {
 	using namespace std;
 	ug::Selector& sel = obj->get_selector();
@@ -69,7 +69,7 @@ Edge* CreateEdge(MeshObject* obj, int subsetInd)
 }
 
 
-Face* CreateFace(MeshObject* obj, int subsetInd)
+inline Face* CreateFace(MeshObject* obj, int subsetInd)
 {
 	using namespace std;
 	Selector& sel = obj->get_selector();
@@ -119,7 +119,7 @@ Face* CreateFace(MeshObject* obj, int subsetInd)
 }
 
 
-Volume* CreateVolume(MeshObject* obj, int subsetInd)
+inline Volume* CreateVolume(MeshObject* obj, int subsetInd)
 {
 	using namespace std;
 	Selector& sel = obj->get_selector();
@@ -187,7 +187,7 @@ Volume* CreateVolume(MeshObject* obj, int subsetInd)
 }
 
 
-void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
+inline void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 				 const vector3& lowLeft, const vector3& lowRight, int subsetInd,
 				 bool fill)
 {
@@ -231,7 +231,7 @@ void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
 }
 
 
-void CreateCircle(MeshObject* obj, const vector3& center, number radius,
+inline void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 				  int numRimVertices, int subsetInd, bool fill)
 {
 	Grid& grid = obj->get_grid();
@@ -288,7 +288,7 @@ void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 }
 
 
-void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
+inline void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 			   int subsetInd, bool createVol)
 {
 	Grid& grid = obj->get_grid();
@@ -337,7 +337,7 @@ void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
 }
 
 
-void CreateSphere(MeshObject* obj, const vector3& center, number radius,
+inline void CreateSphere(MeshObject* obj, const vector3& center, number radius,
 				  int numRefinements, int subsetInd)
 {
 	Grid& grid = obj->get_grid();
@@ -354,7 +354,7 @@ void CreateSphere(MeshObject* obj, const vector3& center, number radius,
 }
 
 
-void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 {
 	Grid& grid = obj->get_grid();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
@@ -397,7 +397,7 @@ void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 }
 
 
-void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 {
 	Grid& grid = obj->get_grid();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
@@ -441,7 +441,7 @@ void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 }
 
 
-void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
 {
 	Grid& grid = obj->get_grid();
 	MeshObject::position_accessor_t& aaPos = obj->position_accessor();

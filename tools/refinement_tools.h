@@ -14,7 +14,7 @@
 namespace ug{
 namespace promesh{
 
-void Refine(MeshObject* obj, bool strictSubsetInheritance)
+inline void Refine(MeshObject* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -27,7 +27,7 @@ void Refine(MeshObject* obj, bool strictSubsetInheritance)
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-void HangingNodeRefine(MeshObject* obj, bool strictSubsetInheritance, bool anisotropic)
+inline void HangingNodeRefine(MeshObject* obj, bool strictSubsetInheritance, bool anisotropic)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -56,7 +56,7 @@ void HangingNodeRefine(MeshObject* obj, bool strictSubsetInheritance, bool aniso
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
+inline void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -90,7 +90,7 @@ void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
+inline void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -118,7 +118,7 @@ void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
 	grid.detach_from_vertices(aTmpPos);
 }
 
-void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac)
+inline void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac)
 {
 	Grid& grid = obj->get_grid();
 
@@ -158,7 +158,7 @@ void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac)
 	}
 }
 
-void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
+inline void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();

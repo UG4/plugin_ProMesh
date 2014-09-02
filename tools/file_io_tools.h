@@ -11,19 +11,68 @@
 namespace ug{
 namespace promesh{
 
-bool LoadMesh(MeshObject* obj, const char* filename)
+inline bool LoadMesh(MeshObject* obj, const char* filename)
 {
-	return LoadGridFromFile(obj->get_grid(), obj->get_subset_handler(), filename,
-							obj->position_attachment());
+	const char* pSuffix = strrchr(filename, '.');
+	if(!pSuffix)
+		return false;
+
+	if(strcmp(pSuffix, ".ugx") == 0)
+	{
+	//	load from ugx
+		GridReaderUGX ugxReader;
+		if(!ugxReader.parse_file(filename)){
+			UG_LOG("ERROR in LoadGridFromUGX: File not found: " << filename << std::endl);
+			return false;
+		}
+		else{
+			if(ugxReader.num_grids() < 1){
+				UG_LOG("ERROR in LoadGridFromUGX: File contains no grid.\n");
+				return false;
+			}
+			else{
+				ugxReader.grid(obj->get_grid(), 0, obj->position_attachment());
+
+				if(ugxReader.num_subset_handlers(0) > 0)
+					ugxReader.subset_handler(obj->get_subset_handler(), 0, 0);
+
+				if(ugxReader.num_subset_handlers(0) > 1)
+					ugxReader.subset_handler(obj->get_crease_handler(), 1, 0);
+
+				if(ugxReader.num_selectors(0) > 0)
+					ugxReader.selector(obj->get_selector(), 0, 0);
+
+				return true;
+			}
+		}
+	}
+	else{
+		return LoadGridFromFile(obj->get_grid(), obj->get_subset_handler(), filename,
+								obj->position_attachment());
+	}
+	return false;
 }
 
-bool SaveMesh(MeshObject* obj, const char* filename)
+inline bool SaveMesh(MeshObject* obj, const char* filename)
 {
-	return SaveGridToFile(obj->get_grid(), obj->get_subset_handler(), filename,
-						  obj->position_attachment());
+	const char* pSuffix = strrchr(filename, '.');
+	if(!pSuffix)
+		return false;
+
+	if(strcmp(pSuffix, ".ugx") == 0){
+		GridWriterUGX ugxWriter;
+		ugxWriter.add_grid(obj->get_grid(), "defGrid", obj->position_attachment());
+		ugxWriter.add_subset_handler(obj->get_subset_handler(), "defSH", 0);
+		ugxWriter.add_subset_handler(obj->get_crease_handler(), "markSH", 0);
+		ugxWriter.add_selector(obj->get_selector(), "defSel", 0);
+		return ugxWriter.write_to_file(filename);
+	}
+	else
+		return SaveGridToFile(obj->get_grid(), obj->get_subset_handler(), filename,
+							  obj->position_attachment());
 }
 
-bool ExportToUG3(MeshObject* obj, const char* filenamePrefix, const char* lgmName,
+inline bool ExportToUG3(MeshObject* obj, const char* filenamePrefix, const char* lgmName,
 				 const char* problemName)
 {
 	bool saveOk = false;

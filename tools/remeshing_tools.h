@@ -17,7 +17,7 @@
 namespace ug{
 namespace promesh{
 
-void ConvertToTriangles(MeshObject* obj)
+inline void ConvertToTriangles(MeshObject* obj)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -27,7 +27,7 @@ void ConvertToTriangles(MeshObject* obj)
 				sel.end<Quadrilateral>(), &aaPos);
 }
 
-void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const number factor)
+inline void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const number factor)
 {
 	using namespace std;
 	Grid& grid = obj->get_grid();
@@ -81,7 +81,7 @@ void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const number fa
 	// remove doubles
 }
 
-void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int si)
+inline void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int si)
 {
 	if(minAngle < 0)
 		minAngle = 0;
@@ -176,7 +176,7 @@ void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int 
 	sel.enable_autoselection(autoselEnabled);
 }
 
-void Retriangulate(MeshObject* obj, number minAngle)
+inline void Retriangulate(MeshObject* obj, number minAngle)
 {
 	Grid& g = obj->get_grid();
 	Selector& sel = obj->get_selector();
@@ -188,7 +188,7 @@ void Retriangulate(MeshObject* obj, number minAngle)
 						  aaPos, minAngle, IsNotInSubset(creases, -1));
 }
 
-void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeLen,
+inline void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeLen,
 					  int numIterations, bool adaptive, bool automarkBoundaries)
 {
 	Grid& grid = obj->get_grid();
@@ -207,7 +207,7 @@ void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeLen,
 						 numIterations, true, adaptive);
 }
 
-void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number threshold)
+inline void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number threshold)
 {
 	using namespace std;
 	Grid& g = obj->get_grid();
@@ -233,7 +233,7 @@ void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number threshold)
 	}
 }
 
-void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, bool preserveAll,
+inline void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, bool preserveAll,
 					bool separateVolumes, bool appendSubsetsAtEnd)
 {
 	Grid& grid = obj->get_grid();
@@ -258,7 +258,7 @@ void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, bool pr
 		sh.subset_info(i).name = "tetrahedrons";
 }
 
-void AssignVolumeConstraints(MeshObject* obj, number volConstraint)
+inline void AssignVolumeConstraints(MeshObject* obj, number volConstraint)
 {
 	Selector& sel = obj->get_selector();
 	MeshObject::volume_constraint_accessor_t& aaVolCon = obj->volume_constraint_accessor();
@@ -270,12 +270,12 @@ void AssignVolumeConstraints(MeshObject* obj, number volConstraint)
 	}
 }
 
-void ClearVolumeConstraints(MeshObject* obj)
+inline void ClearVolumeConstraints(MeshObject* obj)
 {
 	obj->clear_volume_constraints();
 }
 
-void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter,
+inline void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter,
 					  bool preserveAll, bool applyVolumeConstraint)
 {
 	UG_LOG("retetrahedralizing using 'tetgen' by Hang Si... ");
@@ -289,14 +289,14 @@ void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter,
 	UG_LOG("done.\n");
 }
 
-void Duplicate(MeshObject* obj, const vector3& offset, bool deselectOld, bool selectNew)
+inline void Duplicate(MeshObject* obj, const vector3& offset, bool deselectOld, bool selectNew)
 {
 	Grid& grid = obj->get_grid();
 	Selector& sel = obj->get_selector();
 	ug::Duplicate(grid, sel, offset, obj->position_attachment(), deselectOld, selectNew);
 }
 
-void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
+inline void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 			 bool createFaces, bool createVolumes)
 {
 	using namespace std;
@@ -341,7 +341,7 @@ void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 	sel.select(faces.begin(), faces.end());
 }
 
-void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snapThreshold)
+inline void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snapThreshold)
 {
 	using namespace std;
 	Grid& g = obj->get_grid();
@@ -376,7 +376,7 @@ void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snap
  * It should thus be called for 'Volumes' first, then for 'Faces' and
  * finally for 'Edges'.*/
 template <class TElemIter>
-void CreateShrinkElements(MeshObject* obj, number scale,
+inline void CreateShrinkElements(MeshObject* obj, number scale,
 						  TElemIter elemsBegin, TElemIter elemsEnd)
 {
 	using namespace std;
@@ -409,7 +409,7 @@ void CreateShrinkElements(MeshObject* obj, number scale,
 /**	For each element in obj this method creates a new element with separate
  * corners. The new element will be scaled by 'scale'.
  * All original elements will be deleted before the method terminates.*/
-void CreateShrinkGeometry(MeshObject* obj, number scale)
+inline void CreateShrinkGeometry(MeshObject* obj, number scale)
 {
 	using namespace std;
 
