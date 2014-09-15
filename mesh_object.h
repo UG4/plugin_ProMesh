@@ -49,6 +49,11 @@ class MeshObject
 		SubsetHandler& get_crease_handler()	{return m_creaseHandler;}
 		Selector& get_selector()			{return m_selector;}
 
+		Grid&			grid()				{return m_grid;}
+		SubsetHandler&	subset_handler()	{return m_subsetHandler;}
+		SubsetHandler&	crease_handler()	{return m_creaseHandler;}
+		Selector&		selector()			{return m_selector;}
+
 	//	pivot
 		void set_pivot(const vector3& pivot)	{m_pivot = pivot;}
 		const vector3& get_pivot() const		{return m_pivot;}

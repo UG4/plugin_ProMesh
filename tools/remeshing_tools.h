@@ -41,7 +41,7 @@ inline void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const nu
 
 	vector<Face*> faces;
 	faces.assign(sh.begin<Face>(fromSi), sh.end<Face>(fromSi));
-	for (int i = 0; i < faces.size(); i++)
+	for (size_t i = 0; i < faces.size(); i++)
 	{
 		Face* f = faces.at(i);
 		vector3 p1, p2, p3;
@@ -234,12 +234,13 @@ inline void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number thresh
 }
 
 inline void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, bool preserveAll,
-					bool separateVolumes, bool appendSubsetsAtEnd)
+					bool separateVolumes, bool appendSubsetsAtEnd, int verbosity)
 {
 	Grid& grid = obj->get_grid();
 	SubsetHandler& sh = obj->get_subset_handler();
 	UG_LOG("tetrahedralizing using 'tetgen' by Hang Si... ");
-	ug::Tetrahedralize(grid, sh, quality, preserveOuter, preserveAll, obj->position_attachment());
+	ug::Tetrahedralize(grid, sh, quality, preserveOuter, preserveAll,
+					   obj->position_attachment(), verbosity);
 	UG_LOG("done. Created " << grid.num<Tetrahedron>() << " tetrahedrons.\n");
 
 	int oldNumSubsets = sh.num_subsets();
@@ -276,7 +277,7 @@ inline void ClearVolumeConstraints(MeshObject* obj)
 }
 
 inline void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter,
-					  bool preserveAll, bool applyVolumeConstraint)
+					  bool preserveAll, bool applyVolumeConstraint, int verbosity)
 {
 	UG_LOG("retetrahedralizing using 'tetgen' by Hang Si... ");
 	ug::Retetrahedralize(obj->get_grid(),
@@ -285,7 +286,8 @@ inline void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter
 					quality,
 					preserveOuter, preserveAll,
 					obj->position_attachment(),
-					applyVolumeConstraint);
+					applyVolumeConstraint,
+					verbosity);
 	UG_LOG("done.\n");
 }
 

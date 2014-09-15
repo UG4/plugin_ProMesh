@@ -181,6 +181,7 @@
 #define	TOOLTIP_SELECT_VERTEX_BY_INDEX "Selects a vertex given its index."
 #define	TOOLTIP_SELECT_EDGE_BY_INDEX "Selects a edge given its index."
 #define	TOOLTIP_SELECT_FACE_BY_INDEX "Selects a face given its index."
+#define	TOOLTIP_SELECT_FACES_BY_NORMAL "Selects faces given a normal and a maximum deviation angle."
 #define	TOOLTIP_SELECT_VOLUME_BY_INDEX "Selects a volume given its index."
 #define	TOOLTIP_SELECT_VERTEX_BY_COORDINATE "Selects a vertex given a coordinate."
 #define	TOOLTIP_SELECT_EDGE_BY_COORDINATE  "Selects the edge whose center is closest to the specified coordinate."
@@ -213,16 +214,29 @@
 #define	TOOLTIP_EXPAND_LAYERS_3D "Expands a 2d layer to a 3d layer by introducing prisms."
 #define	TOOLTIP_FRAC_TO_LAYER "Enhances a 2d fracture to a 3d fracture."
 
+//info tools
+#define TOOLTIP_MEASURE_GRID_LENGTH "Measures the length of all edges of a grid"
+#define TOOLTIP_MEASURE_GRID_AREA "Measures the area of all faces of a grid"
+#define TOOLTIP_MEASURE_GRID_VOLUME "Measures the volume of all volume elements of a grid"
+
+#define TOOLTIP_MEASURE_SUBSET_LENGTH "Measures the length of all edges of the given subset"
+#define TOOLTIP_MEASURE_SUBSET_AREA "Measures the area of all faces of the given subset"
+#define TOOLTIP_MEASURE_SUBSET_VOLUME "Measures the volume of all volume elements of the given subset"
+
+#define TOOLTIP_MEASURE_SELECTION_LENGTH "Measures the length of all edges of the current selection"
+#define TOOLTIP_MEASURE_SELECTION_AREA "Measures the area of all faces of the current selection"
+#define TOOLTIP_MEASURE_SELECTION_VOLUME "Measures the volume of all volume elements of the current selection"
+
 //new tools
-#define TOOLTIP_SELECT_VERTEX_IN_BOX ""
-#define TOOLTIP_SELECT_EDGE_IN_BOX ""
-#define TOOLTIP_SELECT_FACE_IN_BOX ""
-#define TOOLTIP_SELECT_VOLUME_IN_BOX ""
-#define TOOLTIP_SELECT_VERTEX_IN_CYLINDER ""
-#define TOOLTIP_SELECT_EDGE_IN_CYLINDER ""
-#define TOOLTIP_SELECT_FACE_IN_CYLINDER ""
-#define TOOLTIP_SELECT_VOLUME_IN_CYLINDER ""
-#define TOOLTIP_SCALE_AROUND_PIVOT ""
+#define TOOLTIP_GET_BOUNDING_BOX "Returns the bounding box of the specified mesh."
+#define TOOLTIP_SELECT_VERTEX_IN_BOX "Selects all vertices in the given box"
+#define TOOLTIP_SELECT_EDGE_IN_BOX "Selects all edges in the given box"
+#define TOOLTIP_SELECT_FACE_IN_BOX "Selects all faces in the given box"
+#define TOOLTIP_SELECT_VOLUME_IN_BOX "Selects all volumes in the given box"
+#define TOOLTIP_SELECT_VERTEX_IN_CYLINDER "Selects all vertices in the given cylinder"
+#define TOOLTIP_SELECT_EDGE_IN_CYLINDER "Selects all edges in the given cylinder"
+#define TOOLTIP_SELECT_FACE_IN_CYLINDER "Selects all faces in the given cylinder"
+#define TOOLTIP_SELECT_VOLUME_IN_CYLINDER "Selects all volumes in the given cylinder"
 
 
 

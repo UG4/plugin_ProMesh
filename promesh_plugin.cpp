@@ -12,6 +12,7 @@
 #include "tools/selection_tools.h"
 #include "tools/subset_tools.h"
 #include "tools/topology_tools.h"
+#include "tools/measure_tools.h"
 #include "bridge/util.h"
 #include "bridge/util_domain_dependent.h"
 #include "tooltips.h"
@@ -207,6 +208,7 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_SelectAllFaces", &SelectAllFaces, grp, "", "", TOOLTIP_SELECT_ALL_FACES)
 		.add_function("PM_DeselectAllFaces", &DeselectAllFaces, grp, "", "", TOOLTIP_DESELECT_ALL_FACES)
 		.add_function("PM_SelectFaceByIndex", &SelectFaceByIndex, grp, "", "", TOOLTIP_SELECT_FACE_BY_INDEX)
+		.add_function("PM_SelectFacesByNormal", &SelectFacesByNormal, grp, "", "", TOOLTIP_SELECT_FACES_BY_NORMAL)
 		.add_function("PM_FaceSelectionFill", &FaceSelectionFill, grp, "", "", TOOLTIP_FACE_SELECTION_FILL)
 		.add_function("PM_SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "", "", TOOLTIP_SELECT_BENT_QUADRILATERALS)
 
@@ -216,7 +218,10 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_DeselectAllVolumes", &DeselectAllVolumes, grp, "", "", TOOLTIP_DESELECT_ALL_VOLUMES)
 		.add_function("PM_SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "", "", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 		.add_function("PM_SelectVolumeByIndex", &SelectVolumeByIndex, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_INDEX)
-		.add_function("PM_VolumeSelectionFill", &VolumeSelectionFill, grp, "", "", TOOLTIP_VOLUME_SELECTION_FILL);
+		.add_function("PM_VolumeSelectionFill", &VolumeSelectionFill, grp, "", "", TOOLTIP_VOLUME_SELECTION_FILL)
+
+		.add_function("PM_MarkSelection", &MarkSelection, grp, "", "", TOOLTIP_MARK_SELECTION)
+		.add_function("PM_UnmarkSelection", &UnmarkSelection, grp, "", "", TOOLTIP_UNMARK_SELECTION);
 
 //	subset tools
 	reg.add_function("PM_AssignSubset", &AssignSubset, grp, "", "", TOOLTIP_ASSIGN_SUBSET)
@@ -263,8 +268,26 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_ProjectVerticesToCloseFaces", &ProjectVerticesToCloseFaces, grp, "", "", TOOLTIP_PROJECT_VERTICES_TO_CLOSE_FACES)
 		.add_function("PM_IntersectCloseEdges", &IntersectCloseEdges, grp, "", "", TOOLTIP_INTERSECT_CLOSE_EDGES);
 
+//	info tools
+		reg.add_function("PM_MeasureGridLength", &MeasureGridLength, grp, "", "", TOOLTIP_MEASURE_GRID_LENGTH)
+		   .add_function("PM_MeasureGridArea", &MeasureGridArea, grp, "", "", TOOLTIP_MEASURE_GRID_AREA)
+		   .add_function("PM_MeasureGridVolume", &MeasureGridVolume, grp, "", "", TOOLTIP_MEASURE_GRID_VOLUME)
+		   .add_function("PM_MeasureSubsetLength", &MeasureSubsetLength, grp, "", "", TOOLTIP_MEASURE_SUBSET_LENGTH)
+		   .add_function("PM_MeasureSubsetArea", &MeasureSubsetArea, grp, "", "", TOOLTIP_MEASURE_SUBSET_AREA)
+		   .add_function("PM_MeasureSubsetVolume", &MeasureSubsetVolume, grp, "", "", TOOLTIP_MEASURE_SUBSET_VOLUME)
+		   .add_function("PM_MeasureSelectionLength", &MeasureSelectionLength, grp, "", "", TOOLTIP_MEASURE_SELECTION_LENGTH)
+		   .add_function("PM_MeasureSelectionArea", &MeasureSelectionArea, grp, "", "", TOOLTIP_MEASURE_SELECTION_AREA)
+		   .add_function("PM_MeasureSelectionVolume", &MeasureSelectionVolume, grp, "", "", TOOLTIP_MEASURE_SELECTION_VOLUME);
+
 //	new tools
-	reg.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp, "", "", TOOLTIP_SELECT_VERTEX_IN_BOX)
+	reg.add_class_<Box>("PM_Box", grp)
+		.add_method("set_min", &Box::set_min)
+		.add_method("set_max", &Box::set_max)
+		.add_method("min", &Box::get_min)
+		.add_method("max", &Box::get_max);
+
+	reg.add_function("PM_GetBoundingBox", &GetBoundingBox, grp, "", "", TOOLTIP_GET_BOUNDING_BOX)
+		.add_function("PM_SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp, "", "", TOOLTIP_SELECT_VERTEX_IN_BOX)
 		.add_function("PM_SelectEdgesInBox", &SelectElementsInBox<Edge>, grp, "", "", TOOLTIP_SELECT_EDGE_IN_BOX)  
 		.add_function("PM_SelectFacesInBox", &SelectElementsInBox<Face>, grp, "", "", TOOLTIP_SELECT_FACE_IN_BOX)
 		.add_function("PM_SelectVolumesInBox", &SelectElementsInBox<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_IN_BOX)

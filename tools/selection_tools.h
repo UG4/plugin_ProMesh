@@ -56,8 +56,6 @@ TElem* SelectElemByCoordinate(MeshObject* obj, const vector3& coord)
 template <class TElem>
 TElem* SelectElemByCylindricalCoordinate(MeshObject* obj, number rho, number phi, number z)
 {
-	Grid& grid = obj->get_grid();
-
 	number x = rho * cos(phi);
 	number y = rho * sin(phi);
 

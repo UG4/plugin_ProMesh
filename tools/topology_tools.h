@@ -350,6 +350,10 @@ inline void ResolveSelfIntersections(MeshObject* obj, number snapThreshold)
 	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedVertices(sel, sel.begin<Face>(), sel.end<Face>());
 
+	//	remove doubles again
+	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
+					 obj->position_attachment(), snapThreshold);
+
 	if(intersectFaces)
 		ProjectVerticesToCloseFaces(grid, sel,
 									obj->position_attachment(), snapThreshold);
