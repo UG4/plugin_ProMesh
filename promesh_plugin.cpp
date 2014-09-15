@@ -81,8 +81,10 @@ static void Dimension(Registry& reg, string grp)
  * @param reg				registry
  * @param parentGroup		group for sorting of functionality
  */
-static void Common(Registry& reg, string grp)
+static void Common(Registry& reg, string baseGrp)
 {
+	string grp = baseGrp;
+
 	reg.add_class_<MeshObject>("PM_MeshObject", grp)
 		.add_constructor()
 		.add_method("get_grid", &MeshObject::get_grid, grp)
@@ -269,15 +271,16 @@ static void Common(Registry& reg, string grp)
 		.add_function("PM_IntersectCloseEdges", &IntersectCloseEdges, grp, "", "", TOOLTIP_INTERSECT_CLOSE_EDGES);
 
 //	info tools
-		reg.add_function("PM_MeasureGridLength", &MeasureGridLength, grp, "", "", TOOLTIP_MEASURE_GRID_LENGTH)
-		   .add_function("PM_MeasureGridArea", &MeasureGridArea, grp, "", "", TOOLTIP_MEASURE_GRID_AREA)
-		   .add_function("PM_MeasureGridVolume", &MeasureGridVolume, grp, "", "", TOOLTIP_MEASURE_GRID_VOLUME)
-		   .add_function("PM_MeasureSubsetLength", &MeasureSubsetLength, grp, "", "", TOOLTIP_MEASURE_SUBSET_LENGTH)
-		   .add_function("PM_MeasureSubsetArea", &MeasureSubsetArea, grp, "", "", TOOLTIP_MEASURE_SUBSET_AREA)
-		   .add_function("PM_MeasureSubsetVolume", &MeasureSubsetVolume, grp, "", "", TOOLTIP_MEASURE_SUBSET_VOLUME)
-		   .add_function("PM_MeasureSelectionLength", &MeasureSelectionLength, grp, "", "", TOOLTIP_MEASURE_SELECTION_LENGTH)
-		   .add_function("PM_MeasureSelectionArea", &MeasureSelectionArea, grp, "", "", TOOLTIP_MEASURE_SELECTION_AREA)
-		   .add_function("PM_MeasureSelectionVolume", &MeasureSelectionVolume, grp, "", "", TOOLTIP_MEASURE_SELECTION_VOLUME);
+		grp = baseGrp + string("/Info/Measure length, area, volume");
+		reg.add_function("PM_MeasureGridLength", &MeasureGridLength, grp, "length", "", TOOLTIP_MEASURE_GRID_LENGTH)
+		   .add_function("PM_MeasureGridArea", &MeasureGridArea, grp, "area", "", TOOLTIP_MEASURE_GRID_AREA)
+		   .add_function("PM_MeasureGridVolume", &MeasureGridVolume, grp, "volume", "", TOOLTIP_MEASURE_GRID_VOLUME)
+		   .add_function("PM_MeasureSubsetLength", &MeasureSubsetLength, grp, "length", "mesh#subset", TOOLTIP_MEASURE_SUBSET_LENGTH)
+		   .add_function("PM_MeasureSubsetArea", &MeasureSubsetArea, grp, "area", "mesh#subset", TOOLTIP_MEASURE_SUBSET_AREA)
+		   .add_function("PM_MeasureSubsetVolume", &MeasureSubsetVolume, grp, "volume", "mesh#subset", TOOLTIP_MEASURE_SUBSET_VOLUME)
+		   .add_function("PM_MeasureSelectionLength", &MeasureSelectionLength, grp, "length", "", TOOLTIP_MEASURE_SELECTION_LENGTH)
+		   .add_function("PM_MeasureSelectionArea", &MeasureSelectionArea, grp, "area", "", TOOLTIP_MEASURE_SELECTION_AREA)
+		   .add_function("PM_MeasureSelectionVolume", &MeasureSelectionVolume, grp, "volume", "", TOOLTIP_MEASURE_SELECTION_VOLUME);
 
 //	new tools
 	reg.add_class_<Box>("PM_Box", grp)
