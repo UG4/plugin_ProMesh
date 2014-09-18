@@ -126,6 +126,8 @@
 #define	TOOLTIP_TRANSFORM "Transforms the vertices with the given matrix"
 #define	TOOLTIP_CONE_TRANSFORM "Transforms the vertices with the given cone transformation"
 #define	TOOLTIP_LAPLACIAN_SMOOTH "Smoothes vertices in a grid."
+#define	TOOLTIP_WEIGHTED_EDGE_SMOOTH "Smoothes vertices along edges in a grid with special weights for non-smoothed vertices."
+#define	TOOLTIP_WEIGHTED_FACE_SMOOTH "Smoothes vertices across faces in a grid with special weights for non-smoothed vertices."
 #define	TOOLTIP_TANGENTIAL_SMOOTH "Smoothes vertices on a manifold."
 #define	TOOLTIP_RPOJECT_TO_PLANE "Projects all selected elements to the specified plane"
 #define	TOOLTIP_PROJECT_TO_LIMIT_PLOOP "Projects all vertices in the grid to their limit positions as defined by the piecewise loop scheme."

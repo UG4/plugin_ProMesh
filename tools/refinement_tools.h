@@ -77,6 +77,7 @@ inline void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	SubdivisionLoopProjector<APosition>
 		refCallbackLoop(grid, aPosition, aTmpPos);
 
+	refCallbackLoop.consider_as_crease_edge(IsInSubset(obj->get_crease_handler(), REM_CREASE));
 	Refine(grid, sel, &refCallbackLoop);
 
 //	copy position data of selected vertices

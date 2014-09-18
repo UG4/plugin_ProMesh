@@ -10,6 +10,7 @@
 #include "lib_grid/algorithms/subdivision/subdivision_loop.h"
 #include "lib_grid/algorithms/selection_util.h"
 #include "lib_grid/algorithms/smoothing/manifold_smoothing.h"
+#include "lib_grid/algorithms/callback_util.h"
 
 namespace ug{
 namespace promesh{
@@ -204,6 +205,20 @@ inline void LaplacianSmooth(MeshObject* obj, number alpha, int numIterations)
 
 	ug::LaplacianSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
 						obj->position_accessor(), alpha, numIterations);
+}
+
+inline void WeightedEdgeSmooth(MeshObject* obj, number alpha, int numIterations)
+{
+	Selector& sel = obj->selector();
+	ug::WeightedEdgeSmooth(obj->get_grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+					   obj->position_accessor(), alpha, numIterations, IsSelected(sel));
+}
+
+inline void WeightedFaceSmooth(MeshObject* obj, number alpha, int numIterations)
+{
+	Selector& sel = obj->selector();
+	ug::WeightedFaceSmooth(obj->get_grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+					   obj->position_accessor(), alpha, numIterations, IsSelected(sel));
 }
 
 inline void TangentialSmooth(MeshObject* obj, number alpha, int numIterations)

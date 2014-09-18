@@ -96,7 +96,7 @@ static void Common(Registry& reg, string baseGrp)
 		.set_construct_as_smart_pointer(true);
 
 //	coordinate transform tools
-	
+	grp = baseGrp + string("/Coordinate Transform");
 	reg.add_function("GetSelectionCenter", &GetSelectionCenter, grp, "", "", TOOLTIP_GET_SELECTION_CENTER)
 		.add_function("SetSelectionCenter", &SetSelectionCenter, grp, "", "", TOOLTIP_SET_SELECTION_CENTER)
 		.add_function("Move", &Move, grp, "", "", TOOLTIP_MOVE)
@@ -108,6 +108,16 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("RotateAroundPivot", &RotateAroundPivot, grp, "", "", TOOLTIP_ROTATE_AROUND_PIVOT)  
 		.add_function("ConeTransform", &ConeTransform, grp, "", "", TOOLTIP_CONE_TRANSFORM)  
 		.add_function("LaplacianSmooth", &LaplacianSmooth, grp, "", "", TOOLTIP_LAPLACIAN_SMOOTH)  
+		.add_function("WeightedEdgeSmooth", &WeightedEdgeSmooth, grp, "",
+					  "mesh#"
+					  "alpha | default | min=0D; max=1D; value=0.25D#"
+					  "num iterations | default | min=0; value=10",
+					  TOOLTIP_WEIGHTED_EDGE_SMOOTH)  
+		.add_function("WeightedFaceSmooth", &WeightedFaceSmooth, grp, "",
+					  "mesh#"
+					  "alpha | default | min=0D; max=1D; value=0.25D#"
+					  "num iterations | default | min=0; value=10",
+					  TOOLTIP_WEIGHTED_FACE_SMOOTH)  
 		.add_function("TangentialSmooth", &TangentialSmooth, grp, "", "", TOOLTIP_TANGENTIAL_SMOOTH) 
 		.add_function("ProjectToLimitPLoop", &ProjectToLimitPLoop, grp, "", "", TOOLTIP_PROJECT_TO_LIMIT_PLOOP)  
 		.add_function("ProjectToLimitSmoothBoundary", &ProjectToLimitSmoothBoundary, grp, "", "", TOOLTIP_PROJECT_TO_LIMIT_SMOOTH_BOUNDARY) 
@@ -116,7 +126,9 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("SetPivotToMeshCenter", &SetPivotToMeshCenter, grp, "", "", TOOLTIP_SET_PIVOT_TO_MESH_CENTER)
 		.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "", "", TOOLTIP_FLATTEN_BENT_QUADRILATERALS);  
 
+	
 //	file io
+	grp = baseGrp;
 	reg.add_function("LoadMesh", &LoadMesh, grp, "", "", TOOLTIP_LOAD_MESH)
 		.add_function("SaveMesh", &SaveMesh, grp,TOOLTIP_SAVE_MESH)
 		.add_function("ExportToUG3", &ExportToUG3, grp, "", "", TOOLTIP_EXPORT_TO_UG3);
