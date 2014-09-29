@@ -11,6 +11,7 @@
 #include "common/node_tree/node_tree.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/trees/octree.h"
+#include "lib_grid/algorithms/mark_util.h"
 
 namespace ug{
 namespace promesh{
@@ -778,6 +779,24 @@ inline void VolumeSelectionFill(MeshObject* obj)
 	Selector& sel = obj->get_selector();
 	SelectionFill<Volume>(sel, IsSelected(sel));
 }
+
+// template <class TVertexIterator, class TAPosition>
+// UG_API 
+// void MarkCorners(Grid& grid, ISubsetHandler& sh,
+// 					TVertexIterator vrtsBegin, TVertexIterator vrtsEnd,
+// 					Grid::edge_traits::callback cbPathEdge,
+// 					int subsetIndex, number angle,
+// 					TAPosition& aPos);
+
+inline void MarkCornersOfMarkedEdges(MeshObject* obj, number angle)
+{
+	Selector& sel = obj->selector();
+	MarkCorners(obj->grid(), obj->crease_handler(),
+				sel.begin<Vertex>(), sel.end<Vertex>(),
+				IsInSubset(obj->crease_handler(), ug::REM_CREASE),
+				ug::REM_FIXED, angle, obj->position_attachment());
+}
+
 
 inline void MarkSelection(MeshObject* obj)
 {

@@ -34,6 +34,7 @@
 #define	TOOLTIP_RETRIANGULATE "Inserts vertices as required and performs Constrained Delaunay triangulation."
 #define	TOOLTIP_ADJUST_EDGE_LENGTH "Remeshes the active grid so that all edges approximatly have a certain length."
 #define	TOOLTIP_ADAPT_SURFACE_TO_CYLINDER "Introduces edges in a grid around a selected vertex which roughly correspond to the intersection of a cylinder with the surface."
+#define TOOLTIP_REPLACE_LOW_VALENCE_VERTICES "Replaces selected valence-3 and valence-4 vertices by triangles, if the curvature of associated triangles is low"
 #define	TOOLTIP_TETRAHEDRALIZE "Fills a closed surface with tetrahedrons."
 #define	TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS "Assigns volume constraints to selected tetrahedrons."
 #define	TOOLTIP_CLEAR_VOLUME_CONSTRAINTS "Clears all assigned volume constraints."
@@ -210,6 +211,7 @@
 #define	TOOLTIP_MARK_CREASE_EDGES "Marks edges whose associated faces have a certain angle as crease-edge."
 #define	TOOLTIP_MARK_SELECTION "Marks selected vertices and edges."
 #define	TOOLTIP_UNMARK_SELECTION "Unmarks selected elements."
+#define TOOLTIP_MARK_CORNERS_OF_MARKED_EDGES "Marks selected vertices as fixed, if they lie at a sharp corner of a marked path or if they are at endpoints or at junctions of marked edges."
 
 //fracture tools
 #define	TOOLTIP_EXPAND_LAYERS_2D "Expands a 1d layer to a 2d layer by introducing quadrilaterals."

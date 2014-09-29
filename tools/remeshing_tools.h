@@ -12,6 +12,7 @@
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
 #include "lib_grid/algorithms/remeshing/grid_adaption.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
+#include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/duplicate.h"
 
 namespace ug{
@@ -425,6 +426,12 @@ inline void CreateShrinkGeometry(MeshObject* obj, number scale)
 	CreateShrinkElements(obj, scale, edges.begin(), edges.end());
 }
 
+inline void ReplaceLowValenceVertices(MeshObject* obj, number maxSquaredHeightToBaseAreaRatio)
+{
+	Selector& sel = obj->selector();
+	ug::ReplaceLowValenceVertices(obj->grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+						   maxSquaredHeightToBaseAreaRatio, obj->position_accessor());
+}
 
 }}// end of namespace
 

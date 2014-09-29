@@ -7,6 +7,8 @@
 
 #include "../mesh_object.h"
 #include "lib_grid/file_io/file_io.h"
+#include "lib_grid/file_io/file_io_ug.h"
+#include "lib_grid/file_io/file_io_ugx.h"
 
 namespace ug{
 namespace promesh{

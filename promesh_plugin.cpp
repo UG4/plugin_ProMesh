@@ -155,12 +155,17 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("InsertCenter", &InsertCenter, grp, "", "", TOOLTIP_INSERT_CENTER);
 
 //	remeshing
+	grp = baseGrp + string("/Remeshing/Triangulation");
 	reg.add_function("ConvertToTriangles", &ConvertToTriangles, grp, "", "", TOOLTIP_CONVERT_TO_TRIANGLES)
 		.add_function("TriangleFill", &TriangleFill, grp, "", "", TOOLTIP_TRIANGLE_FILL)
 		.add_function("Retriangulate", &Retriangulate, grp, "", "", TOOLTIP_RETRIANGULATE)
 		.add_function("AdjustEdgeLength", &AdjustEdgeLength, grp, "", "", TOOLTIP_ADJUST_EDGE_LENGTH)
 		.add_function("AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp, "", "", TOOLTIP_ADAPT_SURFACE_TO_CYLINDER)
-		.add_function("Tetrahedralize", &Tetrahedralize, grp, "", "", TOOLTIP_TETRAHEDRALIZE)
+		.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
+					  "mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
+
+	grp = baseGrp + string("/Remeshing/Tetgen");
+	reg.add_function("Tetrahedralize", &Tetrahedralize, grp, "", "", TOOLTIP_TETRAHEDRALIZE)
 		.add_function("AssignVolumeConstraints", &AssignVolumeConstraints, grp, "", "", TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS)
 		.add_function("ClearVolumeConstraints", &ClearVolumeConstraints, grp, "", "", TOOLTIP_CLEAR_VOLUME_CONSTRAINTS)
 		.add_function("Retetrahedralize", &Retetrahedralize, grp, "", "", TOOLTIP_RETETRAHEDRALIZE)
@@ -171,6 +176,7 @@ static void Common(Registry& reg, string baseGrp)
 	    .add_function("ExtrudeFacesWithTets", &ExtrudeFacesWithTets, grp, "", "", TOOLTIP_EXTRUDE_FACES_WITH_TETS);
 
 //	selection tools
+	grp = baseGrp;
 	reg.add_function("ClearSelection", &ClearSelection, grp, "", "", TOOLTIP_CLEAR_SELECTION)
 		.add_function("SelectAll", &SelectAll, grp, "", "", TOOLTIP_SELECT_ALL) 
 		.add_function("ExtendSelection", &ExtendSelection, grp, "", "", TOOLTIP_EXTEND_SELECTION)
@@ -232,12 +238,18 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("DeselectAllVolumes", &DeselectAllVolumes, grp, "", "", TOOLTIP_DESELECT_ALL_VOLUMES)
 		.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "", "", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 		.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_INDEX)
-		.add_function("VolumeSelectionFill", &VolumeSelectionFill, grp, "", "", TOOLTIP_VOLUME_SELECTION_FILL)
+		.add_function("VolumeSelectionFill", &VolumeSelectionFill, grp, "", "", TOOLTIP_VOLUME_SELECTION_FILL);
 
-		.add_function("MarkSelection", &MarkSelection, grp, "", "", TOOLTIP_MARK_SELECTION)
-		.add_function("UnmarkSelection", &UnmarkSelection, grp, "", "", TOOLTIP_UNMARK_SELECTION);
+
+	grp = baseGrp + string("/Selection/Marks");
+	reg.add_function("MarkSelection", &MarkSelection, grp, "", "", TOOLTIP_MARK_SELECTION)
+		.add_function("UnmarkSelection", &UnmarkSelection, grp, "", "", TOOLTIP_UNMARK_SELECTION)
+		.add_function("MarkCornersOfMarkedEdges", &MarkCornersOfMarkedEdges,
+					  grp, "", "mesh # min angle | default | value=75D",
+					  TOOLTIP_MARK_CORNERS_OF_MARKED_EDGES);
 
 //	subset tools
+	grp = baseGrp;
 	reg.add_function("AssignSubset", &AssignSubset, grp, "", "", TOOLTIP_ASSIGN_SUBSET)
 		.add_function("SetSubsetName", &SetSubsetName, grp, "", "", TOOLTIP_SET_SUBSET_NAME)
 		.add_function("AssignSubsetColors", &AssignSubsetColors, grp, "", "", TOOLTIP_ASSIGN_SUBSET_COLORS)
