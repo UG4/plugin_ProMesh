@@ -12,6 +12,7 @@
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/trees/octree.h"
 #include "lib_grid/algorithms/mark_util.h"
+#include "lib_grid/algorithms/problem_detection_util.h"
 
 namespace ug{
 namespace promesh{
@@ -756,6 +757,16 @@ inline int SelectUnorientableVolumes(MeshObject* obj)
 	}
 
 	return numUnorientable;
+}
+
+inline int SelectSlivers(MeshObject* obj, number thresholdRatio)
+{
+	std::vector<Tetrahedron*> slivers;
+	Grid& g = obj->grid();
+	FindSlivers(slivers, g.begin<Tetrahedron>(), g.end<Tetrahedron>(),
+			    thresholdRatio, obj->position_accessor());
+	obj->selector().select(slivers.begin(), slivers.end());
+	return static_cast<int>(slivers.size());
 }
 
 inline bool SelectVolumeByIndex(MeshObject* obj, int index)

@@ -230,13 +230,15 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("SelectFaceByIndex", &SelectFaceByIndex, grp, "", "", TOOLTIP_SELECT_FACE_BY_INDEX)
 		.add_function("SelectFacesByNormal", &SelectFacesByNormal, grp, "", "", TOOLTIP_SELECT_FACES_BY_NORMAL)
 		.add_function("FaceSelectionFill", &FaceSelectionFill, grp, "", "", TOOLTIP_FACE_SELECTION_FILL)
-		.add_function("SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "", "", TOOLTIP_SELECT_BENT_QUADRILATERALS)
+		.add_function("SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "", "", TOOLTIP_SELECT_BENT_QUADRILATERALS);
 
-		.add_function("SelectVolumeByCoordinate", &SelectElemByCoordinate<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_COORDINATE)
+	grp = baseGrp + string("/Selection/Volumes");
+	reg.add_function("SelectVolumeByCoordinate", &SelectElemByCoordinate<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_COORDINATE)
 		.add_function("SelectVolumeByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_CYL_COORDINATE)
 		.add_function("SelectAllVolumes", &SelectAllVolumes, grp, "", "", TOOLTIP_SELECT_ALL_VOLUMES)
 		.add_function("DeselectAllVolumes", &DeselectAllVolumes, grp, "", "", TOOLTIP_DESELECT_ALL_VOLUMES)
 		.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "", "", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
+		.add_function("SelectSlivers", &SelectSlivers, grp, "", "mesh # threshold ratio | default | min=0; val=0.01D", TOOLTIP_SELECT_SLIVERS)
 		.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_INDEX)
 		.add_function("VolumeSelectionFill", &VolumeSelectionFill, grp, "", "", TOOLTIP_VOLUME_SELECTION_FILL);
 

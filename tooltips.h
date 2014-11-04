@@ -205,6 +205,7 @@
 #define	TOOLTIP_SELECT_SELECTION_BOUNDARY "Selects the boundary of the current selection."
 #define	TOOLTIP_SELECT_BENT_QUADRILATERALS "Selects quadrilaterals which do not lie in a plane."
 #define	TOOLTIP_CLOSE_SELECTION "Selects all associated elements of lower dimensions."
+#define TOOLTIP_SELECT_SLIVERS "Selects flat tetrahedrons. Threshold-ratio specifies the minimal ratio between the distance of two opposing edges to the length of the longest edge."
 
 //mark tools
 #define	TOOLTIP_CLEAR_MARKS "Clears all marks"
