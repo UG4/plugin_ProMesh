@@ -7,7 +7,8 @@
 # Name of your plugin, path to your plugin (relative to ug's root path) and sources.
 set(pluginName	ProMesh)
 set(pluginPath	plugins/experimental/promesh)
-set(SOURCES		promesh_plugin.cpp)
+set(SOURCES		mesh.cpp
+				promesh_plugin.cpp)
 
 
 ################################################################################

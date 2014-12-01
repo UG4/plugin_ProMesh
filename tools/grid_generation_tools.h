@@ -6,19 +6,19 @@
 #define __H__UG__grid_generation_tools__
 
 #include <vector>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
 #include "lib_grid/algorithms/grid_generation/icosahedron.h"
 
 namespace ug{
 namespace promesh{
 
-inline Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
+inline Vertex* CreateVertex(Mesh* obj, const vector3& pos, int subsetInd)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	build a new vertex
 	RegularVertex* vrt = *grid.create<RegularVertex>();
@@ -34,12 +34,12 @@ inline Vertex* CreateVertex(MeshObject* obj, const vector3& pos, int subsetInd)
 }
 
 
-inline Edge* CreateEdge(MeshObject* obj, int subsetInd)
+inline Edge* CreateEdge(Mesh* obj, int subsetInd)
 {
 	using namespace std;
-	ug::Selector& sel = obj->get_selector();
-	ug::Grid& grid = obj->get_grid();
-	ug::SubsetHandler& sh = obj->get_subset_handler();
+	ug::Selector& sel = obj->selector();
+	ug::Grid& grid = obj->grid();
+	ug::SubsetHandler& sh = obj->subset_handler();
 
 	size_t numVrts = sel.num<ug::Vertex>();
 	vector<ug::Vertex*> vrts;
@@ -69,12 +69,12 @@ inline Edge* CreateEdge(MeshObject* obj, int subsetInd)
 }
 
 
-inline Face* CreateFace(MeshObject* obj, int subsetInd)
+inline Face* CreateFace(Mesh* obj, int subsetInd)
 {
 	using namespace std;
-	Selector& sel = obj->get_selector();
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Selector& sel = obj->selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 
 	size_t numVrts = sel.num<Vertex>();
 
@@ -119,12 +119,12 @@ inline Face* CreateFace(MeshObject* obj, int subsetInd)
 }
 
 
-inline Volume* CreateVolume(MeshObject* obj, int subsetInd)
+inline Volume* CreateVolume(Mesh* obj, int subsetInd)
 {
 	using namespace std;
-	Selector& sel = obj->get_selector();
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Selector& sel = obj->selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 
 	size_t numVrts = sel.num<Vertex>();
 
@@ -187,14 +187,14 @@ inline Volume* CreateVolume(MeshObject* obj, int subsetInd)
 }
 
 
-inline void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& upRight,
+inline void CreatePlane(Mesh* obj, const vector3& upLeft, const vector3& upRight,
 				 const vector3& lowLeft, const vector3& lowRight, int subsetInd,
 				 bool fill)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -231,13 +231,13 @@ inline void CreatePlane(MeshObject* obj, const vector3& upLeft, const vector3& u
 }
 
 
-inline void CreateCircle(MeshObject* obj, const vector3& center, number radius,
+inline void CreateCircle(Mesh* obj, const vector3& center, number radius,
 				  int numRimVertices, int subsetInd, bool fill)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -288,13 +288,13 @@ inline void CreateCircle(MeshObject* obj, const vector3& center, number radius,
 }
 
 
-inline void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& boxMax,
+inline void CreateBox(Mesh* obj, const vector3& boxMin, const vector3& boxMax,
 			   int subsetInd, bool createVol)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -337,12 +337,12 @@ inline void CreateBox(MeshObject* obj, const vector3& boxMin, const vector3& box
 }
 
 
-inline void CreateSphere(MeshObject* obj, const vector3& center, number radius,
+inline void CreateSphere(Mesh* obj, const vector3& center, number radius,
 				  int numRefinements, int subsetInd)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 //	create the sphere
 	GenerateIcosphere(grid, center, radius, numRefinements, obj->position_attachment(), &sel);
@@ -354,12 +354,12 @@ inline void CreateSphere(MeshObject* obj, const vector3& center, number radius,
 }
 
 
-inline void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreateTetrahedron(Mesh* obj, int subsetInd, bool createVol)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -397,12 +397,12 @@ inline void CreateTetrahedron(MeshObject* obj, int subsetInd, bool createVol)
 }
 
 
-inline void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreatePyramid(Mesh* obj, int subsetInd, bool createVol)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -441,12 +441,12 @@ inline void CreatePyramid(MeshObject* obj, int subsetInd, bool createVol)
 }
 
 
-inline void CreatePrism(MeshObject* obj, int subsetInd, bool createVol)
+inline void CreatePrism(Mesh* obj, int subsetInd, bool createVol)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();

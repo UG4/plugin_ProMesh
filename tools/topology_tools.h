@@ -6,7 +6,7 @@
 #define __H__UG__topology_tools__
 
 #include <vector>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/remeshing/resolve_intersections.h"
 #include "lib_grid/algorithms/geom_obj_util/vertex_util.h"
 #include "lib_grid/algorithms/geom_obj_util/edge_util.h"
@@ -14,11 +14,11 @@
 namespace ug{
 namespace promesh{
 
-inline void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
+inline void EraseSelectedElements(Mesh* obj, bool eraseUnusedVrts,
 						   bool eraseUnusedEdges, bool eraseUnusedFaces)
 {
 //	adjust selection
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectAssociatedEdges(sel, sel.begin<Vertex>(), sel.end<Vertex>());
 	SelectAssociatedFaces(sel, sel.begin<Edge>(), sel.end<Edge>());
 	SelectAssociatedVolumes(sel, sel.begin<Face>(), sel.end<Face>());
@@ -33,7 +33,7 @@ inline void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 		SelectInnerSelectionVertices(sel);
 
 //	erase selected elements
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 	grid.erase(sel.begin<Volume>(), sel.end<Volume>());
 	grid.erase(sel.begin<Face>(), sel.end<Face>());
 	grid.erase(sel.begin<Edge>(), sel.end<Edge>());
@@ -41,10 +41,10 @@ inline void EraseSelectedElements(MeshObject* obj, bool eraseUnusedVrts,
 }
 
 ///	returns the number of removed vertices
-inline size_t RemoveDoubles(MeshObject* obj, number threshold)
+inline size_t RemoveDoubles(Mesh* obj, number threshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	size_t numVrts = grid.num<Vertex>();
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
@@ -52,21 +52,21 @@ inline size_t RemoveDoubles(MeshObject* obj, number threshold)
 	return numVrts - grid.num<Vertex>();
 }
 
-inline size_t RemoveDoubleEdges(MeshObject* obj)
+inline size_t RemoveDoubleEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	size_t numEdges= grid.num<Edge>();
 	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
 	return numEdges - grid.num<Edge>();
 }
 
-inline void MergeAtFirst(MeshObject* obj)
+inline void MergeAtFirst(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	SelectAssociatedGridObjects(sel);
 
@@ -76,11 +76,11 @@ inline void MergeAtFirst(MeshObject* obj)
 		aaPos[vrt] = first;
 }
 
-inline void MergeAtCenter(MeshObject* obj)
+inline void MergeAtCenter(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	SelectAssociatedGridObjects(sel);
 
@@ -91,11 +91,11 @@ inline void MergeAtCenter(MeshObject* obj)
 		aaPos[vrt] = center;
 }
 
-inline void MergeAtLast(MeshObject* obj)
+inline void MergeAtLast(Mesh* obj)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectAssociatedGridObjects(sel);
 
 //	todo: This iteration shouldn't be necessary!
@@ -110,12 +110,12 @@ inline void MergeAtLast(MeshObject* obj)
 		aaPos[vrt] = last;
 }
 
-inline void CollapseEdge(MeshObject* obj)
+inline void CollapseEdge(Mesh* obj)
 {
 	using namespace std;
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	vector<Face*> vFaces;
 	vector<Edge*> vEdges;
@@ -152,14 +152,14 @@ inline void CollapseEdge(MeshObject* obj)
 	}
 }
 
-inline void SplitEdge(MeshObject* obj)
+inline void SplitEdge(Mesh* obj)
 {
 	using namespace std;
 //	collect all edges that shall be splitted in a vector
 //	since new edges will be automatically selected again.
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	vector<Edge*> vEdges;
 	for(EdgeIterator iter = sel.begin<Edge>();
@@ -176,13 +176,13 @@ inline void SplitEdge(MeshObject* obj)
 	}
 }
 
-inline void SwapEdge(MeshObject* obj)
+inline void SwapEdge(Mesh* obj)
 {
 	using namespace std;
 //	collect all edges that shall be swapped in a vector
 //	since new edges will be automatically selected again.
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	vector<Edge*> vEdges;
 	for(EdgeIterator iter = sel.begin<Edge>();
 		iter != sel.end<Edge>(); ++iter)
@@ -203,63 +203,63 @@ inline void SwapEdge(MeshObject* obj)
 	}
 }
 
-inline void PlaneCut(MeshObject* obj, const vector3& p, const vector3& n)
+inline void PlaneCut(Mesh* obj, const vector3& p, const vector3& n)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	CutEdgesWithPlane(sel, p, n);
 }
 
-inline void AdjustEdgeOrientation(MeshObject* obj)
+inline void AdjustEdgeOrientation(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	AdjustEdgeOrientationToFaceOrientation(grid, sel.begin<Edge>(),
 												sel.end<Edge>());
 }
 
-inline void FixFaceOrientation(MeshObject* obj)
+inline void FixFaceOrientation(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	FixFaceOrientation(grid, sel.begin<Face>(),
 							sel.end<Face>());
 }
 
-inline void FixFaceSubsetOrientations(MeshObject* obj)
+inline void FixFaceSubsetOrientations(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 
 	for(int i = 0; i < sh.num_subsets(); ++i){
 		FixFaceOrientation(grid, sh.begin<Face>(i), sh.end<Face>(i));
 	}
 }
 
-inline int FixVolumeOrientation(MeshObject* obj)
+inline int FixVolumeOrientation(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	return FixOrientation(grid, sel.begin<Volume>(), sel.end<Volume>(), aaPos);
 }
 
 
-inline void InvertFaceOrientation(MeshObject* obj)
+inline void InvertFaceOrientation(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	InvertOrientation(grid, sel.begin<Face>(), sel.end<Face>());
 }
 
-inline void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
+inline void ResolveEdgeIntersection(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	the grid may now contain some degenerated triangles. We'll try to
 //	remove most of them by projecting vertices onto close edges
@@ -276,11 +276,11 @@ inline void ResolveEdgeIntersection(MeshObject* obj, number snapThreshold)
 					 obj->position_attachment(), snapThreshold);
 }
 
-inline void ResolveTriangleIntersections(MeshObject* obj, number snapThreshold)
+inline void ResolveTriangleIntersections(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	// MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	// Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	first we'll resolve triangle-triangle intersections
 	ug::ResolveTriangleIntersections(grid, sel.begin<Triangle>(),
@@ -299,11 +299,11 @@ inline void ResolveTriangleIntersections(MeshObject* obj, number snapThreshold)
 					 obj->position_attachment(), snapThreshold);
 }
 
-inline void ProjectVerticesToCloseEdges(MeshObject* obj, number snapThreshold)
+inline void ProjectVerticesToCloseEdges(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	// MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	// Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	ProjectVerticesToCloseEdges(grid, sel.get_grid_objects(),
 								obj->position_attachment(), snapThreshold);
@@ -313,11 +313,11 @@ inline void ProjectVerticesToCloseEdges(MeshObject* obj, number snapThreshold)
 					 obj->position_attachment(), snapThreshold);
 }
 
-inline void ProjectVerticesToCloseFaces(MeshObject* obj, number snapThreshold)
+inline void ProjectVerticesToCloseFaces(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	//MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	//Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	ProjectVerticesToCloseFaces(grid, sel,
 								obj->position_attachment(), snapThreshold);
@@ -327,21 +327,21 @@ inline void ProjectVerticesToCloseFaces(MeshObject* obj, number snapThreshold)
 					 obj->position_attachment(), snapThreshold);
 }
 
-inline void IntersectCloseEdges(MeshObject* obj, number snapThreshold)
+inline void IntersectCloseEdges(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
 }
 
 
-inline void ResolveSelfIntersections(MeshObject* obj, number snapThreshold)
+inline void ResolveSelfIntersections(Mesh* obj, number snapThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	Triangulate(grid, sel.begin<Quadrilateral>(), sel.end<Quadrilateral>(), &aaPos);
 	
@@ -375,7 +375,7 @@ inline void ResolveSelfIntersections(MeshObject* obj, number snapThreshold)
 									obj->position_attachment(), snapThreshold);
 	}
 	else{
-		MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+		Mesh::position_accessor_t& aaPos = obj->position_accessor();
 		IntersectCloseEdges(grid, sel, aaPos, snapThreshold);
 	}
 

@@ -4,27 +4,27 @@
 #ifndef __H__UG_measure_tools
 #define __H__UG_measure_tools
 
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/volume_calculation.h"
 
 namespace ug{
 namespace promesh{
 
-inline number MeasureGridLength(MeshObject* obj)
+inline number MeasureGridLength(Mesh* obj)
 {
 	return CalculateVolume(obj->grid().begin<Edge>(),
 						   obj->grid().end<Edge>(),
 						   obj->position_accessor());
 }
 
-inline number MeasureGridArea(MeshObject* obj)
+inline number MeasureGridArea(Mesh* obj)
 {
 	return CalculateVolume(obj->grid().begin<Face>(),
 						   obj->grid().end<Face>(),
 						   obj->position_accessor());
 }
 
-inline number MeasureGridVolume(MeshObject* obj)
+inline number MeasureGridVolume(Mesh* obj)
 {
 	return CalculateVolume(obj->grid().begin<Volume>(),
 						   obj->grid().end<Volume>(),
@@ -33,21 +33,21 @@ inline number MeasureGridVolume(MeshObject* obj)
 
 
 
-inline number MeasureSubsetLength(MeshObject* obj, int subsetInd)
+inline number MeasureSubsetLength(Mesh* obj, int subsetInd)
 {
 	return CalculateVolume(obj->subset_handler().begin<Edge>(subsetInd),
 						   obj->subset_handler().end<Edge>(subsetInd),
 						   obj->position_accessor());
 }
 
-inline number MeasureSubsetArea(MeshObject* obj, int subsetInd)
+inline number MeasureSubsetArea(Mesh* obj, int subsetInd)
 {
 	return CalculateVolume(obj->subset_handler().begin<Face>(subsetInd),
 						   obj->subset_handler().end<Face>(subsetInd),
 						   obj->position_accessor());
 }
 
-inline number MeasureSubsetVolume(MeshObject* obj, int subsetInd)
+inline number MeasureSubsetVolume(Mesh* obj, int subsetInd)
 {
 	return CalculateVolume(obj->subset_handler().begin<Volume>(subsetInd),
 						   obj->subset_handler().end<Volume>(subsetInd),
@@ -56,21 +56,21 @@ inline number MeasureSubsetVolume(MeshObject* obj, int subsetInd)
 
 
 
-inline number MeasureSelectionLength(MeshObject* obj)
+inline number MeasureSelectionLength(Mesh* obj)
 {
 	return CalculateVolume(obj->selector().begin<Edge>(),
 						   obj->selector().end<Edge>(),
 						   obj->position_accessor());
 }
 
-inline number MeasureSelectionArea(MeshObject* obj)
+inline number MeasureSelectionArea(Mesh* obj)
 {
 	return CalculateVolume(obj->selector().begin<Face>(),
 						   obj->selector().end<Face>(),
 						   obj->position_accessor());
 }
 
-inline number MeasureSelectionVolume(MeshObject* obj)
+inline number MeasureSelectionVolume(Mesh* obj)
 {
 	return CalculateVolume(obj->selector().begin<Volume>(),
 						   obj->selector().end<Volume>(),

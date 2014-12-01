@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <stack>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "common/node_tree/node_tree.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/trees/octree.h"
@@ -17,32 +17,32 @@
 namespace ug{
 namespace promesh{
 
-inline void ClearSelection(MeshObject* obj)
+inline void ClearSelection(Mesh* obj)
 {
-	obj->get_selector().clear();
+	obj->selector().clear();
 }
 
-inline void SelectAll(MeshObject* obj)
+inline void SelectAll(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	sel.select(grid.vertices_begin(), grid.vertices_end());
 	sel.select(grid.edges_begin(), grid.edges_end());
 	sel.select(grid.faces_begin(), grid.faces_end());
 	sel.select(grid.volumes_begin(), grid.volumes_end());
 }
 
-inline void ExtendSelection(MeshObject* obj, int neighborhoodSize)
+inline void ExtendSelection(Mesh* obj, int neighborhoodSize)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	ExtendSelection(sel, (size_t)neighborhoodSize);
 }
 
 template <class TElem>
-TElem* SelectElemByCoordinate(MeshObject* obj, const vector3& coord)
+TElem* SelectElemByCoordinate(Mesh* obj, const vector3& coord)
 {
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	TElem* e = FindClosestByCoordinate<TElem>(coord,
 											 grid.begin<TElem>(),
@@ -50,13 +50,13 @@ TElem* SelectElemByCoordinate(MeshObject* obj, const vector3& coord)
 											 aaPos);
 
 	if(e)
-		obj->get_selector().select(e);
+		obj->selector().select(e);
 
 	return e;
 }
 
 template <class TElem>
-TElem* SelectElemByCylindricalCoordinate(MeshObject* obj, number rho, number phi, number z)
+TElem* SelectElemByCylindricalCoordinate(Mesh* obj, number rho, number phi, number z)
 {
 	number x = rho * cos(phi);
 	number y = rho * sin(phi);
@@ -65,11 +65,11 @@ TElem* SelectElemByCylindricalCoordinate(MeshObject* obj, number rho, number phi
 	return SelectElemByCoordinate<TElem>(obj, coord);
 }
 
-inline void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
+inline void SelectSubset(Mesh* obj, int si, bool selVrts, bool selEdges,
 				  		 bool selFaces, bool selVols)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 
 	if(si >= 0){
 		if(selVrts)
@@ -82,7 +82,7 @@ inline void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 			sel.select(sh.begin<Volume>(si), sh.end<Volume>(si));
 	}
 	else{
-		Grid& grid = obj->get_grid();
+		Grid& grid = obj->grid();
 	//	subset -1 has to be selected. Those are not directly accessible.
 		if(selVrts){
 			for(VertexIterator iter = grid.vertices_begin();
@@ -119,11 +119,11 @@ inline void SelectSubset(MeshObject* obj, int si, bool selVrts, bool selEdges,
 	}
 }
 
-inline void SelectSubsetBoundary(MeshObject* obj, int si, bool edgeBnds,
+inline void SelectSubsetBoundary(Mesh* obj, int si, bool edgeBnds,
 						  bool faceBnds, bool volBnds)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 
 	if(edgeBnds)
 		SelectAreaBoundary(sel, sh.begin<Edge>(si), sh.end<Edge>(si));
@@ -145,12 +145,12 @@ static inline void SelectUnassignedElementsHelper(Grid& grid, SubsetHandler& sh,
 	}
 }
 
-inline void SelectUnassignedElements(MeshObject* obj, bool selVrts, bool selEdges,
+inline void SelectUnassignedElements(Mesh* obj, bool selVrts, bool selEdges,
 							  bool selFaces, bool selVols)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 
 	if(selVrts)
 		SelectUnassignedElementsHelper<Vertex>(grid, sh, sel);
@@ -162,11 +162,11 @@ inline void SelectUnassignedElements(MeshObject* obj, bool selVrts, bool selEdge
 		SelectUnassignedElementsHelper<Volume>(grid, sh, sel);
 }
 
-inline void InvertSelection(MeshObject* obj, bool invVrts, bool invEdges,
+inline void InvertSelection(Mesh* obj, bool invVrts, bool invEdges,
 					 bool invFaces, bool invVols)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	if(invVrts)
 		InvertSelection(sel, grid.begin<Vertex>(),
@@ -185,9 +185,9 @@ inline void InvertSelection(MeshObject* obj, bool invVrts, bool invEdges,
 							grid.end<Volume>());
 }
 
-inline void SelectSelectionBoundary(MeshObject* obj)
+inline void SelectSelectionBoundary(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 
 	if(sel.num<Volume>() > 0)
 		SelectAreaBoundary(sel, sel.begin<Volume>(), sel.end<Volume>());
@@ -195,9 +195,9 @@ inline void SelectSelectionBoundary(MeshObject* obj)
 		SelectAreaBoundary(sel, sel.begin<Face>(), sel.end<Face>());
 }
 
-inline void CloseSelection(MeshObject* obj)
+inline void CloseSelection(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
 	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
@@ -206,58 +206,58 @@ inline void CloseSelection(MeshObject* obj)
 
 ////////////////////////////////////////////////////////////////////////////////
 //	VERTICES
-inline void SelectBoundaryVertices(MeshObject* obj)
+inline void SelectBoundaryVertices(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	ug::SelectBoundaryElements(sel, grid.begin<Vertex>(), grid.end<Vertex>());
 }
 
-inline void SelectInnerVertices(MeshObject* obj)
+inline void SelectInnerVertices(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectInnerElements(sel, grid.begin<Vertex>(), grid.end<Vertex>());
 }
 
-inline void SelectAssociatedVertices(MeshObject* obj)
+inline void SelectAssociatedVertices(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
 	SelectAssociatedVertices(sel, sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedVertices(sel, sel.begin<Volume>(), sel.end<Volume>());
 }
 
-inline void SelectAllVertices(MeshObject* obj)
+inline void SelectAllVertices(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	sel.select(grid.vertices_begin(), grid.vertices_end());
 }
 
-inline void DeselectAllVertices(MeshObject* obj)
+inline void DeselectAllVertices(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	sel.deselect(sel.vertices_begin(), sel.vertices_end());
 }
 
-inline void SelectMarkedVertices(MeshObject* obj)
+inline void SelectMarkedVertices(Mesh* obj)
 {
-	obj->get_selector().select(
-		obj->get_crease_handler().begin<Vertex>(REM_FIXED),
-		obj->get_crease_handler().end<Vertex>(REM_FIXED));
+	obj->selector().select(
+		obj->crease_handler().begin<Vertex>(REM_FIXED),
+		obj->crease_handler().end<Vertex>(REM_FIXED));
 }
 
-inline bool SelectVertexByIndex(MeshObject* obj, int index)
+inline bool SelectVertexByIndex(Mesh* obj, int index)
 {
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 	int counter = 0;
 
 	for(VertexIterator iter = grid.begin<Vertex>();
 		iter != grid.end<Vertex>(); ++iter, ++counter)
 	{
 		if(counter == index){
-			obj->get_selector().select(*iter);
+			obj->selector().select(*iter);
 			return true;
 		}
 	}
@@ -285,10 +285,10 @@ inline size_t SelectUnconnectedVerticesHelper(Grid& grid, Selector& sel)
 	return numUnconnected;
 }
 
-inline size_t SelectUnconnectedVertices(MeshObject* obj, bool edgeCons, bool faceCons, bool volCons)
+inline size_t SelectUnconnectedVertices(Mesh* obj, bool edgeCons, bool faceCons, bool volCons)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	size_t numUnconnected = 0;
 	if(edgeCons)
@@ -302,24 +302,24 @@ inline size_t SelectUnconnectedVertices(MeshObject* obj, bool edgeCons, bool fac
 
 ////////////////////////////////////////////////////////////////////////////////
 //	EDGES
-inline void SelectBoundaryEdges(MeshObject* obj)
+inline void SelectBoundaryEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectBoundaryElements(sel, grid.begin<Edge>(), grid.end<Edge>());
 }
 
-inline void SelectInnerEdges(MeshObject* obj)
+inline void SelectInnerEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectInnerElements(sel, grid.begin<Edge>(), grid.end<Edge>());
 }
 
-inline void SelectNonManifoldEdges(MeshObject* obj)
+inline void SelectNonManifoldEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 //	iterate over all edges and check how many adjacent faces each has.
 //	if there are more than 2, the edge will be selected
@@ -331,17 +331,17 @@ inline void SelectNonManifoldEdges(MeshObject* obj)
 	}
 }
 
-inline void SelectSmoothEdgePath(MeshObject* obj, number maxDeviation, bool stopAtSelectedVrts)
+inline void SelectSmoothEdgePath(Mesh* obj, number maxDeviation, bool stopAtSelectedVrts)
 {
-	SelectSmoothEdgePath(obj->get_selector(), maxDeviation, stopAtSelectedVrts);
+	SelectSmoothEdgePath(obj->selector(), maxDeviation, stopAtSelectedVrts);
 }
 
-inline void SelectShortEdges(MeshObject* obj, number maxLength)
+inline void SelectShortEdges(Mesh* obj, number maxLength)
 {
 	number maxLengthSq = maxLength * maxLength;
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	for(EdgeIterator iter = grid.begin<Edge>();
 		iter != grid.end<Edge>(); ++iter)
@@ -352,12 +352,12 @@ inline void SelectShortEdges(MeshObject* obj, number maxLength)
 	}
 }
 
-inline void SelectLongEdges(MeshObject* obj, number minLength)
+inline void SelectLongEdges(Mesh* obj, number minLength)
 {
 	number minLengthSq = minLength * minLength;
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	for(EdgeIterator iter = grid.begin<Edge>();
 		iter != grid.end<Edge>(); ++iter)
@@ -368,18 +368,18 @@ inline void SelectLongEdges(MeshObject* obj, number minLength)
 	}
 }
 
-inline void SelectCreaseEdges(MeshObject* obj, number minAngle)
+inline void SelectCreaseEdges(Mesh* obj, number minAngle)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectCreaseEdges(sel, grid.begin<Edge>(), grid.end<Edge>(),
 					  minAngle, obj->position_attachment());
 }
 
-inline void SelectLinkedBoundaryEdges(MeshObject* obj, bool stopAtSelectedVrts)
+inline void SelectLinkedBoundaryEdges(Mesh* obj, bool stopAtSelectedVrts)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	if(stopAtSelectedVrts)
 		SelectLinkedElements<Edge>(sel, IsOnBoundary(grid), IsNotSelected(sel));
@@ -387,75 +387,75 @@ inline void SelectLinkedBoundaryEdges(MeshObject* obj, bool stopAtSelectedVrts)
 		SelectLinkedElements<Edge>(sel, IsOnBoundary(grid));
 }
 
-inline void SelectAssociatedEdges(MeshObject* obj)
+inline void SelectAssociatedEdges(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectAssociatedEdges(sel,sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedEdges(sel, sel.begin<Volume>(), sel.end<Volume>());
 }
 
-inline void SelectAllEdges(MeshObject* obj)
+inline void SelectAllEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	sel.select(grid.edges_begin(), grid.edges_end());
 }
 
-inline void DeselectAllEdges(MeshObject* obj)
+inline void DeselectAllEdges(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	sel.deselect(sel.edges_begin(), sel.edges_end());
 }
 
-inline void SelectMarkedEdges(MeshObject* obj)
+inline void SelectMarkedEdges(Mesh* obj)
 {
-	obj->get_selector().select(
-		obj->get_crease_handler().begin<Edge>(REM_CREASE),
-		obj->get_crease_handler().end<Edge>(REM_CREASE));
+	obj->selector().select(
+		obj->crease_handler().begin<Edge>(REM_CREASE),
+		obj->crease_handler().end<Edge>(REM_CREASE));
 }
 
-inline bool SelectEdgeByIndex(MeshObject* obj, int index)
+inline bool SelectEdgeByIndex(Mesh* obj, int index)
 {
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 	int counter = 0;
 
 	for(EdgeIterator iter = grid.begin<Edge>();
 		iter != grid.end<Edge>(); ++iter, ++counter)
 	{
 		if(counter == index){
-			obj->get_selector().select(*iter);
+			obj->selector().select(*iter);
 			return true;
 		}
 	}
 	return false;
 }
 
-inline void EdgeSelectionFill(MeshObject* obj)
+inline void EdgeSelectionFill(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectionFill<Edge>(sel, IsSelected(sel));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
-inline void SelectBoundaryFaces(MeshObject* obj)
+inline void SelectBoundaryFaces(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectBoundaryElements(sel, grid.begin<Face>(), grid.end<Face>());
 }
 
-inline void SelectInnerFaces(MeshObject* obj)
+inline void SelectInnerFaces(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	SelectInnerElements(sel, grid.begin<Face>(), grid.end<Face>());
 }
 
-inline void SelectLinkedManifoldFaces(MeshObject* obj)
+inline void SelectLinkedManifoldFaces(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 //	select associated faces of selected elements
 	SelectAssociatedFaces(sel, sel.vertices_begin(), sel.vertices_end());
 	SelectAssociatedFaces(sel, sel.edges_begin(), sel.edges_end());
@@ -490,10 +490,10 @@ inline void SelectLinkedManifoldFaces(MeshObject* obj)
 	}
 }
 
-inline void SelectLinkedBoundaryFaces(MeshObject* obj, bool stopAtSelectedEdges)
+inline void SelectLinkedBoundaryFaces(Mesh* obj, bool stopAtSelectedEdges)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	if(stopAtSelectedEdges)
 		SelectLinkedElements<Face>(sel, IsOnBoundary(grid), IsNotSelected(sel));
@@ -501,12 +501,12 @@ inline void SelectLinkedBoundaryFaces(MeshObject* obj, bool stopAtSelectedEdges)
 		SelectLinkedElements<Face>(sel, IsOnBoundary(grid));
 }
 
-inline void SelectDegenerateFaces(MeshObject* obj, number maxHeight)
+inline void SelectDegenerateFaces(Mesh* obj, number maxHeight)
 {
 	number maxHeightSq = maxHeight * maxHeight;
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	for(FaceIterator iter = grid.begin<Face>();
 		iter != grid.end<Face>(); ++iter)
@@ -540,10 +540,10 @@ inline void SelectDegenerateFaces(MeshObject* obj, number maxHeight)
 	}
 }
 
-inline void SelectLinkedFlatFaces(MeshObject* obj, number maxDeviationAngle, bool traverseFlipped,
+inline void SelectLinkedFlatFaces(Mesh* obj, number maxDeviationAngle, bool traverseFlipped,
 						   bool traverseDegeneratedFaces, bool stopAtSelectedEdges)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	if(traverseDegeneratedFaces)
 		ug::SelectLinkedFlatAndDegeneratedFaces(sel, maxDeviationAngle,
 												traverseFlipped,
@@ -553,12 +553,12 @@ inline void SelectLinkedFlatFaces(MeshObject* obj, number maxDeviationAngle, boo
 								  stopAtSelectedEdges);
 }
 
-inline void SelectIntersectingTriangles(MeshObject* obj)
+inline void SelectIntersectingTriangles(Mesh* obj)
 {
 	using namespace ug::node_tree;
 
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 //	make sure that triangles are present.
 	if(grid.num<Triangle>() == 0){
@@ -583,7 +583,7 @@ inline void SelectIntersectingTriangles(MeshObject* obj)
 	}
 
 //	access the position attachment of the grid
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	we'll use a traverser to find the intersections.
 	Traverser_IntersectFaces intersectionTraverser;
@@ -621,46 +621,46 @@ inline void SelectIntersectingTriangles(MeshObject* obj)
 
 }
 
-inline void SelectAssociatedFaces(MeshObject* obj)
+inline void SelectAssociatedFaces(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
 }
 
-inline void SelectAllFaces(MeshObject* obj)
+inline void SelectAllFaces(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	sel.select(grid.faces_begin(), grid.faces_end());
 }
 
-inline void DeselectAllFaces(MeshObject* obj)
+inline void DeselectAllFaces(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	sel.deselect(sel.faces_begin(), sel.faces_end());
 }
 
-inline bool SelectFaceByIndex(MeshObject* obj, int index)
+inline bool SelectFaceByIndex(Mesh* obj, int index)
 {
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 	int counter = 0;
 
 	for(FaceIterator iter = grid.begin<Face>();
 		iter != grid.end<Face>(); ++iter, ++counter)
 	{
 		if(counter == index){
-			obj->get_selector().select(*iter);
+			obj->selector().select(*iter);
 			return true;
 		}
 	}
 	return false;
 }
 
-inline void SelectFacesByNormal(MeshObject* obj, const vector3& refNormal, number maxDeviationAngle)
+inline void SelectFacesByNormal(Mesh* obj, const vector3& refNormal, number maxDeviationAngle)
 {
 	number dotThreshold = cos(deg_to_rad(maxDeviationAngle));
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
 
 	vector3 n;
@@ -674,16 +674,16 @@ inline void SelectFacesByNormal(MeshObject* obj, const vector3& refNormal, numbe
 	}
 }
 
-inline void FaceSelectionFill(MeshObject* obj)
+inline void FaceSelectionFill(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectionFill<Face>(sel, IsSelected(sel));
 }
 
-inline size_t SelectBentQuadrilaterals(MeshObject* obj, number dotThreshold)
+inline size_t SelectBentQuadrilaterals(Mesh* obj, number dotThreshold)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
 
 //	iterate over all quadrilaterals and search for bent ones
@@ -714,23 +714,23 @@ inline size_t SelectBentQuadrilaterals(MeshObject* obj, number dotThreshold)
 
 ////////////////////////////////////////////////////////////////////////////////
 //	VOLUMES
-inline void SelectAllVolumes(MeshObject* obj)
+inline void SelectAllVolumes(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	sel.select(grid.volumes_begin(), grid.volumes_end());
 }
 
-inline void DeselectAllVolumes(MeshObject* obj)
+inline void DeselectAllVolumes(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	sel.deselect(sel.volumes_begin(), sel.volumes_end());
 }
 
-inline int SelectUnorientableVolumes(MeshObject* obj)
+inline int SelectUnorientableVolumes(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 
 	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
 
@@ -759,7 +759,7 @@ inline int SelectUnorientableVolumes(MeshObject* obj)
 	return numUnorientable;
 }
 
-inline int SelectSlivers(MeshObject* obj, number thresholdRatio)
+inline int SelectSlivers(Mesh* obj, number thresholdRatio)
 {
 	std::vector<Tetrahedron*> slivers;
 	Grid& g = obj->grid();
@@ -769,25 +769,25 @@ inline int SelectSlivers(MeshObject* obj, number thresholdRatio)
 	return static_cast<int>(slivers.size());
 }
 
-inline bool SelectVolumeByIndex(MeshObject* obj, int index)
+inline bool SelectVolumeByIndex(Mesh* obj, int index)
 {
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 	int counter = 0;
 
 	for(VolumeIterator iter = grid.begin<Volume>();
 		iter != grid.end<Volume>(); ++iter, ++counter)
 	{
 		if(counter == index){
-			obj->get_selector().select(*iter);
+			obj->selector().select(*iter);
 			return true;
 		}
 	}
 	return false;
 }
 
-inline void VolumeSelectionFill(MeshObject* obj)
+inline void VolumeSelectionFill(Mesh* obj)
 {
-	Selector& sel = obj->get_selector();
+	Selector& sel = obj->selector();
 	SelectionFill<Volume>(sel, IsSelected(sel));
 }
 
@@ -799,7 +799,7 @@ inline void VolumeSelectionFill(MeshObject* obj)
 // 					int subsetIndex, number angle,
 // 					TAPosition& aPos);
 
-inline void MarkCornersOfMarkedEdges(MeshObject* obj, number angle)
+inline void MarkCornersOfMarkedEdges(Mesh* obj, number angle)
 {
 	Selector& sel = obj->selector();
 	MarkCorners(obj->grid(), obj->crease_handler(),
@@ -809,28 +809,28 @@ inline void MarkCornersOfMarkedEdges(MeshObject* obj, number angle)
 }
 
 
-inline void MarkSelection(MeshObject* obj)
+inline void MarkSelection(Mesh* obj)
 {
-	obj->get_crease_handler().assign_subset(
-		obj->get_selector().begin<Vertex>(),
-		obj->get_selector().end<Vertex>(),
+	obj->crease_handler().assign_subset(
+		obj->selector().begin<Vertex>(),
+		obj->selector().end<Vertex>(),
 		ug::REM_FIXED);
-	obj->get_crease_handler().assign_subset(
-		obj->get_selector().begin<Edge>(),
-		obj->get_selector().end<Edge>(),
+	obj->crease_handler().assign_subset(
+		obj->selector().begin<Edge>(),
+		obj->selector().end<Edge>(),
 		ug::REM_CREASE);
 }
 
-inline void UnmarkSelection(MeshObject* obj)
+inline void UnmarkSelection(Mesh* obj)
 {
-	obj->get_crease_handler().assign_subset(
-		obj->get_selector().begin<Vertex>(),
-		obj->get_selector().end<Vertex>(),
+	obj->crease_handler().assign_subset(
+		obj->selector().begin<Vertex>(),
+		obj->selector().end<Vertex>(),
 		ug::REM_NONE);
 
-	obj->get_crease_handler().assign_subset(
-		obj->get_selector().begin<Edge>(),
-		obj->get_selector().end<Edge>(),
+	obj->crease_handler().assign_subset(
+		obj->selector().begin<Edge>(),
+		obj->selector().end<Edge>(),
 		ug::REM_NONE);
 }
 

@@ -6,7 +6,7 @@
 #define __H__PROMESH__coordinate_transform_tools__
 
 #include <vector>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/subdivision/subdivision_loop.h"
 #include "lib_grid/algorithms/selection_util.h"
 #include "lib_grid/algorithms/smoothing/manifold_smoothing.h"
@@ -15,45 +15,45 @@
 namespace ug{
 namespace promesh{
 
-inline bool GetSelectionCenter(MeshObject* obj, vector3& centerOut)
+inline bool GetSelectionCenter(Mesh* obj, vector3& centerOut)
 {
-	return CalculateCenter(centerOut, obj->get_selector(), obj->position_accessor());
+	return CalculateCenter(centerOut, obj->selector(), obj->position_accessor());
 }
 
 
-inline bool SetSelectionCenter(MeshObject* obj, const vector3& center)
+inline bool SetSelectionCenter(Mesh* obj, const vector3& center)
 {
 	vector3 oldCenter;
 	if(GetSelectionCenter(obj, oldCenter)){
 		vector3 d;
 		VecSubtract(d, center, oldCenter);
-		TranslateSelection(obj->get_selector(), d, obj->position_accessor());
+		TranslateSelection(obj->selector(), d, obj->position_accessor());
 		return true;
 	}
 	return false;
 }
 
 
-inline void Move(MeshObject* obj, const vector3& offset)
+inline void Move(Mesh* obj, const vector3& offset)
 {
-	TranslateSelection(obj->get_selector(), offset, obj->position_accessor());
+	TranslateSelection(obj->selector(), offset, obj->position_accessor());
 }
 
-inline void MoveMeshTo(MeshObject* obj, const vector3& newPos)
+inline void MoveMeshTo(Mesh* obj, const vector3& newPos)
 {
 	vector3 offset;
 	VecSubtract(offset, newPos, obj->pivot());
-	MoveVertices(obj->get_grid().begin<Vertex>(), obj->get_grid().end<Vertex>(),
+	MoveVertices(obj->grid().begin<Vertex>(), obj->grid().end<Vertex>(),
 				 obj->position_accessor(), offset);
 	obj->set_pivot(newPos);
 }
 
-inline void MoveAlongNormal(MeshObject* obj, number offset, bool usePrecalculatedNormals)
+inline void MoveAlongNormal(Mesh* obj, number offset, bool usePrecalculatedNormals)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	MeshObject::normal_accessor_t& aaNorm = obj->normal_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::normal_accessor_t& aaNorm = obj->normal_accessor();
 
 	Grid::face_traits::secure_container faces;
 	std::vector<Vertex*> vrts;
@@ -83,12 +83,12 @@ inline void MoveAlongNormal(MeshObject* obj, number offset, bool usePrecalculate
 	}
 }
 
-inline void ScaleAroundCenter(MeshObject* obj, const vector3& scale)
+inline void ScaleAroundCenter(Mesh* obj, const vector3& scale)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
 	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
@@ -102,12 +102,12 @@ inline void ScaleAroundCenter(MeshObject* obj, const vector3& scale)
 	}
 }
 
-inline void ScaleAroundPivot(MeshObject* obj, const vector3& scale)
+inline void ScaleAroundPivot(Mesh* obj, const vector3& scale)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = obj->pivot();
 
 	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
@@ -122,12 +122,12 @@ inline void ScaleAroundPivot(MeshObject* obj, const vector3& scale)
 }
 
 
-inline void RotateAroundCenter(MeshObject* obj, const vector3& rot)
+inline void RotateAroundCenter(Mesh* obj, const vector3& rot)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
 //	todo: combine rotation and transform matrix and use ugs build in methods.
@@ -145,12 +145,12 @@ inline void RotateAroundCenter(MeshObject* obj, const vector3& rot)
 }
 
 
-inline void RotateAroundPivot(MeshObject* obj, const vector3& rot)
+inline void RotateAroundPivot(Mesh* obj, const vector3& rot)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = obj->pivot();
 
 //	todo: combine rotation and transform matrix and use ugs build in methods.
@@ -168,13 +168,13 @@ inline void RotateAroundPivot(MeshObject* obj, const vector3& rot)
 }
 
 
-inline void ConeTransform(MeshObject* obj, const vector3& base, const vector3& axis,
+inline void ConeTransform(Mesh* obj, const vector3& base, const vector3& axis,
 					number scaleAtTip)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
@@ -198,76 +198,76 @@ inline void ConeTransform(MeshObject* obj, const vector3& base, const vector3& a
 }
 
 
-inline void LaplacianSmooth(MeshObject* obj, number alpha, int numIterations)
+inline void LaplacianSmooth(Mesh* obj, number alpha, int numIterations)
 {
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 
-	ug::LaplacianSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
+	ug::LaplacianSmooth(obj->grid(), vrts.begin(), vrts.end(),
 						obj->position_accessor(), alpha, numIterations);
 }
 
-inline void WeightedEdgeSmooth(MeshObject* obj, number alpha, int numIterations)
+inline void WeightedEdgeSmooth(Mesh* obj, number alpha, int numIterations)
 {
 	Selector& sel = obj->selector();
-	ug::WeightedEdgeSmooth(obj->get_grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+	ug::WeightedEdgeSmooth(obj->grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
 					   obj->position_accessor(), alpha, numIterations, IsSelected(sel));
 }
 
-inline void WeightedFaceSmooth(MeshObject* obj, number alpha, int numIterations)
+inline void WeightedFaceSmooth(Mesh* obj, number alpha, int numIterations)
 {
 	Selector& sel = obj->selector();
-	ug::WeightedFaceSmooth(obj->get_grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+	ug::WeightedFaceSmooth(obj->grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
 					   obj->position_accessor(), alpha, numIterations, IsSelected(sel));
 }
 
-inline void TangentialSmooth(MeshObject* obj, number alpha, int numIterations)
+inline void TangentialSmooth(Mesh* obj, number alpha, int numIterations)
 {
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 
-	ug::TangentialSmooth(obj->get_grid(), vrts.begin(), vrts.end(),
+	ug::TangentialSmooth(obj->grid(), vrts.begin(), vrts.end(),
 						 obj->position_accessor(), alpha, numIterations);
 }
 
-inline void ProjectToLimitPLoop(MeshObject* obj)
+inline void ProjectToLimitPLoop(Mesh* obj)
 {
-	ProjectToLimitPLoop(obj->get_grid(), obj->position_attachment(),
+	ProjectToLimitPLoop(obj->grid(), obj->position_attachment(),
 						obj->position_attachment());
 }
 
 
-inline void ProjectToLimitSmoothBoundary(MeshObject* obj)
+inline void ProjectToLimitSmoothBoundary(Mesh* obj)
 {
-	ProjectToLimitSubdivBoundary(obj->get_grid(), obj->position_attachment(),
+	ProjectToLimitSubdivBoundary(obj->grid(), obj->position_attachment(),
 								 obj->position_attachment());
 }
 
 
-inline void SetPivot(MeshObject* obj, const vector3& pos)
+inline void SetPivot(Mesh* obj, const vector3& pos)
 {
 	obj->set_pivot(pos);
 }
 
 
-inline void SetPivotToSelectionCenter(MeshObject* obj)
+inline void SetPivotToSelectionCenter(Mesh* obj)
 {
 	vector3 center;
-	CalculateCenter(center, obj->get_selector(), obj->position_accessor());
+	CalculateCenter(center, obj->selector(), obj->position_accessor());
 	obj->set_pivot(center);
 }
 
-inline void SetPivotToMeshCenter(MeshObject* obj)
+inline void SetPivotToMeshCenter(Mesh* obj)
 {
-	obj->set_pivot(CalculateCenter(obj->get_grid().begin<Vertex>(),
-								   obj->get_grid().end<Vertex>(),
+	obj->set_pivot(CalculateCenter(obj->grid().begin<Vertex>(),
+								   obj->grid().end<Vertex>(),
 								   obj->position_accessor()));
 }
 
-inline void FlattenBentQuadrilaterals(MeshObject* obj, number stepSize, int numIterations)
+inline void FlattenBentQuadrilaterals(Mesh* obj, number stepSize, int numIterations)
 {
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	for(int i = 0; i < numIterations; ++i){
 	//	iterate over all quadrilaterals
@@ -297,12 +297,12 @@ inline void FlattenBentQuadrilaterals(MeshObject* obj, number stepSize, int numI
 }
 
 
-inline void ProjectToPlane(MeshObject* obj, const vector3& planeCenter, const vector3& planeNormal)
+inline void ProjectToPlane(Mesh* obj, const vector3& planeCenter, const vector3& planeNormal)
 {
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
-	CollectVerticesTouchingSelection(vrts, obj->get_selector());
+	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{

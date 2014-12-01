@@ -6,7 +6,7 @@
 #define __H__UG__remeshing_tools__
 
 #include <vector>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
 #include "lib_grid/algorithms/extrusion/extrusion.h"
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
@@ -18,23 +18,23 @@
 namespace ug{
 namespace promesh{
 
-inline void ConvertToTriangles(MeshObject* obj)
+inline void ConvertToTriangles(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	Triangulate(grid, sel.begin<Quadrilateral>(),
 				sel.end<Quadrilateral>(), &aaPos);
 }
 
-inline void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const number factor)
+inline void ExtrudeFacesWithTets(Mesh* obj, int fromSi, int toSi, const number factor)
 {
 	using namespace std;
-	Grid& grid = obj->get_grid();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sel.clear();
 	bool autoselEnabled = sel.autoselection_enabled();
@@ -82,7 +82,7 @@ inline void ExtrudeFacesWithTets(MeshObject* obj, int fromSi, int toSi, const nu
 	// remove doubles
 }
 
-inline void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngle, int si)
+inline void TriangleFill(Mesh* obj, bool qualityGeneration, number minAngle, int si)
 {
 	if(minAngle < 0)
 		minAngle = 0;
@@ -91,9 +91,9 @@ inline void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngl
 				"algorithm may not terminate for minAngle > 30.\n")
 	}
 
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 
 //	if no edges are selected, nothing can be triangulated
 	if(sel.num<Edge>() < 3){
@@ -105,7 +105,7 @@ inline void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngl
 //	in the current selection.
 	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
 
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 	AInt aInt;
 	grid.attach_to_vertices(aInt);
 
@@ -177,23 +177,23 @@ inline void TriangleFill(MeshObject* obj, bool qualityGeneration, number minAngl
 	sel.enable_autoselection(autoselEnabled);
 }
 
-inline void Retriangulate(MeshObject* obj, number minAngle)
+inline void Retriangulate(Mesh* obj, number minAngle)
 {
-	Grid& g = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& creases = obj->get_crease_handler();
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& creases = obj->crease_handler();
 
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	QualityGridGeneration(g, sel.begin<Triangle>(), sel.end<Triangle>(),
 						  aaPos, minAngle, IsNotInSubset(creases, -1));
 }
 
-inline void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeLen,
+inline void AdjustEdgeLength(Mesh* obj, number minEdgeLen, number maxEdgeLen,
 					  int numIterations, bool adaptive, bool automarkBoundaries)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& shCrease = obj->get_crease_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& shCrease = obj->crease_handler();
 
 	if(automarkBoundaries){
 		for(EdgeIterator iter = grid.begin<Edge>();
@@ -208,12 +208,12 @@ inline void AdjustEdgeLength(MeshObject* obj, number minEdgeLen, number maxEdgeL
 						 numIterations, true, adaptive);
 }
 
-inline void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number threshold)
+inline void AdaptSurfaceToCylinder(Mesh* obj, number radius, number threshold)
 {
 	using namespace std;
-	Grid& g = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	store all source-vertices in a list
 	vector<Vertex*> vrts;
@@ -234,11 +234,11 @@ inline void AdaptSurfaceToCylinder(MeshObject* obj, number radius, number thresh
 	}
 }
 
-inline void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, bool preserveAll,
+inline void Tetrahedralize(Mesh* obj, number quality, bool preserveOuter, bool preserveAll,
 					bool separateVolumes, bool appendSubsetsAtEnd, int verbosity)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 	UG_LOG("tetrahedralizing using 'tetgen' by Hang Si... ");
 	ug::Tetrahedralize(grid, sh, quality, preserveOuter, preserveAll,
 					   obj->position_attachment(), verbosity);
@@ -260,10 +260,10 @@ inline void Tetrahedralize(MeshObject* obj, number quality, bool preserveOuter, 
 		sh.subset_info(i).name = "tetrahedrons";
 }
 
-inline void AssignVolumeConstraints(MeshObject* obj, number volConstraint)
+inline void AssignVolumeConstraints(Mesh* obj, number volConstraint)
 {
-	Selector& sel = obj->get_selector();
-	MeshObject::volume_constraint_accessor_t& aaVolCon = obj->volume_constraint_accessor();
+	Selector& sel = obj->selector();
+	Mesh::volume_constraint_accessor_t& aaVolCon = obj->volume_constraint_accessor();
 
 	for(Selector::traits<Volume>::iterator iter = sel.begin<Volume>();
 		iter != sel.end<Volume>(); ++iter)
@@ -272,17 +272,17 @@ inline void AssignVolumeConstraints(MeshObject* obj, number volConstraint)
 	}
 }
 
-inline void ClearVolumeConstraints(MeshObject* obj)
+inline void ClearVolumeConstraints(Mesh* obj)
 {
 	obj->clear_volume_constraints();
 }
 
-inline void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter,
+inline void Retetrahedralize(Mesh* obj, number quality, bool preserveOuter,
 					  bool preserveAll, bool applyVolumeConstraint, int verbosity)
 {
 	UG_LOG("retetrahedralizing using 'tetgen' by Hang Si... ");
-	ug::Retetrahedralize(obj->get_grid(),
-					obj->get_subset_handler(),
+	ug::Retetrahedralize(obj->grid(),
+					obj->subset_handler(),
 					obj->volume_constraint_attachment(),
 					quality,
 					preserveOuter, preserveAll,
@@ -292,23 +292,23 @@ inline void Retetrahedralize(MeshObject* obj, number quality, bool preserveOuter
 	UG_LOG("done.\n");
 }
 
-inline void Duplicate(MeshObject* obj, const vector3& offset, bool deselectOld, bool selectNew)
+inline void Duplicate(Mesh* obj, const vector3& offset, bool deselectOld, bool selectNew)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
 	ug::Duplicate(grid, sel, offset, obj->position_attachment(), deselectOld, selectNew);
 }
 
-inline void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
+inline void Extrude(Mesh* obj, const vector3& totalDir, int numSteps,
 			 bool createFaces, bool createVolumes)
 {
 	using namespace std;
 	vector3 stepDir;
 	VecScale(stepDir, totalDir, 1./(float)numSteps);
 
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
@@ -344,13 +344,13 @@ inline void Extrude(MeshObject* obj, const vector3& totalDir, int numSteps,
 	sel.select(faces.begin(), faces.end());
 }
 
-inline void ExtrudeCylinders(MeshObject* obj, number height, number radius, number snapThreshold)
+inline void ExtrudeCylinders(Mesh* obj, number height, number radius, number snapThreshold)
 {
 	using namespace std;
-	Grid& g = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 //	store all source-vertices in a list
 	vector<Vertex*> vrts;
@@ -379,13 +379,13 @@ inline void ExtrudeCylinders(MeshObject* obj, number height, number radius, numb
  * It should thus be called for 'Volumes' first, then for 'Faces' and
  * finally for 'Edges'.*/
 template <class TElemIter>
-inline void CreateShrinkElements(MeshObject* obj, number scale,
+inline void CreateShrinkElements(Mesh* obj, number scale,
 						  TElemIter elemsBegin, TElemIter elemsEnd)
 {
 	using namespace std;
 	typedef typename TElemIter::value_type elem_ptr_t;
-	Grid& g = obj->get_grid();
-	MeshObject::position_accessor_t aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
 
 	vector<elem_ptr_t>	elems(elemsBegin, elemsEnd);
 
@@ -412,11 +412,11 @@ inline void CreateShrinkElements(MeshObject* obj, number scale,
 /**	For each element in obj this method creates a new element with separate
  * corners. The new element will be scaled by 'scale'.
  * All original elements will be deleted before the method terminates.*/
-inline void CreateShrinkGeometry(MeshObject* obj, number scale)
+inline void CreateShrinkGeometry(Mesh* obj, number scale)
 {
 	using namespace std;
 
-	Grid& g = obj->get_grid();
+	Grid& g = obj->grid();
 	vector<Volume*>	vols(g.begin<Volume>(), g.end<Volume>());
 	vector<Face*>	faces(g.begin<Face>(), g.end<Face>());
 	vector<Edge*>	edges(g.begin<Edge>(), g.end<Edge>());
@@ -426,7 +426,7 @@ inline void CreateShrinkGeometry(MeshObject* obj, number scale)
 	CreateShrinkElements(obj, scale, edges.begin(), edges.end());
 }
 
-inline void ReplaceLowValenceVertices(MeshObject* obj, number maxSquaredHeightToBaseAreaRatio)
+inline void ReplaceLowValenceVertices(Mesh* obj, number maxSquaredHeightToBaseAreaRatio)
 {
 	Selector& sel = obj->selector();
 	ug::ReplaceLowValenceVertices(obj->grid(), sel.begin<Vertex>(), sel.end<Vertex>(),

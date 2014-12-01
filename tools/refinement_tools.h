@@ -5,7 +5,7 @@
 #ifndef __H__UG__refinement_tools__
 #define __H__UG__refinement_tools__
 
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/refinement/regular_refinement.h"
 #include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
 #include "lib_grid/algorithms/refinement/refinement_projectors/loop_subdivision_projectors.h"
@@ -14,11 +14,11 @@
 namespace ug{
 namespace promesh{
 
-inline void Refine(MeshObject* obj, bool strictSubsetInheritance)
+inline void Refine(Mesh* obj, bool strictSubsetInheritance)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 	bool siEnabled = sh.strict_inheritance_enabled();
 	sh.enable_strict_inheritance(strictSubsetInheritance);
 
@@ -27,11 +27,11 @@ inline void Refine(MeshObject* obj, bool strictSubsetInheritance)
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-inline void HangingNodeRefine(MeshObject* obj, bool strictSubsetInheritance, bool anisotropic)
+inline void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 	bool siEnabled = sh.strict_inheritance_enabled();
 
 	sh.enable_strict_inheritance(strictSubsetInheritance);
@@ -56,11 +56,11 @@ inline void HangingNodeRefine(MeshObject* obj, bool strictSubsetInheritance, boo
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-inline void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
+inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 	bool siEnabled = sh.strict_inheritance_enabled();
 
 	sh.enable_strict_inheritance(strictSubsetInheritance);
@@ -77,7 +77,7 @@ inline void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	SubdivisionLoopProjector<APosition>
 		refCallbackLoop(grid, aPosition, aTmpPos);
 
-	refCallbackLoop.consider_as_crease_edge(IsInSubset(obj->get_crease_handler(), REM_CREASE));
+	refCallbackLoop.consider_as_crease_edge(IsInSubset(obj->crease_handler(), REM_CREASE));
 	Refine(grid, sel, &refCallbackLoop);
 
 //	copy position data of selected vertices
@@ -91,11 +91,11 @@ inline void RefineSmooth(MeshObject* obj, bool strictSubsetInheritance)
 	sh.enable_strict_inheritance(siEnabled);
 }
 
-inline void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance)
+inline void RefineSmoothBoundary2D(Mesh* obj, bool strictSubsetInheritance)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 	bool siEnabled = sh.strict_inheritance_enabled();
 
 	sh.enable_strict_inheritance(strictSubsetInheritance);
@@ -119,9 +119,9 @@ inline void RefineSmoothBoundary2D(MeshObject* obj, bool strictSubsetInheritance
 	grid.detach_from_vertices(aTmpPos);
 }
 
-inline void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac)
+inline void CreateFractal(Mesh* obj, size_t numIterations, number scaleFac)
 {
-	Grid& grid = obj->get_grid();
+	Grid& grid = obj->grid();
 
 //	we'll use a hanging-node refiner
 	FractalProjector refCallback(grid, scaleFac);
@@ -159,11 +159,11 @@ inline void CreateFractal(MeshObject* obj, size_t numIterations, number scaleFac
 	}
 }
 
-inline void InsertCenter(MeshObject* obj, bool strictSubsetInheritance)
+inline void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
 {
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 	bool siEnabled = sh.strict_inheritance_enabled();
 
 	sh.enable_strict_inheritance(strictSubsetInheritance);

@@ -7,17 +7,17 @@
 
 #include <vector>
 #include <queue>
-#include "../mesh_object.h"
+#include "../mesh.h"
 #include "lib_grid/algorithms/subset_util.h"
 #include "lib_grid/algorithms/grid_statistics.h"
 
 namespace ug{
 namespace promesh{
 
-inline void AssignSubset(MeshObject* obj, int newIndex)
+inline void AssignSubset(Mesh* obj, int newIndex)
 {
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	sh.assign_subset(sel.begin<Vertex>(),
 					 sel.end<Vertex>(), newIndex);
@@ -29,67 +29,67 @@ inline void AssignSubset(MeshObject* obj, int newIndex)
 					 sel.end<Volume>(), newIndex);
 }
 
-inline void SetSubsetName(MeshObject* obj, int si, const char* name)
+inline void SetSubsetName(Mesh* obj, int si, const char* name)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	sh.subset_info(si).name = name;
 }
 
-inline void AssignSubsetColors(MeshObject* obj)
+inline void AssignSubsetColors(Mesh* obj)
 {
-	AssignSubsetColors(obj->get_subset_handler());
+	AssignSubsetColors(obj->subset_handler());
 }
 
-inline void SeparateFacesByEdgeSubsets(MeshObject* obj)
+inline void SeparateFacesByEdgeSubsets(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 	SeparateSubsetsByLowerDimSubsets<Face>(grid, sh);
 }
 
-inline void SeparateFacesBySelectedEdges(MeshObject* obj)
+inline void SeparateFacesBySelectedEdges(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 	SeparateSubsetsByLowerDimSelection<Face>(grid, sh, sel);
 }
 
-inline void SeparateVolumesByFaceSubsets(MeshObject* obj)
+inline void SeparateVolumesByFaceSubsets(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 	SeparateSubsetsByLowerDimSubsets<Volume>(grid, sh);
 }
 
-inline void SeparateVolumesBySelectedFaces(MeshObject* obj)
+inline void SeparateVolumesBySelectedFaces(Mesh* obj)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
-	Selector& sel = obj->get_selector();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 	SeparateSubsetsByLowerDimSelection<Volume>(grid, sh, sel);
 }
 
-inline void SeparateIrregularManifoldSubsets(MeshObject* obj)
+inline void SeparateIrregularManifoldSubsets(Mesh* obj)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	for(int i = 0; i < sh.num_subsets(); ++i){
 		int firstFree = GetMaxSubsetIndex<Face>(sh) + 1;
 		SplitIrregularManifoldSubset(sh, i, firstFree);
 	}
 }
 
-inline void MoveSubset(MeshObject* obj, int oldIndex, int newIndex)
+inline void MoveSubset(Mesh* obj, int oldIndex, int newIndex)
 {
 	if(newIndex != oldIndex){
-		SubsetHandler& sh = obj->get_subset_handler();
+		SubsetHandler& sh = obj->subset_handler();
 		sh.move_subset(oldIndex, newIndex);
 	}
 }
 
-inline void SwapSubsets(MeshObject* obj, int oldIndex, int newIndex)
+inline void SwapSubsets(Mesh* obj, int oldIndex, int newIndex)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	if(newIndex != oldIndex && newIndex < sh.num_subsets()
 		&& oldIndex < sh.num_subsets())
 	{
@@ -97,16 +97,16 @@ inline void SwapSubsets(MeshObject* obj, int oldIndex, int newIndex)
 	}
 }
 
-inline void JoinSubsets(MeshObject* obj, int target, int si1, int si2, bool eraseUnused)
+inline void JoinSubsets(Mesh* obj, int target, int si1, int si2, bool eraseUnused)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	sh.join_subsets(target, si1, si2, eraseUnused);
 }
 
-inline void EraseSubset(MeshObject* obj, int si, bool eraseGeometry)
+inline void EraseSubset(Mesh* obj, int si, bool eraseGeometry)
 {
-	Grid& grid = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
 
 	if(si < sh.num_subsets())
 	{
@@ -120,9 +120,9 @@ inline void EraseSubset(MeshObject* obj, int si, bool eraseGeometry)
 	}
 }
 
-inline void EraseEmptySubsets(MeshObject* obj)
+inline void EraseEmptySubsets(Mesh* obj)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	int i = 0;
 	while(i < sh.num_subsets()){
 		if(sh.empty(i))
@@ -132,29 +132,29 @@ inline void EraseEmptySubsets(MeshObject* obj)
 	}
 }
 
-inline void AdjustSubsetsForUG3(MeshObject* obj, bool keepIntfSubs)
+inline void AdjustSubsetsForUG3(Mesh* obj, bool keepIntfSubs)
 {
-	AdjustSubsetsForLgmNg(obj->get_grid(), obj->get_subset_handler(), keepIntfSubs);
+	AdjustSubsetsForLgmNg(obj->grid(), obj->subset_handler(), keepIntfSubs);
 }
 
-inline void AdjustSubsetsForUG4(MeshObject* obj, bool preserveExistingSubsets)
+inline void AdjustSubsetsForUG4(Mesh* obj, bool preserveExistingSubsets)
 {
-	AdjustSubsetsForSimulation(obj->get_subset_handler(), preserveExistingSubsets);
+	AdjustSubsetsForSimulation(obj->subset_handler(), preserveExistingSubsets);
 }
 
-inline void SeparateFaceSubsetsByNormal(MeshObject* obj)
+inline void SeparateFaceSubsetsByNormal(Mesh* obj)
 {
-	ug::SeparateFaceSubsetsByNormal(obj->get_grid(), obj->get_subset_handler());
+	ug::SeparateFaceSubsetsByNormal(obj->grid(), obj->subset_handler());
 }
 
-inline void SeparateFaceSubsetByNormal(MeshObject* obj, int si)
+inline void SeparateFaceSubsetByNormal(Mesh* obj, int si)
 {
-	if(si < obj->get_subset_handler().num_subsets())
-		SeparateFaceSubsetsByNormal(obj->get_grid(), obj->get_subset_handler(),
+	if(si < obj->subset_handler().num_subsets())
+		SeparateFaceSubsetsByNormal(obj->grid(), obj->subset_handler(),
 									obj->position_attachment(), NULL, si);
 }
 
-inline void AssignSubsetsByQuality(MeshObject* obj, int numSections)
+inline void AssignSubsetsByQuality(Mesh* obj, int numSections)
 {
 	using namespace std;
 	std::vector<number> intervals;
@@ -163,9 +163,9 @@ inline void AssignSubsetsByQuality(MeshObject* obj, int numSections)
 		intervals.push_back((number)i / (number)numSections);
 	intervals.push_back(1.);
 
-	Grid& grid = obj->get_grid();
-	Selector& sel = obj->get_selector();
-	SubsetHandler& sh = obj->get_subset_handler();
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
 
 	ug::AssignSubsetsByQuality(grid, sh, sel.begin<Face>(),
 								sel.end<Face>(), intervals);
@@ -190,14 +190,14 @@ inline void AssignSubsetsByQuality(MeshObject* obj, int numSections)
 	UG_LOG(endl);
 }
 
-inline void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle)
+inline void SeparateDegeneratedBoundaryFaceSubsets(Mesh* obj, number angle)
 {
 	using namespace std;
 	number thresholdDot = cos(deg_to_rad(angle));
 
-	Grid& g = obj->get_grid();
-	SubsetHandler& sh = obj->get_subset_handler();
-	MeshObject::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	vector<Edge*> edges;
 	vector<Edge*> edges2;
@@ -327,9 +327,9 @@ inline void SeparateDegeneratedBoundaryFaceSubsets(MeshObject* obj, number angle
 	g.end_marking();
 }
 
-inline void AssignSubsetsByElementType(MeshObject* obj)
+inline void AssignSubsetsByElementType(Mesh* obj)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 	AssignSubsetsByElementType(sh);
 	int i = 0;
 	while(i < sh.num_subsets()){
@@ -340,13 +340,13 @@ inline void AssignSubsetsByElementType(MeshObject* obj)
 	}
 }
 
-inline void CopySubsetIndicesToSides(MeshObject* obj, bool selectionOnly,
+inline void CopySubsetIndicesToSides(Mesh* obj, bool selectionOnly,
 							  bool toUnassignedOnly)
 {
-	SubsetHandler& sh = obj->get_subset_handler();
+	SubsetHandler& sh = obj->subset_handler();
 
 	if(selectionOnly){
-		Selector& sel = obj->get_selector();
+		Selector& sel = obj->selector();
 		CopySubsetIndicesToSides(sh, sel.begin<Volume>(), sel.end<Volume>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<Face>(), sel.end<Face>(), toUnassignedOnly);
 		CopySubsetIndicesToSides(sh, sel.begin<Edge>(), sel.end<Edge>(), toUnassignedOnly);

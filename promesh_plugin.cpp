@@ -2,7 +2,7 @@
 // s.b.reiter@gmail.com
 // Jun 14, 2013 (d,m,y)
 
-#include "mesh_object.h"
+#include "mesh.h"
 #include "tools/coordinate_transform_tools.h"
 #include "tools/file_io_tools.h"
 #include "tools/grid_generation_tools.h"
@@ -85,14 +85,18 @@ static void Common(Registry& reg, string baseGrp)
 {
 	string grp = baseGrp;
 
-	reg.add_class_<MeshObject>("MeshObject", grp)
+	reg.add_class_<Mesh>("Mesh", grp)
 		.add_constructor()
-		.add_method("get_grid", &MeshObject::get_grid, grp)
-		.add_method("get_subset_handler", &MeshObject::get_subset_handler, grp)
-		.add_method("get_crease_handler", &MeshObject::get_crease_handler, grp)
-		.add_method("get_selector", &MeshObject::get_selector, grp)
-		.add_method("set_pivot", &MeshObject::set_pivot, grp)
-		.add_method("get_pivot", &MeshObject::get_pivot, grp)
+		.add_method("crease_handler", &Mesh::crease_handler, grp)
+		.add_method("create_vertex", &Mesh::create_vertex, grp)
+		.add_method("create_triangle", &Mesh::create_triangle, grp)
+		.add_method("grid", &Mesh::grid, grp)
+		.add_method("pivot", &Mesh::pivot, grp)
+		.add_method("position", &Mesh::position, grp)
+		.add_method("selector", &Mesh::selector, grp)
+		.add_method("set_pivot", &Mesh::set_pivot, grp)
+		.add_method("set_position", &Mesh::set_position, grp)
+		.add_method("subset_handler", &Mesh::subset_handler, grp)
 		.set_construct_as_smart_pointer(true);
 
 //	coordinate transform tools
