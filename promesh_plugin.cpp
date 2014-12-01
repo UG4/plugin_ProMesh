@@ -73,6 +73,22 @@ static void Dimension(Registry& reg, string grp)
 }
 
 
+///	helper function to register mesh-element-iterators
+template <class TElem>
+static void RegisterElementIterators(Registry& reg, string name, string grp)
+{
+	typedef ElementIterator<TElem> iter_t;
+	reg.add_class_<iter_t>(name, grp)
+		.template add_constructor<void (*)()>()
+		.add_method("assign", &iter_t::assign, grp)
+		.add_method("value", &iter_t::value, grp)
+		.add_method("advance", &iter_t::advance, grp)
+		.add_method("equal", &iter_t::equal, grp)
+		.add_method("unequal", &iter_t::advance, grp)
+		.set_construct_as_smart_pointer(true);
+}
+
+
 /**
  * Function called for the registration of Domain and Algebra independent parts.
  * All Functions and Classes not depending on Domain and Algebra
@@ -85,11 +101,23 @@ static void Common(Registry& reg, string baseGrp)
 {
 	string grp = baseGrp;
 
+	RegisterElementIterators<Vertex>(reg, "VertexIterator", grp);
+	RegisterElementIterators<Edge>(reg, "EdgeIterator", grp);
+	RegisterElementIterators<Face>(reg, "FaceIterator", grp);
+	RegisterElementIterators<Volume>(reg, "VolumeIterator", grp);
+
 	reg.add_class_<Mesh>("Mesh", grp)
 		.add_constructor()
 		.add_method("crease_handler", &Mesh::crease_handler, grp)
 		.add_method("create_vertex", &Mesh::create_vertex, grp)
+		.add_method("create_edge", &Mesh::create_edge, grp)
 		.add_method("create_triangle", &Mesh::create_triangle, grp)
+		.add_method("create_quadrilateral", &Mesh::create_quadrilateral, grp)
+		.add_method("create_hexahedron", &Mesh::create_hexahedron, grp)
+		.add_method("create_octahedron", &Mesh::create_octahedron, grp)
+		.add_method("create_prism", &Mesh::create_prism, grp)
+		.add_method("create_pyramid", &Mesh::create_pyramid, grp)
+		.add_method("create_tetrahedron", &Mesh::create_tetrahedron, grp)
 		.add_method("grid", &Mesh::grid, grp)
 		.add_method("pivot", &Mesh::pivot, grp)
 		.add_method("position", &Mesh::position, grp)
