@@ -20,9 +20,12 @@ class ElementIterator{
 	public:
 		typedef typename Grid::traits<TElem>::iterator	iterator_t;
 
-		ElementIterator()	{}
 		ElementIterator(iterator_t i) : m_iter(i)	{}
 
+		SmartPtr<ElementIterator<TElem> >
+		clone()
+		{return make_sp(new ElementIterator(m_iter));}
+		
 		void	assign(ElementIterator& i)	{m_iter = i.m_iter;}
 		TElem*	value()						{return *m_iter;}
 		void	advance()					{++m_iter;}
@@ -45,6 +48,16 @@ class Mesh
 
 		typedef ANumber volume_constraint_attachment_t;
 		typedef Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>	volume_constraint_accessor_t;
+
+		typedef ElementIterator<Vertex>	vertex_iter_t;
+		typedef ElementIterator<Edge>	edge_iter_t;
+		typedef ElementIterator<Face>	face_iter_t;
+		typedef ElementIterator<Volume>	volume_iter_t;
+
+		typedef SmartPtr<vertex_iter_t>	sp_vertex_iter_t;
+		typedef SmartPtr<edge_iter_t>	sp_edge_iter_t;
+		typedef SmartPtr<face_iter_t>	sp_face_iter_t;
+		typedef SmartPtr<volume_iter_t>	sp_volume_iter_t;
 
 		Mesh();
 
@@ -108,6 +121,49 @@ class Mesh
 							 	  Vertex* v4, Vertex* v5, Vertex* v6, Vertex* v7);
 		Volume*	create_octahedron(Vertex* v0, Vertex* v1, Vertex* v2,
 							 	  Vertex* v3, Vertex* v4, Vertex* v5);
+
+	//	iterators
+	///	returns an iterator to the first element of the specified type
+	/**	\note	This iterator is intended for use through bindings only! If you're
+	 *			actually writing C++ code, please use the iterators of the
+	 *			Grid/Selector/SubsetHandler classes directly.
+	 * \{ */
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		begin()
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(grid().begin<TElem>()));}
+
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		selection_begin()
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(selector().begin<TElem>()));}
+
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		subset_begin(int si)
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(subset_handler().begin<TElem>(si)));}
+	/** \} */
+
+	///	returns an iterator to the position behind the last element of the specified type
+	/**	\note	This iterator is intended for use through bindings only! If you're
+	 *			actually writing C++ code, please use the iterators of the
+	 *			Grid/Selector/SubsetHandler classes directly.
+	 * \{ */
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		end()
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(grid().end<TElem>()));}
+
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		selection_end()
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(selector().end<TElem>()));}
+
+		template <class TElem>
+		SmartPtr<ElementIterator<typename TElem::grid_base_object> >
+		subset_end(int si)
+		{return make_sp(new ElementIterator<typename TElem::grid_base_object>(subset_handler().end<TElem>(si)));}
+	/** \} */
 
 	protected:
 		void volume_constraints_required()
