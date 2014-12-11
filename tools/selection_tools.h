@@ -331,9 +331,10 @@ inline void SelectNonManifoldEdges(Mesh* obj)
 	}
 }
 
-inline void SelectSmoothEdgePath(Mesh* obj, number maxDeviation, bool stopAtSelectedVrts)
+inline void SelectSmoothEdgePath(Mesh* obj, number maxDeviation,
+								 number normalWeight, bool stopAtSelectedVrts)
 {
-	SelectSmoothEdgePath(obj->selector(), maxDeviation, stopAtSelectedVrts);
+	SelectSmoothEdgePath(obj->selector(), maxDeviation, normalWeight, stopAtSelectedVrts);
 }
 
 inline void SelectShortEdges(Mesh* obj, number maxLength)
