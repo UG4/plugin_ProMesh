@@ -12,6 +12,7 @@
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
 #include "lib_grid/algorithms/remeshing/grid_adaption.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
+#include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/duplicate.h"
 
@@ -206,6 +207,30 @@ inline void AdjustEdgeLength(Mesh* obj, number minEdgeLen, number maxEdgeLen,
 
 	AdjustEdgeLength(grid, shCrease, minEdgeLen, maxEdgeLen,
 						 numIterations, true, adaptive);
+}
+
+inline void AdjustEdgeLengthExtended(Mesh* obj, number minEdgeLen, number maxEdgeLen,
+								  number approximation, number triQuality,
+								  int numIterations, bool automarkBoundaries)
+{
+	Grid& grid = obj->grid();
+	SubsetHandler& shCrease = obj->crease_handler();
+
+	if(automarkBoundaries){
+		for(EdgeIterator iter = grid.begin<Edge>();
+			iter != grid.end<Edge>(); ++iter)
+		{
+			if(IsBoundaryEdge2D(grid, *iter))
+				shCrease.assign_subset(*iter, REM_CREASE);
+		}
+	}
+
+	AdjustEdgeLengthDesc desc;
+	desc.minEdgeLen = minEdgeLen;
+	desc.maxEdgeLen = maxEdgeLen;
+	desc.approximation = approximation;
+	desc.triQuality = triQuality;
+	AdjustEdgeLength(grid, shCrease, desc, numIterations);
 }
 
 inline void AdaptSurfaceToCylinder(Mesh* obj, number radius, number threshold)

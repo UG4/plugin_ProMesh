@@ -214,6 +214,15 @@ static void Common(Registry& reg, string baseGrp)
 		.add_function("TriangleFill", &TriangleFill, grp, "", "", TOOLTIP_TRIANGLE_FILL)
 		.add_function("Retriangulate", &Retriangulate, grp, "", "", TOOLTIP_RETRIANGULATE)
 		.add_function("AdjustEdgeLength", &AdjustEdgeLength, grp, "", "", TOOLTIP_ADJUST_EDGE_LENGTH)
+		.add_function("AdjustEdgeLengthExtended", &AdjustEdgeLengthExtended, grp, "",
+			"mesh # "
+			"min edge length | default | min=0.0D; value=1.D # "
+			"max edge length | default | min=0.0D; value=2.D # "
+			"approximation | default | min=0.0D; max=1.0D; value=0.9D # "
+			"triangle quality | default | min=0.0D; max=1.0D; value=0.9D # "
+			"numIterations | default | min=1; value=10 # "
+			"automark boundaries | default |value=true",
+			TOOLTIP_ADJUST_EDGE_LENGTH)
 		.add_function("AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp, "", "", TOOLTIP_ADAPT_SURFACE_TO_CYLINDER)
 		.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
 					  "mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
