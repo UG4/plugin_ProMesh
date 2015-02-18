@@ -10,6 +10,7 @@
 #include "lib_grid/algorithms/remeshing/resolve_intersections.h"
 #include "lib_grid/algorithms/geom_obj_util/vertex_util.h"
 #include "lib_grid/algorithms/geom_obj_util/edge_util.h"
+#include "lib_grid/algorithms/remove_duplicates_util.h"
 
 namespace ug{
 namespace promesh{
@@ -58,8 +59,18 @@ inline size_t RemoveDoubleEdges(Mesh* obj)
 	Selector& sel = obj->selector();
 
 	size_t numEdges= grid.num<Edge>();
-	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
+	RemoveDuplicates(grid, sel.begin<Edge>(), sel.end<Edge>());
 	return numEdges - grid.num<Edge>();
+}
+
+inline size_t RemoveDoubleFaces(Mesh* obj)
+{
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+
+	size_t numFaces= grid.num<Face>();
+	RemoveDuplicates(grid, sel.begin<Face>(), sel.end<Face>());
+	return numFaces - grid.num<Face>();
 }
 
 inline void MergeAtFirst(Mesh* obj)

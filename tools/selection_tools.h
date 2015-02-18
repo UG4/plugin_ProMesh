@@ -13,6 +13,72 @@
 #include "lib_grid/algorithms/trees/octree.h"
 #include "lib_grid/algorithms/mark_util.h"
 #include "lib_grid/algorithms/problem_detection_util.h"
+#include "lib_grid/algorithms/selection_util.h"
+#include "lib_grid/algorithms/callback_util.h"
+#include "lib_grid/algorithms/crease_util.h"
+
+//selection tools
+#define	TOOLTIP_SELECT_LINKED_MANIFOLD_FACES "Selects faces linked with the selection, not crossing non-manifold edges." //?
+#define	TOOLTIP_SELECT_NON_MANIFOLD_EDGES "Selects edges with more than 2 associated faces."
+#define	TOOLTIP_CLEAR_SELECTION "Clears the selection"
+#define	TOOLTIP_SELECT_SMOOTH_EDGE_PATH "Selects a smooth edge path."
+#define	TOOLTIP_SELECT_BOUNDARY_VERTICES "Selects vertices that lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_INNER_VERTICES "Selects vertices that do not lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_BOUNDARY_EDGES "Selects edges that lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_INNER_EDGES "Selects edges that do not lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_BOUNDARY_FACES "Selects faces that lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_INNER_FACES "Selects faces that do not lie on the boundary of the geometry"
+#define	TOOLTIP_SELECT_SHORT_EDGES "Selects edges that are shorter than a given threshold."
+#define	TOOLTIP_SELECT_LONG_EDGES "Selects edges that are longer than a given threshold."
+#define	TOOLTIP_SELECT_CREASE_EDGES "Selects edges that at which triangles meet in a given angle."
+#define	TOOLTIP_SELECT_DEGENERATE_FACES "Selects faces that have a height shorter than a given threshold."
+#define	TOOLTIP_SELECT_LINKED_FLAT_FACES "Selects linked faces of selected faces that have a similar normal."
+#define	TOOLTIP_SELECT_LINKED_BOUNDARY_EDGES "Selects linked boundary edges of selected edges."
+#define	TOOLTIP_SELECT_LINKED_BOUNDARY_FACES "Selects linked boundary faces of selected faces."
+#define	TOOLTIP_SELECT_INTERSECTING_TRIANGLES "Selects intersecting triangles. Neighbors are ignored."
+#define	TOOLTIP_SELECT_ASSOCIATED_VERTICES "Selects vertices that belong to selected edges, faces and volumes."
+#define	TOOLTIP_SELECT_ASSOCIATED_EDGES "Selects edges that belong to selected faces and volumes."
+#define	TOOLTIP_SELECT_ASSOCIATED_FACES "Selects faces that belong to selected volumes."
+#define	TOOLTIP_SELECT_ALL "Selects all vertices, edges ,faces and volumes of the current grid"
+#define	TOOLTIP_SELECT_ALL_VERTICES "Selects all vertices of the current grid"
+#define	TOOLTIP_DESELECT_ALL_VERTICES "Deselects all vertices of the current grid"
+#define	TOOLTIP_SELECT_ALL_EDGES "Selects all edges of the current grid"
+#define	TOOLTIP_DESELECT_ALL_EDGES "Deselects all edges of the current grid"
+#define	TOOLTIP_SELECT_ALL_FACES "Selects all faces of the current grid"
+#define	TOOLTIP_DESELECT_ALL_FACES "Deselects all faces of the current grid"
+#define	TOOLTIP_SELECT_ALL_VOLUMES "Selects all volumes of the current grid"
+#define	TOOLTIP_DESELECT_ALL_VOLUMES "Deselects all volumes of the current grid"
+#define	TOOLTIP_SELECT_MARKED_VERTICES "Selects vertices which are marked."
+#define	TOOLTIP_SELECT_MARKED_EDGES "Selects edges which are marked."
+#define	TOOLTIP_SELECT_UNORIENTABLE_VOLUMES "Selects all volumes whose orientation can not be determined"
+#define	TOOLTIP_EXTEND_SELECTION "Selects neighbors of selected elements."
+#define	TOOLTIP_SELECT_VERTEX_BY_INDEX "Selects a vertex given its index."
+#define	TOOLTIP_SELECT_EDGE_BY_INDEX "Selects a edge given its index."
+#define	TOOLTIP_SELECT_FACE_BY_INDEX "Selects a face given its index."
+#define	TOOLTIP_SELECT_FACES_BY_NORMAL "Selects faces given a normal and a maximum deviation angle."
+#define	TOOLTIP_SELECT_VOLUME_BY_INDEX "Selects a volume given its index."
+#define	TOOLTIP_SELECT_VERTEX_BY_COORDINATE "Selects a vertex given a coordinate."
+#define	TOOLTIP_SELECT_EDGE_BY_COORDINATE  "Selects the edge whose center is closest to the specified coordinate."
+#define	TOOLTIP_SELECT_FACE_BY_COORDINATE "Selects the face whose center is closest to the specified coordinate."
+#define	TOOLTIP_SELECT_VOLUME_BY_COORDINATE "Selects the volume whose center is closest to the specified coordinate."
+#define	TOOLTIP_SELECT_VERTEX_BY_CYL_COORDINATE "Selects a vertex given a cylindrical coordinate."
+#define	TOOLTIP_SELECT_EDGE_BY_CYL_COORDINATE  "Selects the edge whose center is closest to the specified cylindrical coordinate."
+#define	TOOLTIP_SELECT_FACE_BY_CYL_COORDINATE "Selects the face whose center is closest to the specified cylindrical coordinate."
+#define	TOOLTIP_SELECT_VOLUME_BY_CYL_COORDINATE "Selects the volume whose center is closest to the specified cylindrical coordinate."
+#define	TOOLTIP_SELECT_UNCONNECTED_VERTICES "Selects vertices which are not connected to the given element type."
+#define	TOOLTIP_SELECT_SUBSET "Selects all elements of a subset."
+#define	TOOLTIP_SELECT_SUBSET_BOUNDARY "Selects the boundary of a subset."
+#define	TOOLTIP_SELECT_UNASSIGNED_ELEMENTS "Selects all elements not assigned to any subset."
+#define	TOOLTIP_INVERT_SELECTION "Inverts current selection."
+#define	TOOLTIP_EDGE_SELECTION_FILL "Selects neighbours of selected edges over non-selected vertices."
+#define	TOOLTIP_FACE_SELECTION_FILL "Selects neighbours of selected faces over non-selected edges."
+#define	TOOLTIP_VOLUME_SELECTION_FILL "Selects neighbours of selected volumes over non-selected faces."
+#define	TOOLTIP_SELECT_SELECTION_BOUNDARY "Selects the boundary of the current selection."
+#define	TOOLTIP_SELECT_BENT_QUADRILATERALS "Selects quadrilaterals which do not lie in a plane."
+#define	TOOLTIP_CLOSE_SELECTION "Selects all associated elements of lower dimensions."
+#define TOOLTIP_SELECT_SLIVERS "Selects flat tetrahedrons. Threshold-ratio specifies the minimal ratio between the distance of two opposing edges to the length of the longest edge."
+#define TOOLTIP_SELECT_SELECTION_KINK_VERTICES "Selects kink vertices in selected paths"
+#define TOOLTIP_SELECT_SUBSET_KINK_VERTICES "Selects kink vertices in subset-paths"
 
 namespace ug{
 namespace promesh{
@@ -298,6 +364,52 @@ inline size_t SelectUnconnectedVertices(Mesh* obj, bool edgeCons, bool faceCons,
 	if(volCons)
 		numUnconnected += SelectUnconnectedVerticesHelper<Volume>(grid, sel);
 	return numUnconnected;
+}
+
+inline size_t SelectSelectionKinkVertices(Mesh* obj, number thresholdAngle,
+											bool selectDarts)
+{
+	Selector& sel = obj->selector();
+	std::vector<Vertex*> candidates;
+	CollectVerticesTouchingSelection(candidates, sel);
+	size_t numSel = sel.num<Vertex>();
+	
+	SelectKinkVertices(sel, candidates.begin(), candidates.end(),
+						 thresholdAngle, selectDarts, obj->position_accessor(),
+						 IsSelected(sel));
+
+	return sel.num<Vertex>() - numSel;
+}
+
+inline size_t SelectSubsetKinkVertices(Mesh* obj, int subsetIndex,
+									   number thresholdAngle, bool selectDarts)
+{
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	std::vector<Vertex*> candidates;
+	grid.begin_marking();
+	for(EdgeIterator eiter = sh.begin<Edge>(subsetIndex);
+		eiter != sh.end<Edge>(subsetIndex); ++eiter)
+	{
+		Edge* e = *eiter;
+		for(size_t i = 0; i < 2; ++i){
+			if(!grid.is_marked(e->vertex(i))){
+				candidates.push_back(e->vertex(i));
+				grid.mark(e->vertex(i));
+			}
+		}
+	}
+	grid.end_marking();
+
+	size_t numSel = sel.num<Vertex>();
+	
+	SelectKinkVertices(sel, candidates.begin(), candidates.end(),
+						 thresholdAngle, selectDarts, obj->position_accessor(),
+						 IsInSubset(obj->subset_handler(), subsetIndex));
+
+	return sel.num<Vertex>() - numSel;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

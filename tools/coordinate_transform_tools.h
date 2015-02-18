@@ -221,6 +221,27 @@ inline void WeightedFaceSmooth(Mesh* obj, number alpha, int numIterations)
 					   obj->position_accessor(), alpha, numIterations, IsSelected(sel));
 }
 
+inline void WeightedNormalSmooth(Mesh* obj, number alpha, number dotThreshold,
+								 int numIterations)
+{
+	std::vector<Vertex*> vrts;
+	CollectVerticesTouchingSelection(vrts, obj->selector());
+
+	ug::WeightedNormalSmooth(obj->grid(), vrts.begin(), vrts.end(),
+							 obj->position_accessor(), alpha, dotThreshold,
+							 numIterations);
+}
+
+inline void SlopeSmooth(Mesh* obj, number alpha, int numIterations)
+{
+	std::vector<Vertex*> vrts;
+	CollectVerticesTouchingSelection(vrts, obj->selector());
+
+	ug::SlopeSmooth(obj->grid(), vrts.begin(), vrts.end(),
+					   obj->position_accessor(), alpha, vector3(0, 0, 1),
+					   numIterations);
+}
+
 inline void TangentialSmooth(Mesh* obj, number alpha, int numIterations)
 {
 	std::vector<Vertex*> vrts;

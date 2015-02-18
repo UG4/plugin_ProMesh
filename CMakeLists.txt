@@ -8,7 +8,11 @@
 set(pluginName	ProMesh)
 set(pluginPath	plugins/experimental/promesh)
 set(SOURCES		mesh.cpp
-				promesh_plugin.cpp)
+				promesh_plugin.cpp
+				register_coordinate_transform_tools.cpp
+				register_mesh.cpp
+				register_meshing_tools.cpp
+				register_selection_tools.cpp)
 
 
 ################################################################################

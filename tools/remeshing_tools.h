@@ -15,6 +15,7 @@
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/duplicate.h"
+#include "lib_grid/algorithms/remove_duplicates_util.h"
 
 namespace ug{
 namespace promesh{
@@ -104,7 +105,7 @@ inline void TriangleFill(Mesh* obj, bool qualityGeneration, number minAngle, int
 
 //	before triangulating, we'll make sure that no double-edges exist
 //	in the current selection.
-	RemoveDoubleEdges(grid, sel.begin<Edge>(), sel.end<Edge>());
+	RemoveDuplicates(grid, sel.begin<Edge>(), sel.end<Edge>());
 
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 	AInt aInt;
