@@ -29,6 +29,8 @@
 #define	TOOLTIP_CREATE_DUALGRID "creates the dual grid consisting of control volumes as used in the finite volume method" 
 
 //remeshing tools
+#define TOOLTIP_SIMPLIFY_POLYLINES "Removes vertices from the selected polyline which have a smaller curvature than the specified angle."
+#define TOOLTIP_SIMPLIFY_SMOOTHED_POLYLINES "Removes vertices from the selected polyline which have a smaller smoothed curvature than the specified angle."
 #define	TOOLTIP_CONVERT_TO_TRIANGLES "Converts selected quadrilaterals to triangles."
 #define	TOOLTIP_TRIANGLE_FILL "Performs triangle fill using the sweep-line algorithm."
 #define	TOOLTIP_RETRIANGULATE "Inserts vertices as required and performs Constrained Delaunay triangulation."

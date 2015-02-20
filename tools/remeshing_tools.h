@@ -14,11 +14,32 @@
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
+#include "lib_grid/algorithms/remeshing/simplify_polychain.h"
 #include "lib_grid/algorithms/duplicate.h"
 #include "lib_grid/algorithms/remove_duplicates_util.h"
 
 namespace ug{
 namespace promesh{
+
+inline void SimplifyPolylines(Mesh* m, number curvatureThreshold){
+	Grid& grid = m->grid();
+	Selector& sel = m->selector();
+	Mesh::position_accessor_t& aaPos = m->position_accessor();
+
+	SimplifyPolylines(grid, sel.begin<Edge>(), sel.end<Edge>(), curvatureThreshold, aaPos);
+}
+
+inline void SimplifySmoothedPolylines(Mesh* m, number curvatureThreshold,
+									  number smoothingAlpha, int smoothingIterations)
+{
+	Grid& grid = m->grid();
+	Selector& sel = m->selector();
+	Mesh::position_accessor_t& aaPos = m->position_accessor();
+
+	SimplifySmoothedPolylines(grid, sel.begin<Edge>(), sel.end<Edge>(),
+							  curvatureThreshold, aaPos,
+							  smoothingAlpha, smoothingIterations);
+}
 
 inline void ConvertToTriangles(Mesh* obj)
 {

@@ -42,6 +42,18 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 			.add_function("InsertCenter", &InsertCenter, grp, "", "", TOOLTIP_INSERT_CENTER);
 
 	//	remeshing
+		grp = baseGrp + string("/Remeshing/Polylines");
+		reg.add_function("SimplifyPolylines", &SimplifyPolylines, grp, "",
+				"mesh # "
+				"max curvature angle | default | min=0.0D; max=180.0D; value=5.D # ",
+				TOOLTIP_SIMPLIFY_POLYLINES)
+			.add_function("SimplifySmoothedPolylines", &SimplifySmoothedPolylines, grp, "",
+				"mesh # "
+				"max curvature angle | default | min=0.0D; max=180.0D; value=5.D # "
+				"smoothing alpha | default | min=0.0D; value=0.9D # "
+				"smoothing iterations | default | min=0; value=10 # ",
+				TOOLTIP_SIMPLIFY_SMOOTHED_POLYLINES);
+			
 		grp = baseGrp + string("/Remeshing/Triangulation");
 		reg.add_function("ConvertToTriangles", &ConvertToTriangles, grp, "", "", TOOLTIP_CONVERT_TO_TRIANGLES)
 			.add_function("TriangleFill", &TriangleFill, grp, "", "", TOOLTIP_TRIANGLE_FILL)
