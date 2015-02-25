@@ -33,6 +33,14 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 			.add_function("CreatePyramid", &CreatePyramid, grp, "", "", TOOLTIP_CREATE_PYRAMID)
 			.add_function("CreatePrism", &CreatePrism, grp, "", "", TOOLTIP_CREATE_PRISM);
 
+	//	layer meshing
+		reg.add_function("MeshLayers", &MeshLayers, grp, "",
+				"mesh # layers",
+				TOOLTIP_MESH_LAYERS)
+			.add_function("MeshLayerBoundaries", &MeshLayerBoundaries, grp, "",
+				"mesh # layers",
+				TOOLTIP_MESH_LAYER_BOUNDARIES);
+		
 	//	refinement
 		reg.add_function("Refine", &Refine, grp, "", "", TOOLTIP_REFINE)
 			.add_function("HangingNodeRefine", &HangingNodeRefine, grp, "", "", TOOLTIP_HANGING_NODE_REFINE)

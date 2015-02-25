@@ -8,6 +8,7 @@
 #include <vector>
 #include "../mesh.h"
 #include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
+#include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
 #include "lib_grid/algorithms/grid_generation/icosahedron.h"
 
 namespace ug{
@@ -485,6 +486,17 @@ inline void CreatePrism(Mesh* obj, int subsetInd, bool createVol)
 	sel.enable_autoselection(autoselEnabled);
 
 }
+
+inline void MeshLayers(Mesh* m, const RasterLayers& layers)
+{
+	MeshLayers(m->grid(), layers, m->position_accessor(), &m->subset_handler());
+}
+
+inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
+{
+	MeshLayerBoundaries(m->grid(), layers, m->position_accessor(), &m->subset_handler());
+}
+
 }}// end of namespace
 
 #endif
