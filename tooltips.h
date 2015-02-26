@@ -15,6 +15,7 @@
 // grid generation tools
 #define	TOOLTIP_NEW_OBJECT "Creates a new empty object."
 #define	TOOLTIP_MERGE_OBJECTS "Merges the selected objects into a new one."
+#define	TOOLTIP_COPY_SELECTION "Copies the selected elements to a new mesh."
 #define	TOOLTIP_CREATE_VERTEX "Creates a new vertex"
 #define	TOOLTIP_CREATE_EDGE "Creates an edge between two selected vertices."
 #define	TOOLTIP_CREATE_FACE "Creates a face between selected vertices."

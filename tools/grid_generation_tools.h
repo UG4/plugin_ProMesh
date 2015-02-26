@@ -14,6 +14,83 @@
 namespace ug{
 namespace promesh{
 
+/** Make sure that aNewVrt is attached to srcMesh->grid() and contains a
+ * pointer to a valid vertex in destMesh for each selected vertex in srcMesh.
+ * Also make sure that all vertices belonging to a selected element have been
+ * selected, too.*/
+template <class TElem>
+inline void CopySelectedElements(Mesh* srcMesh, Mesh* destMesh, AVertex aNewVrt)
+{
+	Grid& srcGrid						= srcMesh->grid();
+	Selector& srcSel					= srcMesh->selector();
+	SubsetHandler& srcSH				= srcMesh->subset_handler();
+	SubsetHandler& srcCreaseSH			= srcMesh->crease_handler();
+
+	Grid& destGrid						= destMesh->grid();
+	SubsetHandler& destSH				= destMesh->subset_handler();
+	SubsetHandler& destCreaseSH			= destMesh->crease_handler();
+
+	Grid::VertexAttachmentAccessor<AVertex> aaNewVrt(srcGrid, aNewVrt);
+
+	CustomVertexGroup vrts;
+	typedef typename Grid::traits<TElem>::iterator iter_t;
+
+	for(iter_t eiter = srcSel.begin<TElem>();
+		eiter != srcSel.end<TElem>(); ++eiter)
+	{
+		TElem* e = *eiter;
+		vrts.resize(e->num_vertices());
+		for(size_t iv = 0; iv < e->num_vertices(); ++iv)
+			vrts.set_vertex(iv, aaNewVrt[e->vertex(iv)]);
+
+		TElem* ne = *destGrid.create_by_cloning(e, vrts);
+		destSH.assign_subset(ne, srcSH.get_subset_index(e));
+		
+		if(TElem::dim < 2)
+			destCreaseSH.assign_subset(ne, srcCreaseSH.get_subset_index(e));
+	}
+}
+
+inline void CopySelection(Mesh* srcMesh, Mesh* destMesh){
+	Grid& srcGrid						= srcMesh->grid();
+	Selector& srcSel					= srcMesh->selector();
+	SubsetHandler& srcSH				= srcMesh->subset_handler();
+	SubsetHandler& srcCreaseSH			= srcMesh->crease_handler();
+	Mesh::position_accessor_t aaPosSrc	= srcMesh->position_accessor();
+
+	Grid& destGrid						= destMesh->grid();
+	SubsetHandler& destSH				= destMesh->subset_handler();
+	SubsetHandler& destCreaseSH			= destMesh->crease_handler();
+	Mesh::position_accessor_t aaPosDest	= destMesh->position_accessor();
+
+	AVertex aNewVrt;
+	srcGrid.attach_to_vertices(aNewVrt);
+	Grid::VertexAttachmentAccessor<AVertex> aaNewVrt(srcGrid, aNewVrt);
+
+	for(int si = destSH.num_subsets(); si < srcSH.num_subsets(); ++si)
+		destSH.subset_info(si) = srcSH.subset_info(si);
+
+	SelectAssociatedGridObjects(srcSel);
+//	create new vertices in destGrid
+	for(VertexIterator viter = srcSel.begin<Vertex>();
+		viter != srcSel.end<Vertex>(); ++viter)
+	{
+		Vertex* v = *viter;
+		Vertex* nv = *destGrid.create_by_cloning(v);
+		aaNewVrt[v] = nv;
+		aaPosDest[nv] = aaPosSrc[v];
+		destSH.assign_subset(nv, srcSH.get_subset_index(v));
+		destCreaseSH.assign_subset(nv, srcCreaseSH.get_subset_index(v));
+	}
+
+	CopySelectedElements<Edge>(srcMesh, destMesh, aNewVrt);
+	CopySelectedElements<Face>(srcMesh, destMesh, aNewVrt);
+	CopySelectedElements<Volume>(srcMesh, destMesh, aNewVrt);
+
+	srcGrid.detach_from_vertices(aNewVrt);
+}
+
+
 inline Vertex* CreateVertex(Mesh* obj, const vector3& pos, int subsetInd)
 {
 	Grid& grid = obj->grid();

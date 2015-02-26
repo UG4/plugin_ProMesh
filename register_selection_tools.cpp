@@ -63,19 +63,24 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectShortEdges", &SelectShortEdges, grp, "", "", TOOLTIP_SELECT_SHORT_EDGES)
 			.add_function("SelectLongEdges", &SelectLongEdges, grp, "", "", TOOLTIP_SELECT_LONG_EDGES)
 			.add_function("SelectCreaseEdges", &SelectCreaseEdges, grp, "", "", TOOLTIP_SELECT_CREASE_EDGES)
+			.add_function("SelectLinkedEdges", &SelectLinkedElements<Edge>, grp, "", "", TOOLTIP_SELECT_LINKED_EDGES)
 			.add_function("SelectLinkedBoundaryEdges", &SelectLinkedBoundaryEdges, grp, "", "", TOOLTIP_SELECT_LINKED_BOUNDARY_EDGES)
 			.add_function("SelectAssociatedEdges", &SelectAssociatedEdges, grp, "", "", TOOLTIP_SELECT_ASSOCIATED_EDGES)
 			.add_function("SelectAllEdges", &SelectAllEdges, grp, "", "", TOOLTIP_SELECT_ALL_EDGES)
 			.add_function("DeselectAllEdges", &DeselectAllEdges, grp, "", "", TOOLTIP_DESELECT_ALL_EDGES)
 			.add_function("SelectMarkedEdges", &SelectMarkedEdges, grp, "", "", TOOLTIP_SELECT_MARKED_EDGES)
 			.add_function("SelectEdgeByIndex", &SelectEdgeByIndex, grp, "", "", TOOLTIP_SELECT_EDGE_BY_INDEX)
-			.add_function("EdgeSelectionFill", &EdgeSelectionFill, grp, "", "", TOOLTIP_EDGE_SELECTION_FILL);
-
+			.add_function("EdgeSelectionFill", &EdgeSelectionFill, grp, "", "", TOOLTIP_EDGE_SELECTION_FILL)
+			.add_function("SelectShortPolychains", &SelectShortPolychains, grp, "",
+						  "mesh # maxChainLength | default | min=0D; value=1D # closedChainsOnly",
+						  TOOLTIP_SELECT_SHORT_POLYCHAINS);
+			
 		grp = baseGrp + "/Faces";
 		reg.add_function("SelectFaceByCoordinate", &SelectElemByCoordinate<Face>, grp, "", "", TOOLTIP_SELECT_FACE_BY_COORDINATE)
 			.add_function("SelectFaceByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Face>, grp, "", "", TOOLTIP_SELECT_FACE_BY_CYL_COORDINATE)
 			.add_function("SelectBoundaryFaces", &SelectBoundaryFaces, grp, "", "", TOOLTIP_SELECT_BOUNDARY_FACES)
 			.add_function("SelectInnerFaces", &SelectInnerFaces, grp, "", "", TOOLTIP_SELECT_INNER_FACES)
+			.add_function("SelectLinkedFaces", &SelectLinkedElements<Face>, grp, "", "", TOOLTIP_SELECT_LINKED_FACES)
 			.add_function("SelectLinkedManifoldFaces", &SelectLinkedManifoldFaces, grp, "", "", TOOLTIP_SELECT_LINKED_MANIFOLD_FACES)
 			.add_function("SelectLinkedBoundaryFaces", &SelectLinkedBoundaryFaces, grp, "", "", TOOLTIP_SELECT_LINKED_BOUNDARY_FACES)
 			.add_function("SelectDegenerateFaces", &SelectDegenerateFaces, grp, "", "", TOOLTIP_SELECT_DEGENERATE_FACES)
@@ -94,6 +99,7 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectVolumeByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_CYL_COORDINATE)
 			.add_function("SelectAllVolumes", &SelectAllVolumes, grp, "", "", TOOLTIP_SELECT_ALL_VOLUMES)
 			.add_function("DeselectAllVolumes", &DeselectAllVolumes, grp, "", "", TOOLTIP_DESELECT_ALL_VOLUMES)
+			.add_function("SelectLinkedVolumes", &SelectLinkedElements<Volume>, grp, "", "", TOOLTIP_SELECT_LINKED_VOLUMES)
 			.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "", "", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 			.add_function("SelectSlivers", &SelectSlivers, grp, "", "mesh # threshold ratio | default | min=0; val=0.01D", TOOLTIP_SELECT_SLIVERS)
 			.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "", "", TOOLTIP_SELECT_VOLUME_BY_INDEX)

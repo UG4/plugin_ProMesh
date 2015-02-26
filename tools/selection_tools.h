@@ -79,6 +79,10 @@
 #define TOOLTIP_SELECT_SLIVERS "Selects flat tetrahedrons. Threshold-ratio specifies the minimal ratio between the distance of two opposing edges to the length of the longest edge."
 #define TOOLTIP_SELECT_SELECTION_KINK_VERTICES "Selects kink vertices in selected paths"
 #define TOOLTIP_SELECT_SUBSET_KINK_VERTICES "Selects kink vertices in subset-paths"
+#define TOOLTIP_SELECT_LINKED_EDGES "Repeatedly selects all edges which are vertex-neighbors of selected edges."
+#define TOOLTIP_SELECT_LINKED_FACES "Repeatedly selects all faces which are edge-neighbors of selected faces."
+#define TOOLTIP_SELECT_LINKED_VOLUMES "Repeatedly selects all volumes which are face-neighbors of selected volumes."
+#define TOOLTIP_SELECT_SHORT_POLYCHAINS "Selects polygonal chains which are shorter than the given threshold."
 
 namespace ug{
 namespace promesh{
@@ -549,6 +553,12 @@ inline void EdgeSelectionFill(Mesh* obj)
 	SelectionFill<Edge>(sel, IsSelected(sel));
 }
 
+inline void SelectShortPolychains(Mesh* m, number maxChainLength, bool closedChainsOnly)
+{
+	SelectShortPolychains(m->selector(), maxChainLength,
+						  closedChainsOnly, m->position_accessor());
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
 inline void SelectBoundaryFaces(Mesh* obj)
@@ -601,6 +611,12 @@ inline void SelectLinkedManifoldFaces(Mesh* obj)
 			}
 		}
 	}
+}
+
+template <class TElem>
+inline void SelectLinkedElements(Mesh* obj)
+{
+	SelectLinkedElements<TElem>(obj->selector());
 }
 
 inline void SelectLinkedBoundaryFaces(Mesh* obj, bool stopAtSelectedEdges)

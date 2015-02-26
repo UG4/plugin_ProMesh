@@ -21,7 +21,8 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 {
 	try{
 		string grp = baseGrp;
-		reg.add_function("CreateVertex", &CreateVertex, grp, "", "", TOOLTIP_CREATE_VERTEX)
+		reg.add_function("CopySelection", &CopySelection, grp, "", "", TOOLTIP_COPY_SELECTION)
+			.add_function("CreateVertex", &CreateVertex, grp, "", "", TOOLTIP_CREATE_VERTEX)
 			.add_function("CreateEdge", &CreateEdge, grp, "", "", TOOLTIP_CREATE_EDGE)
 			.add_function("CreateFace", &CreateFace, grp, "", "", TOOLTIP_CREATE_FACE)
 			.add_function("CreateVolume", &CreateVolume, grp, "", "", TOOLTIP_CREATE_VOLUME)
