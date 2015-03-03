@@ -8,9 +8,26 @@ namespace promesh{
 
 Mesh::Mesh() : m_creaseHandler(SHE_VERTEX | SHE_EDGE)
 {
-	m_grid.attach_to_vertices(aPosition);
+	init();
+}
+
+Mesh::Mesh(const Mesh& mesh)
+{
+	init();
+	m_grid = mesh.m_grid;
+	m_selector = mesh.m_selector;
+	m_subsetHandler = mesh.m_subsetHandler;
+	m_creaseHandler = mesh.m_creaseHandler;
+	m_pivot = mesh.m_pivot;
+
+
+}
+
+void Mesh::init()
+{
+	m_grid.attach_to_vertices(aPosition, true);
 	m_aaPos.access(m_grid, aPosition);
-	m_grid.attach_to_faces(aNormal);
+	m_grid.attach_to_faces(aNormal, true);
 	m_aaNorm.access(m_grid, aNormal);
 	m_subsetHandler.assign_grid(m_grid);
 	m_subsetHandler.enable_strict_inheritance(true);
@@ -20,7 +37,6 @@ Mesh::Mesh() : m_creaseHandler(SHE_VERTEX | SHE_EDGE)
 	m_selector.assign_grid(m_grid);
 	m_pivot = vector3(0, 0, 0);
 }
-
 
 Vertex*	Mesh::
 create_vertex(const vector3& p)

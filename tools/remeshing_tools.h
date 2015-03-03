@@ -480,6 +480,21 @@ inline void ReplaceLowValenceVertices(Mesh* obj, number maxSquaredHeightToBaseAr
 						   maxSquaredHeightToBaseAreaRatio, obj->position_accessor());
 }
 
+inline void MeshLayers(Mesh* m, const RasterLayers& layers)
+{
+	MeshLayers(m->grid(), layers, m->position_accessor(), &m->subset_handler());
+}
+
+inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
+{
+	MeshLayerBoundaries(m->grid(), layers, m->position_accessor(), &m->subset_handler());
+}
+
+inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers){
+	ExtrudeLayers(obj->grid(), layers, obj->position_accessor(),
+				  obj->subset_handler());
+}
+
 }}// end of namespace
 
 #endif

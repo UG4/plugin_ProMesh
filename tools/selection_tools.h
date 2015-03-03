@@ -920,13 +920,11 @@ inline void VolumeSelectionFill(Mesh* obj)
 	SelectionFill<Volume>(sel, IsSelected(sel));
 }
 
-// template <class TVertexIterator, class TAPosition>
-// UG_API 
-// void MarkCorners(Grid& grid, ISubsetHandler& sh,
-// 					TVertexIterator vrtsBegin, TVertexIterator vrtsEnd,
-// 					Grid::edge_traits::callback cbPathEdge,
-// 					int subsetIndex, number angle,
-// 					TAPosition& aPos);
+
+inline void ClearMarks(Mesh* obj)
+{
+	obj->crease_handler().clear();
+}
 
 inline void MarkCornersOfMarkedEdges(Mesh* obj, number angle)
 {

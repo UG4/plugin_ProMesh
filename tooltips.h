@@ -15,6 +15,7 @@
 // grid generation tools
 #define	TOOLTIP_NEW_OBJECT "Creates a new empty object."
 #define	TOOLTIP_MERGE_OBJECTS "Merges the selected objects into a new one."
+#define TOOLTIP_CLONE_MESH "Creates a new mesh and copies all content from the given mesh into the new instance."
 #define	TOOLTIP_COPY_SELECTION "Copies the selected elements to a new mesh."
 #define	TOOLTIP_CREATE_VERTEX "Creates a new vertex"
 #define	TOOLTIP_CREATE_EDGE "Creates an edge between two selected vertices."
@@ -31,6 +32,7 @@
 
 #define TOOLTIP_MESH_LAYERS "Creates triangle/quadrilateral grids for the given raster-layers"
 #define TOOLTIP_MESH_LAYER_BOUNDARIES "Creates boundary grids for the given raster-layers"
+#define TOOLTIP_EXTRUDE_LAYERS "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface."
 
 //remeshing tools
 #define TOOLTIP_SIMPLIFY_POLYLINES "Removes vertices from the selected polyline which have a smaller curvature than the specified angle."

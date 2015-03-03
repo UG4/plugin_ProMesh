@@ -107,7 +107,8 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 
 
 		grp = baseGrp + string("/Marks");
-		reg.add_function("MarkSelection", &MarkSelection, grp, "", "", TOOLTIP_MARK_SELECTION)
+		reg.add_function("ClearMarks", &ClearMarks, grp, "", "", TOOLTIP_CLEAR_MARKS)
+			.add_function("MarkSelection", &MarkSelection, grp, "", "", TOOLTIP_MARK_SELECTION)
 			.add_function("UnmarkSelection", &UnmarkSelection, grp, "", "", TOOLTIP_UNMARK_SELECTION)
 			.add_function("MarkCornersOfMarkedEdges", &MarkCornersOfMarkedEdges,
 						  grp, "", "mesh # min angle | default | value=75D",

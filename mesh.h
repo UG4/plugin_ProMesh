@@ -60,6 +60,7 @@ class Mesh
 		typedef SmartPtr<volume_iter_t>	sp_volume_iter_t;
 
 		Mesh();
+		Mesh(const Mesh& m);
 
 		virtual ~Mesh()	{}
 
@@ -169,12 +170,14 @@ class Mesh
 		void volume_constraints_required()
 		{
 			if(!m_aaVolumeConstraint.valid()){
-				m_grid.attach_to_volumes(m_aVolumeConstraint);
+				m_grid.attach_to_volumes(m_aVolumeConstraint, true);
 				m_aaVolumeConstraint.access(m_grid, m_aVolumeConstraint);
 			}
 		}
 
 	protected:
+		void init();
+
 		Grid				m_grid;
 		SubsetHandler		m_subsetHandler;
 		SubsetHandler		m_creaseHandler;

@@ -14,6 +14,11 @@
 namespace ug{
 namespace promesh{
 
+inline SmartPtr<Mesh> CloneMesh(Mesh* mesh)
+{
+	return make_sp(new Mesh(*mesh));
+}
+
 /** Make sure that aNewVrt is attached to srcMesh->grid() and contains a
  * pointer to a valid vertex in destMesh for each selected vertex in srcMesh.
  * Also make sure that all vertices belonging to a selected element have been
@@ -562,16 +567,6 @@ inline void CreatePrism(Mesh* obj, int subsetInd, bool createVol)
 //	restore selector
 	sel.enable_autoselection(autoselEnabled);
 
-}
-
-inline void MeshLayers(Mesh* m, const RasterLayers& layers)
-{
-	MeshLayers(m->grid(), layers, m->position_accessor(), &m->subset_handler());
-}
-
-inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
-{
-	MeshLayerBoundaries(m->grid(), layers, m->position_accessor(), &m->subset_handler());
 }
 
 }}// end of namespace

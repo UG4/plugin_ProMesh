@@ -21,7 +21,8 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 {
 	try{
 		string grp = baseGrp;
-		reg.add_function("CopySelection", &CopySelection, grp, "", "", TOOLTIP_COPY_SELECTION)
+		reg.add_function("CloneMesh", &CloneMesh, grp, "", "", TOOLTIP_CLONE_MESH)
+			.add_function("CopySelection", &CopySelection, grp, "", "", TOOLTIP_COPY_SELECTION)
 			.add_function("CreateVertex", &CreateVertex, grp, "", "", TOOLTIP_CREATE_VERTEX)
 			.add_function("CreateEdge", &CreateEdge, grp, "", "", TOOLTIP_CREATE_EDGE)
 			.add_function("CreateFace", &CreateFace, grp, "", "", TOOLTIP_CREATE_FACE)
@@ -35,14 +36,19 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 			.add_function("CreatePrism", &CreatePrism, grp, "", "", TOOLTIP_CREATE_PRISM);
 
 	//	layer meshing
+		grp = baseGrp + string("/Raster Layers");
 		reg.add_function("MeshLayers", &MeshLayers, grp, "",
 				"mesh # layers",
 				TOOLTIP_MESH_LAYERS)
 			.add_function("MeshLayerBoundaries", &MeshLayerBoundaries, grp, "",
 				"mesh # layers",
-				TOOLTIP_MESH_LAYER_BOUNDARIES);
+				TOOLTIP_MESH_LAYER_BOUNDARIES)
+			.add_function("ExtrudeLayers", &ExtrudeLayers, grp, "",
+				"mesh # layers",
+				TOOLTIP_EXTRUDE_LAYERS);
 		
 	//	refinement
+		grp = baseGrp + string("/Refinement");
 		reg.add_function("Refine", &Refine, grp, "", "", TOOLTIP_REFINE)
 			.add_function("HangingNodeRefine", &HangingNodeRefine, grp, "", "", TOOLTIP_HANGING_NODE_REFINE)
 			.add_function("RefineSmooth", &RefineSmooth, grp, "", "", TOOLTIP_REFINE_SMOOTH)
