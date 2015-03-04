@@ -55,7 +55,8 @@ void RegisterCoordinateTransformTools(Registry& reg, string baseGrp)
 			.add_function("SetPivot", &SetPivot, grp, "", "", TOOLTIP_SET_PIVOT) 
 			.add_function("SetPivotToSelectionCenter", &SetPivotToSelectionCenter, grp, "", "", TOOLTIP_SET_PIVOT_TO_SELECTION_CENTER)
 			.add_function("SetPivotToMeshCenter", &SetPivotToMeshCenter, grp, "", "", TOOLTIP_SET_PIVOT_TO_MESH_CENTER)
-			.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "", "", TOOLTIP_FLATTEN_BENT_QUADRILATERALS);  
+			.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "", "", TOOLTIP_FLATTEN_BENT_QUADRILATERALS)
+			.add_function("SnapVerticesToVertices", &SnapVerticesToVertices, grp, "", "mesh # targetMesh", TOOLTIP_SNAP_VERTICES_TO_VERTICES);
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }

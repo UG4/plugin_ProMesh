@@ -79,7 +79,7 @@ static void RegisterMisc(Registry& reg, string baseGrp)
 		.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "", "", TOOLTIP_SELECT_FACE_IN_CYLINDER)
 		.add_function("SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp, "", "", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
 
-	reg.add_function("ScaleAroundPoint", &ScaleAroundPoint, grp, "", "", TOOLTIP_SCALE_AROUND_PIVOT);
+	reg.add_function("ScaleAroundPoint", &ScaleAroundPoint, grp, "", "", TOOLTIP_SCALE_AROUND_POINT);
 }
 
 } // end namespace promesh

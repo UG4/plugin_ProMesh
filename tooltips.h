@@ -119,37 +119,6 @@
 #define	TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES "Copies subset indices of selected elements to sides of those elements."
 #define	TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE "Assigns elemets to subsets based on their concrete type."
 
-//coordinate transform tools
-#define	TOOLTIP_GET_SELECTION_CENTER ""
-#define TOOLTIP_SET_SELECTION_CENTER ""
-#define TOOLTIP_MOVE_ALONG_NORMAL ""
-#define TOOLTIP_SCALE_AROUND_CENTER ""
-#define TOOLTIP_SCALE_AROUND_PIVOT ""
-#define TOOLTIP_ROTATE_AROUND_CENTER ""
-#define TOOLTIP_ROTATE_AROUND_PIVOT ""
-#define	TOOLTIP_COORDINATES "Coordinates of the center of the current selection"
-#define	TOOLTIP_MOVE "Moves selected vertices."
-#define TOOLTIP_MOVE_MESH_TO "Moves the active mesh and its pivot, so that the pivot will be located on the specified position."
-#define	TOOLTIP_NORMAL_MOVE "Moves selected vertices along their normal."
-#define	TOOLTIP_SCALE "Scales the coordinates of the selected vertices around their center."
-#define	TOOLTIP_ROTATE "Rotates the geometry by the given degrees around its center."
-#define	TOOLTIP_TRANSFORM "Transforms the vertices with the given matrix"
-#define	TOOLTIP_CONE_TRANSFORM "Transforms the vertices with the given cone transformation"
-#define	TOOLTIP_LAPLACIAN_SMOOTH "Smoothes vertices in a grid."
-#define	TOOLTIP_WEIGHTED_EDGE_SMOOTH "Smoothes vertices along edges in a grid with special weights for non-smoothed vertices."
-#define	TOOLTIP_WEIGHTED_FACE_SMOOTH "Smoothes vertices across faces in a grid with special weights for non-smoothed vertices."
-#define	TOOLTIP_WEIGHTED_NORMAL_SMOOTH "The higher the dot-product between an outgoing edge and the vertex normal, the higher the influence of that edge during smoothing of that vertex."
-#define	TOOLTIP_SLOPE_SMOOTH "Smoothes the grid so that the geometry is linearized along the path of steepest descent."
-#define	TOOLTIP_TANGENTIAL_SMOOTH "Smoothes vertices on a manifold."
-#define	TOOLTIP_RPOJECT_TO_PLANE "Projects all selected elements to the specified plane"
-#define	TOOLTIP_PROJECT_TO_LIMIT_PLOOP "Projects all vertices in the grid to their limit positions as defined by the piecewise loop scheme."
-#define	TOOLTIP_PROJECT_TO_LIMIT_SMOOTH_BOUNDARY "Projects all boundary-vertices in the grid to their limit positions as defined by the b-spline subdivision scheme."
-#define	TOOLTIP_SET_PIVOT "Sets the pivot point of the selected object."
-#define	TOOLTIP_SET_PIVOT_TO_SELECTION_CENTER "Sets the pivot to the center of the current selection."
-#define	TOOLTIP_SET_PIVOT_TO_MESH_CENTER "Sets the pivot to the center of the active mesh."
-#define	TOOLTIP_FLATTEN_BENT_QUADRILATERALS "Flattens bent quadrilaterals using an iterative flattening scheme"
-#define	TOOLTIP_APPLY_HEIGHT_FIELD "Calculates z-values of all nodes in terms of their x and y values." 
-
 //	file io
 #define TOOLTIP_LOAD_MESH ""
 #define TOOLTIP_SAVE_MESH ""
@@ -191,7 +160,7 @@
 #define TOOLTIP_SELECT_EDGE_IN_CYLINDER "Selects all edges in the given cylinder"
 #define TOOLTIP_SELECT_FACE_IN_CYLINDER "Selects all faces in the given cylinder"
 #define TOOLTIP_SELECT_VOLUME_IN_CYLINDER "Selects all volumes in the given cylinder"
-
+#define TOOLTIP_SCALE_AROUND_POINT "Scales the selected geometry around the given point"
 
 
 

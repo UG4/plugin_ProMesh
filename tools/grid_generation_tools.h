@@ -8,7 +8,6 @@
 #include <vector>
 #include "../mesh.h"
 #include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
-#include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
 #include "lib_grid/algorithms/grid_generation/icosahedron.h"
 
 namespace ug{

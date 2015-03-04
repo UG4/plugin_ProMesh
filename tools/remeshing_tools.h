@@ -7,16 +7,17 @@
 
 #include <vector>
 #include "../mesh.h"
-#include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
+#include "lib_grid/algorithms/duplicate.h"
+#include "lib_grid/algorithms/remove_duplicates_util.h"
 #include "lib_grid/algorithms/extrusion/extrusion.h"
+#include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
+#include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
 #include "lib_grid/algorithms/remeshing/grid_adaption.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/remeshing/simplify_polychain.h"
-#include "lib_grid/algorithms/duplicate.h"
-#include "lib_grid/algorithms/remove_duplicates_util.h"
 
 namespace ug{
 namespace promesh{

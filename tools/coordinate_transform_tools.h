@@ -11,6 +11,38 @@
 #include "lib_grid/algorithms/selection_util.h"
 #include "lib_grid/algorithms/smoothing/manifold_smoothing.h"
 #include "lib_grid/algorithms/callback_util.h"
+#include "lib_grid/algorithms/trees/kd_tree_static.h"
+
+#define	TOOLTIP_GET_SELECTION_CENTER ""
+#define TOOLTIP_SET_SELECTION_CENTER ""
+#define TOOLTIP_MOVE_ALONG_NORMAL ""
+#define TOOLTIP_SCALE_AROUND_CENTER ""
+#define TOOLTIP_SCALE_AROUND_PIVOT ""
+#define TOOLTIP_ROTATE_AROUND_CENTER ""
+#define TOOLTIP_ROTATE_AROUND_PIVOT ""
+#define	TOOLTIP_COORDINATES "Coordinates of the center of the current selection"
+#define	TOOLTIP_MOVE "Moves selected vertices."
+#define TOOLTIP_MOVE_MESH_TO "Moves the active mesh and its pivot, so that the pivot will be located on the specified position."
+#define	TOOLTIP_NORMAL_MOVE "Moves selected vertices along their normal."
+#define	TOOLTIP_SCALE "Scales the coordinates of the selected vertices around their center."
+#define	TOOLTIP_ROTATE "Rotates the geometry by the given degrees around its center."
+#define	TOOLTIP_TRANSFORM "Transforms the vertices with the given matrix"
+#define	TOOLTIP_CONE_TRANSFORM "Transforms the vertices with the given cone transformation"
+#define	TOOLTIP_LAPLACIAN_SMOOTH "Smoothes vertices in a grid."
+#define	TOOLTIP_WEIGHTED_EDGE_SMOOTH "Smoothes vertices along edges in a grid with special weights for non-smoothed vertices."
+#define	TOOLTIP_WEIGHTED_FACE_SMOOTH "Smoothes vertices across faces in a grid with special weights for non-smoothed vertices."
+#define	TOOLTIP_WEIGHTED_NORMAL_SMOOTH "The higher the dot-product between an outgoing edge and the vertex normal, the higher the influence of that edge during smoothing of that vertex."
+#define	TOOLTIP_SLOPE_SMOOTH "Smoothes the grid so that the geometry is linearized along the path of steepest descent."
+#define	TOOLTIP_TANGENTIAL_SMOOTH "Smoothes vertices on a manifold."
+#define	TOOLTIP_RPOJECT_TO_PLANE "Projects all selected elements to the specified plane"
+#define	TOOLTIP_PROJECT_TO_LIMIT_PLOOP "Projects all vertices in the grid to their limit positions as defined by the piecewise loop scheme."
+#define	TOOLTIP_PROJECT_TO_LIMIT_SMOOTH_BOUNDARY "Projects all boundary-vertices in the grid to their limit positions as defined by the b-spline subdivision scheme."
+#define	TOOLTIP_SET_PIVOT "Sets the pivot point of the selected object."
+#define	TOOLTIP_SET_PIVOT_TO_SELECTION_CENTER "Sets the pivot to the center of the current selection."
+#define	TOOLTIP_SET_PIVOT_TO_MESH_CENTER "Sets the pivot to the center of the active mesh."
+#define	TOOLTIP_FLATTEN_BENT_QUADRILATERALS "Flattens bent quadrilaterals using an iterative flattening scheme"
+#define	TOOLTIP_APPLY_HEIGHT_FIELD "Calculates z-values of all nodes in terms of their x and y values." 
+#define TOOLTIP_SNAP_VERTICES_TO_VERTICES "Snaps the selected vertices of the specified mesh to the selected vertices of the target mesh"
 
 namespace ug{
 namespace promesh{
@@ -332,6 +364,35 @@ inline void ProjectToPlane(Mesh* obj, const vector3& planeCenter, const vector3&
 	}
 }
 
+
+inline void SnapVerticesToVertices(Mesh* obj, Mesh* targetMesh)
+{
+	KDTreeStatic<APosition> tree;
+	Grid& targetGrid = targetMesh->grid();
+	Selector& targetSel = targetMesh->selector();
+
+	tree.create_from_grid(targetGrid,
+						  targetSel.begin<Vertex>(),
+						  targetSel.end<Vertex>(),
+						  targetMesh->position_attachment(),
+						  20, 10);
+
+	Mesh::position_accessor_t	aaPos = obj->position_accessor();
+	Mesh::position_accessor_t	aaTargetPos = targetMesh->position_accessor();
+
+	Selector& srcSel = obj->selector();
+	std::vector<Vertex*> closeVrts;
+
+	for(VertexIterator viter = srcSel.begin<Vertex>();
+		viter != srcSel.end<Vertex>(); ++viter)
+	{
+		Vertex* vrt = *viter;
+		tree.get_neighbourhood(closeVrts, aaPos[vrt], 1);
+		if(!closeVrts.empty()){
+			aaPos[vrt] = aaTargetPos[closeVrts[0]];
+		}
+	}
+}
 
 }}// end of namespace
 
