@@ -7,6 +7,7 @@
 
 #include "../mesh.h"
 #include "lib_grid/algorithms/geom_obj_util/misc_util.h"
+#include "lib_grid/algorithms/selection_util.h"
 
 namespace ug{
 namespace promesh{

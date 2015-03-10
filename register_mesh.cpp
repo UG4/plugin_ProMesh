@@ -10,6 +10,9 @@
 using namespace std;
 using namespace ug::bridge;
 
+#define TOOLTIP_MESH	"The Mesh class stores a Grid, SubsetHandler and Selector. Nearly all algorithms in ProMesh operate on Meshes"
+#define TOOLTIP_ITERATOR	"Iterators are used to iterate over the elements (vertices, edges, faces, volumes) of a Mesh"
+
 namespace ug{
 namespace promesh{
 
@@ -18,7 +21,7 @@ template <class TElem>
 static void RegisterElementIterators(Registry& reg, string name, string grp)
 {
 	typedef ElementIterator<TElem> iter_t;
-	reg.add_class_<iter_t>(name, grp)
+	reg.add_class_<iter_t>(name, grp, TOOLTIP_ITERATOR)
 		.add_method("clone", &iter_t::clone)
 		.add_method("assign", &iter_t::assign)
 		.add_method("value", &iter_t::value)
@@ -48,7 +51,7 @@ void RegisterMesh(Registry& reg, string baseGrp)
 		RegisterElementIterators<Face>(reg, "FaceIterator", grp);
 		RegisterElementIterators<Volume>(reg, "VolumeIterator", grp);
 
-		ExportedClass<Mesh>& meshCls = reg.add_class_<Mesh>("Mesh", grp);
+		ExportedClass<Mesh>& meshCls = reg.add_class_<Mesh>("Mesh", grp, TOOLTIP_MESH);
 		meshCls.add_constructor()
 				.add_method("crease_handler", &Mesh::crease_handler)
 				.add_method("create_vertex", &Mesh::create_vertex)

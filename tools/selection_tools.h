@@ -355,7 +355,8 @@ inline size_t SelectUnconnectedVerticesHelper(Grid& grid, Selector& sel)
 	return numUnconnected;
 }
 
-inline size_t SelectUnconnectedVertices(Mesh* obj, bool edgeCons, bool faceCons, bool volCons)
+inline size_t SelectUnconnectedVertices(Mesh* obj, bool edgeCons, bool faceCons,
+										bool volCons)
 {
 	Grid& grid = obj->grid();
 	Selector& sel = obj->selector();

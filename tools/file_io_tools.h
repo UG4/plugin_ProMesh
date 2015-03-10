@@ -10,6 +10,11 @@
 #include "lib_grid/file_io/file_io_ug.h"
 #include "lib_grid/file_io/file_io_ugx.h"
 
+//	file io
+#define TOOLTIP_LOAD_MESH "Loads a Mesh from File. The format is automatically recognized by the filname's suffix. Supported formats are: (ugx, vtu (ascii), obj, stl (ascii and binary), lgm, ng, ele, msh, asc, net, art)."
+#define TOOLTIP_SAVE_MESH "Saves a Mesh to File. The format is automatically recognized by the filname's suffix. Supported formats are: (ugx, vtu (ascii), obj, stl (ascii), ncdf, smesh, ele, tikz/tex, asc, net, art)."
+#define TOOLTIP_EXPORT_TO_UG3 "Writes a mesh to the UG3 legacy format (.lgm and .ng)"
+
 namespace ug{
 namespace promesh{
 

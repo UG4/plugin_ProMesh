@@ -38,15 +38,15 @@
 #define TOOLTIP_SIMPLIFY_POLYLINES "Removes vertices from the selected polyline which have a smaller curvature than the specified angle."
 #define TOOLTIP_SIMPLIFY_SMOOTHED_POLYLINES "Removes vertices from the selected polyline which have a smaller smoothed curvature than the specified angle."
 #define	TOOLTIP_CONVERT_TO_TRIANGLES "Converts selected quadrilaterals to triangles."
-#define	TOOLTIP_TRIANGLE_FILL "Performs triangle fill using the sweep-line algorithm."
+#define	TOOLTIP_TRIANGLE_FILL "Performs triangle fill using the sweep-line algorithm followed by an optional Constrained Delaunay retriangulation."
 #define	TOOLTIP_RETRIANGULATE "Inserts vertices as required and performs Constrained Delaunay triangulation."
 #define	TOOLTIP_ADJUST_EDGE_LENGTH "Remeshes the active grid so that all edges approximatly have a certain length."
 #define	TOOLTIP_ADAPT_SURFACE_TO_CYLINDER "Introduces edges in a grid around a selected vertex which roughly correspond to the intersection of a cylinder with the surface."
 #define TOOLTIP_REPLACE_LOW_VALENCE_VERTICES "Replaces selected valence-3 and valence-4 vertices by triangles, if the curvature of associated triangles is low"
-#define	TOOLTIP_TETRAHEDRALIZE "Fills a closed surface with tetrahedrons."
+#define	TOOLTIP_TETRAHEDRALIZE "Fills a closed surface with tetrahedrons using TetGen."
 #define	TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS "Assigns volume constraints to selected tetrahedrons."
 #define	TOOLTIP_CLEAR_VOLUME_CONSTRAINTS "Clears all assigned volume constraints."
-#define	TOOLTIP_RETETRAHEDRALIZE "Given a tetrahedralization and volume constraints, this method adapts the tetrahedrons."
+#define	TOOLTIP_RETETRAHEDRALIZE "Given a tetrahedralization and volume constraints, this method adapts the tetrahedrons using TetGen."
 #define	TOOLTIP_DUPLICATE "Duplicates the selected geometry."
 #define	TOOLTIP_EXTRUDE "Extrudes selected geometry (vertices, edges, faces)."
 #define	TOOLTIP_EXTRUDE_CYLINDERS "Extrudes cylinders around selected points of a 2d manifold."
@@ -118,11 +118,6 @@
 #define	TOOLTIP_SEPARATE_DEGENERATED_BOUNDARY_FACE_SUBSETS "Separates degenerated boundary face subsets at sharp creases."
 #define	TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES "Copies subset indices of selected elements to sides of those elements."
 #define	TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE "Assigns elemets to subsets based on their concrete type."
-
-//	file io
-#define TOOLTIP_LOAD_MESH ""
-#define TOOLTIP_SAVE_MESH ""
-#define TOOLTIP_EXPORT_TO_UG3 ""
 
 
 //mark tools
