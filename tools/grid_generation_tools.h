@@ -7,8 +7,9 @@
 
 #include <vector>
 #include "../mesh.h"
-#include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
+#include "lib_grid/algorithms/selection_util.h"
 #include "lib_grid/algorithms/grid_generation/icosahedron.h"
+#include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
 
 namespace ug{
 namespace promesh{

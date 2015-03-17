@@ -11,6 +11,7 @@
 #include "lib_grid/algorithms/geom_obj_util/vertex_util.h"
 #include "lib_grid/algorithms/geom_obj_util/edge_util.h"
 #include "lib_grid/algorithms/remove_duplicates_util.h"
+#include "lib_grid/file_io/file_io.h"
 
 namespace ug{
 namespace promesh{

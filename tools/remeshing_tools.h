@@ -12,6 +12,7 @@
 #include "lib_grid/algorithms/extrusion/extrusion.h"
 #include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
+#include "lib_grid/algorithms/grid_generation/triangle_fill_sweep_line.h"
 #include "lib_grid/algorithms/remeshing/delaunay_triangulation.h"
 #include "lib_grid/algorithms/remeshing/grid_adaption.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"

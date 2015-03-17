@@ -15,12 +15,10 @@ Mesh::Mesh(const Mesh& mesh)
 {
 	init();
 	m_grid = mesh.m_grid;
-	m_selector = mesh.m_selector;
-	m_subsetHandler = mesh.m_subsetHandler;
-	m_creaseHandler = mesh.m_creaseHandler;
-	m_pivot = mesh.m_pivot;
-
-
+	// m_selector = mesh.m_selector;
+	// m_subsetHandler = mesh.m_subsetHandler;
+	// m_creaseHandler = mesh.m_creaseHandler;
+	// m_pivot = mesh.m_pivot;
 }
 
 void Mesh::init()
