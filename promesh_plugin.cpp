@@ -53,6 +53,8 @@ static void RegisterMisc(Registry& reg, string baseGrp)
 			"mesh # preserve existing subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG4)
 		.add_function("AssignSubsetsByQuality", &AssignSubsetsByQuality, grp, "",
 			"mesh # num sections", TOOLTIP_ASSIGN_SUBSETS_BY_QUALITY)
+		.add_function("CopySubsetIndicesToSides", &CopySubsetIndicesToSides, grp, "",
+			"mesh # selection only # to unassigned elements only", TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES)
 		.add_function("AssignSubsetsByElementType", &AssignSubsetsByElementType, grp, "",
 			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE);
 
