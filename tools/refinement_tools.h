@@ -6,11 +6,11 @@
 #define __H__UG__refinement_tools__
 
 #include "../mesh.h"
-#include "lib_grid/algorithms/callback_util.h"
 #include "lib_grid/algorithms/refinement/regular_refinement.h"
 #include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
 #include "lib_grid/algorithms/refinement/refinement_projectors/loop_subdivision_projectors.h"
 #include "lib_grid/algorithms/refinement/refinement_projectors/fractal_projector.h"
+#include "lib_grid/callbacks/callbacks.h"
 
 namespace ug{
 namespace promesh{

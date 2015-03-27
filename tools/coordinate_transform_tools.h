@@ -10,8 +10,8 @@
 #include "lib_grid/algorithms/subdivision/subdivision_loop.h"
 #include "lib_grid/algorithms/selection_util.h"
 #include "lib_grid/algorithms/smoothing/manifold_smoothing.h"
-#include "lib_grid/algorithms/callback_util.h"
 #include "lib_grid/algorithms/trees/kd_tree_static.h"
+#include "lib_grid/callbacks/callbacks.h"
 
 #define	TOOLTIP_GET_SELECTION_CENTER ""
 #define TOOLTIP_SET_SELECTION_CENTER ""

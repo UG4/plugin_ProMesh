@@ -14,8 +14,8 @@
 #include "lib_grid/algorithms/mark_util.h"
 #include "lib_grid/algorithms/problem_detection_util.h"
 #include "lib_grid/algorithms/selection_util.h"
-#include "lib_grid/algorithms/callback_util.h"
 #include "lib_grid/algorithms/crease_util.h"
+#include "lib_grid/callbacks/callbacks.h"
 
 //selection tools
 #define	TOOLTIP_SELECT_LINKED_MANIFOLD_FACES "Selects faces linked with the selection, not crossing non-manifold edges." //?
