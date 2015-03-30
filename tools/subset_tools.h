@@ -347,18 +347,10 @@ inline void CopySubsetIndicesToSides(Mesh* obj, bool selectionOnly,
 
 	if(selectionOnly){
 		Selector& sel = obj->selector();
-		CopySubsetIndicesToSides(sh, sel.begin<Volume>(), sel.end<Volume>(), toUnassignedOnly);
-		CopySubsetIndicesToSides(sh, sel.begin<Face>(), sel.end<Face>(), toUnassignedOnly);
-		CopySubsetIndicesToSides(sh, sel.begin<Edge>(), sel.end<Edge>(), toUnassignedOnly);
-		CopySubsetIndicesToSides(sh, sel.begin<Vertex>(), sel.end<Vertex>(), toUnassignedOnly);
+		CopySubsetIndicesToSides(sh, sel.get_grid_objects(), toUnassignedOnly);
 	}
 	else{
-		for(int i = 0; i < sh.num_subsets(); ++i){
-			CopySubsetIndicesToSides(sh, sh.begin<Volume>(i), sh.end<Volume>(i), toUnassignedOnly);
-			CopySubsetIndicesToSides(sh, sh.begin<Face>(i), sh.end<Face>(i), toUnassignedOnly);
-			CopySubsetIndicesToSides(sh, sh.begin<Edge>(i), sh.end<Edge>(i), toUnassignedOnly);
-			CopySubsetIndicesToSides(sh, sh.begin<Vertex>(i), sh.end<Vertex>(i), toUnassignedOnly);
-		}
+		CopySubsetIndicesToSides(sh, toUnassignedOnly);
 	}
 }
 
