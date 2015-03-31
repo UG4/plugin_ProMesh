@@ -121,6 +121,8 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 				TOOLTIP_ADJUST_EDGE_LENGTH)
 			.add_function("AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp, "",
 				"mesh # radius # threshold", TOOLTIP_ADAPT_SURFACE_TO_CYLINDER)
+			.add_function("ReplaceValence3Vertices", &ReplaceValence3Vertices, grp, "",
+				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_VALENCE_3_VERTICES)
 			.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
 				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
 

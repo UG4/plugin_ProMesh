@@ -482,6 +482,13 @@ inline void ReplaceLowValenceVertices(Mesh* obj, number maxSquaredHeightToBaseAr
 						   maxSquaredHeightToBaseAreaRatio, obj->position_accessor());
 }
 
+inline void ReplaceValence3Vertices(Mesh* obj, number maxSquaredHeightToBaseAreaRatio)
+{
+	Selector& sel = obj->selector();
+	ug::ReplaceValence3Vertices(obj->grid(), sel.begin<Vertex>(), sel.end<Vertex>(),
+						   maxSquaredHeightToBaseAreaRatio, obj->position_accessor());
+}
+
 inline void MeshLayers(Mesh* m, const RasterLayers& layers)
 {
 	MeshLayers(m->grid(), layers, m->position_accessor(), &m->subset_handler());

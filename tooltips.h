@@ -42,6 +42,7 @@
 #define	TOOLTIP_RETRIANGULATE "Inserts vertices as required and performs Constrained Delaunay triangulation."
 #define	TOOLTIP_ADJUST_EDGE_LENGTH "Remeshes the active grid so that all edges approximatly have a certain length."
 #define	TOOLTIP_ADAPT_SURFACE_TO_CYLINDER "Introduces edges in a grid around a selected vertex which roughly correspond to the intersection of a cylinder with the surface."
+#define TOOLTIP_REPLACE_VALENCE_3_VERTICES "Replaces selected valence-3 vertices by triangles, if the curvature of associated triangles is low"
 #define TOOLTIP_REPLACE_LOW_VALENCE_VERTICES "Replaces selected valence-3 and valence-4 vertices by triangles, if the curvature of associated triangles is low"
 #define	TOOLTIP_TETRAHEDRALIZE "Fills a closed surface with tetrahedrons using TetGen."
 #define	TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS "Assigns volume constraints to selected tetrahedrons."
