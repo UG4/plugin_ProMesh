@@ -283,6 +283,13 @@ inline void AdaptSurfaceToCylinder(Mesh* obj, number radius, number threshold)
 	}
 }
 
+inline void ConvertToTetrahedra(Mesh* obj)
+{
+	ConvertToTetrahedra(obj->grid(),
+						obj->selector().begin<Volume>(),
+						obj->selector().end<Volume>());
+}
+
 inline void Tetrahedralize(Mesh* obj, number quality, bool preserveOuter, bool preserveAll,
 					bool separateVolumes, bool appendSubsetsAtEnd, int verbosity)
 {

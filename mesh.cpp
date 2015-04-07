@@ -28,7 +28,7 @@ void Mesh::init()
 	m_grid.attach_to_faces(aNormal, true);
 	m_aaNorm.access(m_grid, aNormal);
 	m_subsetHandler.assign_grid(m_grid);
-	m_subsetHandler.enable_strict_inheritance(true);
+	m_subsetHandler.enable_strict_inheritance(false);
 	m_creaseHandler.assign_grid(m_grid);
 	m_creaseHandler.subset_info(REM_CREASE).name = "crease";
 	m_creaseHandler.subset_info(REM_FIXED).name = "fixed";

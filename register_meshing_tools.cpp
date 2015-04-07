@@ -126,8 +126,11 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 			.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
 				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
 
-		grp = baseGrp + "/Remeshing/Tetgen";
-		reg.add_function("Tetrahedralize", &Tetrahedralize, grp, "",
+		grp = baseGrp + "/Remeshing/Tetrahedra";
+		reg.add_function("ConvertToTetrahedra",
+				static_cast<void (*)(Mesh*)>(&ConvertToTetrahedra), grp, "",
+				"mesh", TOOLTIP_CONVERT_TO_TETRAHEDRA)
+			.add_function("Tetrahedralize", &Tetrahedralize, grp, "",
 				"mesh # quality # preserve outer # preserve all # "
 				"separate volumes # append subsets at end # verbosity", TOOLTIP_TETRAHEDRALIZE)
 			.add_function("AssignVolumeConstraints", &AssignVolumeConstraints, grp, "",

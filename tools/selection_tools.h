@@ -83,6 +83,8 @@
 #define TOOLTIP_SELECT_LINKED_FACES "Repeatedly selects all faces which are edge-neighbors of selected faces."
 #define TOOLTIP_SELECT_LINKED_VOLUMES "Repeatedly selects all volumes which are face-neighbors of selected volumes."
 #define TOOLTIP_SELECT_SHORT_POLYCHAINS "Selects polygonal chains which are shorter than the given threshold."
+#define TOOLTIP_SELECT_INTERFACE_ELEMENTS "Selects elements which are adjacent to higher dimensional elements of different subsets."
+
 
 namespace ug{
 namespace promesh{
@@ -271,6 +273,16 @@ inline void CloseSelection(Mesh* obj)
 	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
 	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
 	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+}
+
+
+template <class TElem>
+inline void SelectInterfaceElements(Mesh* obj, bool regardSelectedNbrsOnly)
+{
+	Grid& g = obj->grid();
+	SelectInterfaceElements(obj->selector(), obj->subset_handler(),
+							g.begin<TElem>(), g.end<TElem>(),
+							regardSelectedNbrsOnly);
 }
 
 

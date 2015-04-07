@@ -77,7 +77,9 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp, "",
 				"mesh # min # max", TOOLTIP_SELECT_VERTEX_IN_BOX)
 			.add_function("SelectVerticesInCylinder", &SelectElementsInCylinder<Vertex>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_VERTEX_IN_CYLINDER);
+				"mesh # base # top # radius", TOOLTIP_SELECT_VERTEX_IN_CYLINDER)
+			.add_function("SelectInterfaceVertices", &SelectInterfaceElements<Vertex>, grp, "",
+				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS);
 
 		grp = baseGrp + "/Edges";
 		reg.add_function("SelectEdgeByCoordinate", &SelectElemByCoordinate<Edge>, grp, "",
@@ -121,7 +123,9 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectEdgesInBox", &SelectElementsInBox<Edge>, grp, "",
 				"mesh # min # max", TOOLTIP_SELECT_EDGE_IN_BOX)  
 			.add_function("SelectEdgesInCylinder", &SelectElementsInCylinder<Edge>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_EDGE_IN_CYLINDER);
+				"mesh # base # top # radius", TOOLTIP_SELECT_EDGE_IN_CYLINDER)
+			.add_function("SelectInterfaceEdges", &SelectInterfaceElements<Edge>, grp, "",
+				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS);
 			
 		grp = baseGrp + "/Faces";
 		reg.add_function("SelectFaceByCoordinate", &SelectElemByCoordinate<Face>, grp, "",
@@ -162,7 +166,9 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectFacesInBox", &SelectElementsInBox<Face>, grp, "",
 				"mesh # min # max", TOOLTIP_SELECT_FACE_IN_BOX)
 			.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_FACE_IN_CYLINDER);
+				"mesh # base # top # radius", TOOLTIP_SELECT_FACE_IN_CYLINDER)
+			.add_function("SelectInterfaceFaces", &SelectInterfaceElements<Face>, grp, "",
+				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS);
 
 		grp = baseGrp + "/Volumes";
 		reg.add_function("SelectVolumeByCoordinate", &SelectElemByCoordinate<Volume>, grp, "",
