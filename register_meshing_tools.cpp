@@ -64,7 +64,9 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 				"mesh # layers",
 				TOOLTIP_MESH_LAYER_BOUNDARIES)
 			.add_function("ExtrudeLayers", &ExtrudeLayers, grp, "",
-				"mesh # layers",
+				"mesh #"
+				"layers #"
+				"allow for tets and pyras | default | value = true",
 				TOOLTIP_EXTRUDE_LAYERS);
 		
 	//	refinement

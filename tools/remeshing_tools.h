@@ -506,9 +506,9 @@ inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
 	MeshLayerBoundaries(m->grid(), layers, m->position_accessor(), &m->subset_handler());
 }
 
-inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers){
+inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers, bool allowForTetsAndPyras){
 	ExtrudeLayers(obj->grid(), layers, obj->position_accessor(),
-				  obj->subset_handler());
+				  obj->subset_handler(), allowForTetsAndPyras);
 }
 
 }}// end of namespace
