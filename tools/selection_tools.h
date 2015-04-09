@@ -9,12 +9,13 @@
 #include <stack>
 #include "../mesh.h"
 #include "common/node_tree/node_tree.h"
-#include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
-#include "lib_grid/algorithms/trees/octree.h"
+#include "lib_grid/algorithms/crease_util.h"
 #include "lib_grid/algorithms/mark_util.h"
 #include "lib_grid/algorithms/problem_detection_util.h"
+#include "lib_grid/algorithms/refinement_mark_util.h"
 #include "lib_grid/algorithms/selection_util.h"
-#include "lib_grid/algorithms/crease_util.h"
+#include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
+#include "lib_grid/algorithms/trees/octree.h"
 #include "lib_grid/callbacks/callbacks.h"
 
 //selection tools
@@ -84,7 +85,7 @@
 #define TOOLTIP_SELECT_LINKED_VOLUMES "Repeatedly selects all volumes which are face-neighbors of selected volumes."
 #define TOOLTIP_SELECT_SHORT_POLYCHAINS "Selects polygonal chains which are shorter than the given threshold."
 #define TOOLTIP_SELECT_INTERFACE_ELEMENTS "Selects elements which are adjacent to higher dimensional elements of different subsets."
-
+#define TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS "Selects elements and associated long edges wich have a shortest-to-longest edge ratio smaller than the specified one."
 
 namespace ug{
 namespace promesh{
@@ -283,6 +284,20 @@ inline void SelectInterfaceElements(Mesh* obj, bool regardSelectedNbrsOnly)
 	SelectInterfaceElements(obj->selector(), obj->subset_handler(),
 							g.begin<TElem>(), g.end<TElem>(),
 							regardSelectedNbrsOnly);
+}
+
+
+template <class TElem>
+inline void SelectAnisotropicElements(Mesh* obj, number minEdgeRatio)
+{
+	Grid& g = obj->grid();
+	MarkForAnisotropicRefinement(
+		g,
+		obj->selector(),
+		minEdgeRatio,
+		g.begin<TElem>(),
+		g.end<TElem>(),
+		obj->position_accessor());
 }
 
 

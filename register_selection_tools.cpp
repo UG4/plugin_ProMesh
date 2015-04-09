@@ -168,7 +168,9 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "",
 				"mesh # base # top # radius", TOOLTIP_SELECT_FACE_IN_CYLINDER)
 			.add_function("SelectInterfaceFaces", &SelectInterfaceElements<Face>, grp, "",
-				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS);
+				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS)
+			.add_function("SelectAnisotropicFaces", &SelectAnisotropicElements<Face>, grp, "",
+				"mesh # minEdgeRation | default | 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS);
 
 		grp = baseGrp + "/Volumes";
 		reg.add_function("SelectVolumeByCoordinate", &SelectElemByCoordinate<Volume>, grp, "",
@@ -192,7 +194,9 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 			.add_function("SelectVolumesInBox", &SelectElementsInBox<Volume>, grp, "",
 				"mesh # min # max", TOOLTIP_SELECT_VOLUME_IN_BOX)
 			.add_function("SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
+				"mesh # base # top # radius", TOOLTIP_SELECT_VOLUME_IN_CYLINDER)
+			.add_function("SelectAnisotropicVolumes", &SelectAnisotropicElements<Volume>, grp, "",
+				"mesh # minEdgeRation | default | 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS);
 
 
 		grp = baseGrp + "/Marks";
