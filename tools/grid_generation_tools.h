@@ -453,10 +453,10 @@ inline void CreateTetrahedron(Mesh* obj, int subsetInd, bool createVol)
 	for(size_t i = 0; i < 4; ++i)
 		vrts[i] = *grid.create<RegularVertex>();
 
-	aaPos[vrts[0]] = vector3(1, 1, 1);
-	aaPos[vrts[1]] = vector3(-1, -1, 1);
-	aaPos[vrts[2]] = vector3(-1, 1, -1);
-	aaPos[vrts[3]] = vector3(1, -1, -1);
+	aaPos[vrts[0]] = vector3(0, 0, 0);
+	aaPos[vrts[1]] = vector3(1, 0, 0);
+	aaPos[vrts[2]] = vector3(0, 1, 0);
+	aaPos[vrts[3]] = vector3(0, 0, 1);
 
 //	we'll use a hexahedron and let it create all faces
 	Tetrahedron tet(vrts[0], vrts[1], vrts[2], vrts[3]);
