@@ -9,6 +9,7 @@
 #include "lib_grid/file_io/file_io.h"
 #include "lib_grid/file_io/file_io_ug.h"
 #include "lib_grid/file_io/file_io_ugx.h"
+#include "lib_grid/grid/attachment_io_handler.h"
 
 //	file io
 #define TOOLTIP_LOAD_MESH "Loads a Mesh from File. The format is automatically recognized by the filname's suffix. Supported formats are: (ugx, vtu (ascii), obj, stl (ascii and binary), lgm, ng, ele, msh, asc, net, art)."
@@ -72,6 +73,7 @@ inline bool SaveMesh(Mesh* obj, const char* filename)
 		ugxWriter.add_subset_handler(obj->subset_handler(), "defSH", 0);
 		ugxWriter.add_subset_handler(obj->crease_handler(), "markSH", 0);
 		ugxWriter.add_selector(obj->selector(), "defSel", 0);
+
 		return ugxWriter.write_to_file(filename);
 	}
 	else
