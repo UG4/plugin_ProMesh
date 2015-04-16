@@ -9,7 +9,6 @@
 #include "lib_grid/file_io/file_io.h"
 #include "lib_grid/file_io/file_io_ug.h"
 #include "lib_grid/file_io/file_io_ugx.h"
-#include "lib_grid/grid/attachment_io_handler.h"
 
 //	file io
 #define TOOLTIP_LOAD_MESH "Loads a Mesh from File. The format is automatically recognized by the filname's suffix. Supported formats are: (ugx, vtu (ascii), obj, stl (ascii and binary), lgm, ng, ele, msh, asc, net, art)."
