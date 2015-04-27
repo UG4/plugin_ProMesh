@@ -395,6 +395,7 @@ inline void Extrude(Mesh* obj, const vector3& totalDir, int numSteps,
 	sel.clear<Vertex>();
 	sel.clear<Edge>();
 	sel.clear<Face>();
+	sel.clear<Volume>();
 	sel.select(vrts.begin(), vrts.end());
 	sel.select(edges.begin(), edges.end());
 	sel.select(faces.begin(), faces.end());
