@@ -19,14 +19,29 @@ inline void AssignSubset(Mesh* obj, int newIndex)
 	Selector& sel = obj->selector();
 	SubsetHandler& sh = obj->subset_handler();
 
-	sh.assign_subset(sel.begin<Vertex>(),
-					 sel.end<Vertex>(), newIndex);
-	sh.assign_subset(sel.begin<Edge>(),
-					 sel.end<Edge>(), newIndex);
-	sh.assign_subset(sel.begin<Face>(),
-					 sel.end<Face>(), newIndex);
-	sh.assign_subset(sel.begin<Volume>(),
-					 sel.end<Volume>(), newIndex);
+	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), newIndex);
+	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), newIndex);
+	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), newIndex);
+	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
+}
+
+inline void AssignSubset(Mesh* obj, int newIndex, bool vertices, bool edges,
+						 bool faces, bool volumes)
+{
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	if(vertices)
+		sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), newIndex);
+
+	if(edges)
+		sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), newIndex);
+	
+	if(faces)
+		sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), newIndex);
+
+	if(volumes)
+		sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
 }
 
 inline void SetSubsetName(Mesh* obj, int si, const char* name)

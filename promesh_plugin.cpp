@@ -32,8 +32,12 @@ static void RegisterMisc(Registry& reg, string baseGrp)
 
 //	subset tools
 	grp = baseGrp + "/Subsets";
-	reg.add_function("AssignSubset", &AssignSubset, grp, "",
+	reg.add_function("AssignSubset",
+			static_cast<void (*)(Mesh*, int)>(&AssignSubset), grp, "",
 			"mesh # subset index", TOOLTIP_ASSIGN_SUBSET)
+		.add_function("AssignSubset",
+			static_cast<void (*)(Mesh*, int, bool, bool, bool, bool)>(&AssignSubset), grp, "",
+			"mesh # subset index # assign vertices # assign edges # assign faces # assign volumes", TOOLTIP_ASSIGN_SUBSET)
 		.add_function("SetSubsetName", &SetSubsetName, grp, "",
 			"mesh # subset index # name ", TOOLTIP_SET_SUBSET_NAME)
 		.add_function("AssignSubsetColors", &AssignSubsetColors, grp, "", "mesh", TOOLTIP_ASSIGN_SUBSET_COLORS)
