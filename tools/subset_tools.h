@@ -345,7 +345,7 @@ inline void SeparateDegeneratedBoundaryFaceSubsets(Mesh* obj, number angle)
 inline void AssignSubsetsByElementType(Mesh* obj)
 {
 	SubsetHandler& sh = obj->subset_handler();
-	AssignSubsetsByElementType(sh);
+	AssignSubsetsByElementType(sh, obj->selector().get_grid_objects());
 	int i = 0;
 	while(i < sh.num_subsets()){
 		if(sh.empty(i))
