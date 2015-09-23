@@ -974,6 +974,10 @@ inline void MarkSelection(Mesh* obj)
 		obj->selector().begin<Edge>(),
 		obj->selector().end<Edge>(),
 		ug::REM_CREASE);
+	obj->crease_handler().assign_subset(
+		obj->selector().begin<Face>(),
+		obj->selector().end<Face>(),
+		ug::REM_CREASE);
 }
 
 inline void UnmarkSelection(Mesh* obj)

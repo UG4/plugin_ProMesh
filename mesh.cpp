@@ -6,7 +6,7 @@
 namespace ug{
 namespace promesh{
 
-Mesh::Mesh() : m_creaseHandler(SHE_VERTEX | SHE_EDGE)
+Mesh::Mesh() : m_creaseHandler(SHE_VERTEX | SHE_EDGE | SHE_FACE)
 {
 	init();
 }
