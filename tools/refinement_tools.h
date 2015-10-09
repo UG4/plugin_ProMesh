@@ -75,6 +75,12 @@ inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	APosition aTmpPos;
 	grid.attach_to_vertices(aTmpPos);
 
+	CopyAttachments(grid, sel.begin<Vertex>(),
+						sel.end<Vertex>(),
+						aPosition, aTmpPos);
+
+	CopyAttachments(grid, grid.begin<Vertex>(), grid.end<Vertex>(), aPosition, aTmpPos);
+
 	SubdivisionLoopProjector<APosition>
 		refCallbackLoop(grid, aPosition, aTmpPos);
 
@@ -85,7 +91,6 @@ inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	CopyAttachments(grid, sel.begin<Vertex>(),
 						sel.end<Vertex>(),
 						aTmpPos, aPosition);
-
 
 	grid.detach_from_vertices(aTmpPos);
 
