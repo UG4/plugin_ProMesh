@@ -79,6 +79,7 @@
 #define	TOOLTIP_DESELECT_ALL_VOLUMES "Deselects all volumes of the current grid"
 #define	TOOLTIP_SELECT_MARKED_VERTICES "Selects vertices which are marked."
 #define	TOOLTIP_SELECT_MARKED_EDGES "Selects edges which are marked."
+#define	TOOLTIP_SELECT_MARKED_FACES "Selects faces which are marked."
 #define	TOOLTIP_SELECT_UNORIENTABLE_VOLUMES "Selects all volumes whose orientation can not be determined"
 #define	TOOLTIP_EXTEND_SELECTION "Selects neighbors of selected elements."
 #define	TOOLTIP_SELECT_VERTEX_BY_INDEX "Selects a vertex given its index."
@@ -629,6 +630,13 @@ inline void SelectInnerFaces(Mesh* obj)
 	Grid& grid = obj->grid();
 	Selector& sel = obj->selector();
 	SelectInnerElements(sel, grid.begin<Face>(), grid.end<Face>());
+}
+
+inline void SelectMarkedFaces(Mesh* obj)
+{
+	obj->selector().select(
+		obj->crease_handler().begin<Face>(REM_CREASE),
+		obj->crease_handler().end<Face>(REM_CREASE));
 }
 
 inline void SelectLinkedManifoldFaces(Mesh* obj)

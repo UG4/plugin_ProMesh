@@ -165,6 +165,8 @@ void RegisterSelectionTools(Registry& reg, string baseGrp)
 				"mesh", TOOLTIP_SELECT_BOUNDARY_FACES)
 			.add_function("SelectInnerFaces", &SelectInnerFaces, grp, "",
 				"mesh", TOOLTIP_SELECT_INNER_FACES)
+			.add_function("SelectMarkedFaces", &SelectMarkedFaces, grp, "",
+				"mesh", TOOLTIP_SELECT_MARKED_FACES)
 			.add_function("SelectLinkedFaces", &SelectLinkedElements<Face>, grp, "",
 				"mesh", TOOLTIP_SELECT_LINKED_FACES)
 			.add_function("SelectLinkedManifoldFaces", &SelectLinkedManifoldFaces, grp, "",
