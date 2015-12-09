@@ -47,7 +47,7 @@ namespace promesh{
 
 ///	helper function to register mesh-element-iterators
 template <class TElem>
-static void RegisterElementIterators(Registry& reg, string name, string grp)
+static void RegisterElementIterators(ProMeshRegistry& reg, string name, string grp)
 {
 	typedef ElementIterator<TElem> iter_t;
 	reg.add_class_<iter_t>(name, grp, TOOLTIP_ITERATOR)
@@ -71,7 +71,7 @@ static void RegisterMeshIteratorMethods(ExportedClass<Mesh>& cls, string elemNam
 		.add_method(elemName + "_subset_end", &Mesh::subset_end<TElem>);
 }
 
-void RegisterMesh(Registry& reg, string baseGrp)
+void RegisterMesh(ProMeshRegistry& reg, string baseGrp)
 {
 	try{
 		string grp = baseGrp;

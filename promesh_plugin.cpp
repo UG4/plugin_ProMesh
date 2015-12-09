@@ -31,13 +31,16 @@
  */
 
 #include "mesh.h"
+#include "promesh_plugin.h"
+#include "promesh_registry.h"
+#include "registration_routines.h"
+#include "tooltips.h"
+
 #include "tools/file_io_tools.h"
 #include "tools/new_tools.h"
 #include "tools/subset_tools.h"
 #include "tools/measure_tools.h"
 #include "bridge/util.h"
-#include "tooltips.h"
-#include "registration_routines.h"
 
 using namespace std;
 using namespace ug::bridge;
@@ -45,18 +48,26 @@ using namespace ug::bridge;
 namespace ug{
 namespace promesh{
 
-static void RegisterMisc(Registry& reg, string baseGrp)
+static ProMeshRegistry* g_promeshRegistry = NULL;
+
+ProMeshRegistry&
+GetProMeshRegistry()
+{
+	return *g_promeshRegistry;
+}
+
+static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 {
 	string grp;
 
 //	file io
 	grp = baseGrp + "/File IO";
 	reg.add_function("LoadMesh", &LoadMesh, grp, "",
-			"mesh # filename", TOOLTIP_LOAD_MESH)
+			"mesh # filename", TOOLTIP_LOAD_MESH, "", RT_NO_PROMESH)
 		.add_function("SaveMesh", &SaveMesh, grp, "",
-			"mesh # filename", TOOLTIP_SAVE_MESH)
+			"mesh # filename", TOOLTIP_SAVE_MESH, "", RT_NO_PROMESH)
 		.add_function("ExportToUG3", &ExportToUG3, grp, "",
-			"mesh # filenamePrefix # lgmName # problemName", TOOLTIP_EXPORT_TO_UG3);
+			"mesh # filenamePrefix # lgmName # problemName", TOOLTIP_EXPORT_TO_UG3, "", RT_NO_PROMESH);
 
 //	subset tools
 	grp = baseGrp + "/Subsets";
@@ -137,7 +148,8 @@ static void RegisterMisc(Registry& reg, string baseGrp)
 		.add_method("min", &Box::get_min)
 		.add_method("max", &Box::get_max);
 
-	reg.add_function("GetBoundingBox", &GetBoundingBox, grp, "", "", TOOLTIP_GET_BOUNDING_BOX);
+	reg.add_function("GetBoundingBox", &GetBoundingBox, grp, "", "",
+					 TOOLTIP_GET_BOUNDING_BOX, "", RT_NO_PROMESH);
 }
 
 } // end namespace promesh
@@ -153,11 +165,15 @@ InitUGPlugin_ProMesh(Registry* reg, string grp)
 	grp.append("promesh");
 
 	try{
-		RegisterMesh(*reg, grp);
-		RegisterCoordinateTransformTools(*reg, grp);
-		RegisterSelectionTools(*reg, grp);
-		RegisterMeshingTools(*reg, grp);
-		RegisterMisc(*reg, grp);
+		if(g_promeshRegistry == NULL)
+			g_promeshRegistry = new ProMeshRegistry(reg);
+
+		ProMeshRegistry& pmreg = GetProMeshRegistry();
+		RegisterMesh(pmreg, grp);
+		RegisterCoordinateTransformTools(pmreg, grp);
+		RegisterSelectionTools(pmreg, grp);
+		RegisterMeshingTools(pmreg, grp);
+		RegisterMisc(pmreg, grp);
 	}
 	UG_REGISTRY_CATCH_THROW(grp);
 }

@@ -42,12 +42,12 @@
 #include "lib_grid/callbacks/callbacks.h"
 
 #define	TOOLTIP_GET_SELECTION_CENTER ""
-#define TOOLTIP_SET_SELECTION_CENTER ""
-#define TOOLTIP_MOVE_ALONG_NORMAL ""
-#define TOOLTIP_SCALE_AROUND_CENTER ""
-#define TOOLTIP_SCALE_AROUND_PIVOT ""
-#define TOOLTIP_ROTATE_AROUND_CENTER ""
-#define TOOLTIP_ROTATE_AROUND_PIVOT ""
+#define TOOLTIP_MOVE_SELECTION_TO "Moves the selected elements so that the new selection center will lie at the specified position."
+#define TOOLTIP_MOVE_ALONG_NORMAL "Moves selected vertices along their normal by the specified offset."
+#define TOOLTIP_SCALE_AROUND_CENTER "Scales the selected elements around the center of the current selection."
+#define TOOLTIP_SCALE_AROUND_PIVOT "Scales the selected elements around the pivot of the mesh."
+#define TOOLTIP_ROTATE_AROUND_CENTER "Rotates the selected elements around the center of the current selection."
+#define TOOLTIP_ROTATE_AROUND_PIVOT "Rotates the selected elements around the pivot of the mesh."
 #define	TOOLTIP_COORDINATES "Coordinates of the center of the current selection"
 #define	TOOLTIP_MOVE "Moves selected vertices."
 #define TOOLTIP_MOVE_MESH_TO "Moves the active mesh and its pivot, so that the pivot will be located on the specified position."
@@ -81,7 +81,7 @@ inline bool GetSelectionCenter(Mesh* obj, vector3& centerOut)
 }
 
 
-inline bool SetSelectionCenter(Mesh* obj, const vector3& center)
+inline bool MoveSelectionTo(Mesh* obj, const vector3& center)
 {
 	vector3 oldCenter;
 	if(GetSelectionCenter(obj, oldCenter)){
@@ -141,6 +141,11 @@ inline void MoveAlongNormal(Mesh* obj, number offset, bool usePrecalculatedNorma
 
 		VecScaleAdd(p, 1., p, offset, n);
 	}
+}
+
+inline void MoveAlongNormal(Mesh* obj, number offset)
+{
+	MoveAlongNormal(obj, offset, true);
 }
 
 inline void ScaleAroundCenter(Mesh* obj, const vector3& scale)

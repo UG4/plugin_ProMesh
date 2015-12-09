@@ -30,19 +30,17 @@
  * GNU Lesser General Public License for more details.
  */
 
-#ifndef __H__UG_registration_routines
-#define __H__UG_registration_routines
+#ifndef __H__UG_promesh_plugin
+#define __H__UG_promesh_plugin
 
-#include <string>
 #include "promesh_registry.h"
 
 namespace ug{
 namespace promesh{
-	void RegisterMesh(ProMeshRegistry& reg, std::string grp);
-	void RegisterCoordinateTransformTools(ProMeshRegistry& reg, std::string grp);
-	void RegisterSelectionTools(ProMeshRegistry& reg, std::string grp);
-	void RegisterMeshingTools(ProMeshRegistry& reg, std::string grp);
-}//	end of namespace
+UG_API ProMeshRegistry&
+GetProMeshRegistry();
+
+}// end of namespace
 }//	end of namespace
 
-#endif	//__H__registration_routines
+#endif	//__H__UG_promesh_plugin

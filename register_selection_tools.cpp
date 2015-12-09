@@ -43,7 +43,7 @@ using namespace ug::bridge;
 namespace ug{
 namespace promesh{
 
-void RegisterSelectionTools(Registry& reg, string baseGrp)
+void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 {
 	baseGrp.append("/Selection");
 	try{

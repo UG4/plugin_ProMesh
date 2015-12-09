@@ -46,15 +46,15 @@ using namespace ug::bridge;
 namespace ug{
 namespace promesh{
 
-void RegisterMeshingTools(Registry& reg, string baseGrp)
+void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 {
 	try{
 		string grp;
 		grp = baseGrp + "/Grid Generation";
 		reg.add_function("CloneMesh", &CloneMesh, grp, "",
-				"mesh", TOOLTIP_CLONE_MESH)
+				"mesh", TOOLTIP_CLONE_MESH, "", RT_NO_PROMESH)
 			.add_function("CopySelection", &CopySelection, grp, "",
-				"srcMesh # targetMesh", TOOLTIP_COPY_SELECTION);
+				"srcMesh # targetMesh", TOOLTIP_COPY_SELECTION, "", RT_NO_PROMESH);
 
 		grp = baseGrp + "/Grid Generation/Basic Elements";
 		reg.add_function("CreateVertex", &CreateVertex, grp, "",
@@ -71,7 +71,7 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 				"mesh # upLeft # upRight # lowLeft # lowRight # subset index # fill",
 				TOOLTIP_CREATE_PLANE)
 			.add_function("CreateCircle", &CreateCircle, grp, "",
-				"mesh # center # radius # num rim vertices # subset index # fill",
+				"mesh # center # radius || value=1 # num rim vertices || value=12 # subset index # fill",
 				TOOLTIP_CREATE_CIRCLE)
 			.add_function("CreateBox", &CreateBox, grp, "",
 				"mesh # boxMin # boxMax # subset index # create volume", TOOLTIP_CREATE_BOX)
@@ -87,16 +87,14 @@ void RegisterMeshingTools(Registry& reg, string baseGrp)
 	//	layer meshing
 		grp = baseGrp + "/Raster Layers";
 		reg.add_function("MeshLayers", &MeshLayers, grp, "",
-				"mesh # layers",
-				TOOLTIP_MESH_LAYERS)
+				"mesh # layers", TOOLTIP_MESH_LAYERS, "", RT_NO_PROMESH)
 			.add_function("MeshLayerBoundaries", &MeshLayerBoundaries, grp, "",
-				"mesh # layers",
-				TOOLTIP_MESH_LAYER_BOUNDARIES)
+				"mesh # layers", TOOLTIP_MESH_LAYER_BOUNDARIES, "", RT_NO_PROMESH)
 			.add_function("ExtrudeLayers", &ExtrudeLayers, grp, "",
 				"mesh #"
 				"layers #"
-				"allow for tets and pyras | default | value = true",
-				TOOLTIP_EXTRUDE_LAYERS);
+				"allow for tets and pyras || value = true",
+				TOOLTIP_EXTRUDE_LAYERS, "", RT_NO_PROMESH);
 		
 	//	refinement
 		grp = baseGrp + "/Remeshing/Refinement";
