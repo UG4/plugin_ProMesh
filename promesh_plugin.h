@@ -30,6 +30,12 @@
  * GNU Lesser General Public License for more details.
  */
 
+/** 
+ *  \defgroup promesh ProMesh
+ *  \ingroup plugins
+ *  This plugin provides an interface to lib_grid's meshing algorithms.
+ */
+
 #ifndef __H__UG_promesh_plugin
 #define __H__UG_promesh_plugin
 
@@ -37,9 +43,14 @@
 
 namespace ug{
 namespace promesh{
+
+/// \addtogroup promesh
+/// \{
+
 UG_API ProMeshRegistry&
 GetProMeshRegistry();
 
+/// \}
 }// end of namespace
 }//	end of namespace
 

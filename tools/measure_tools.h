@@ -39,6 +39,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 inline number MeasureGridLength(Mesh* obj)
 {
 	return CalculateVolume(obj->grid().begin<Edge>(),
@@ -105,7 +107,7 @@ inline number MeasureSelectionVolume(Mesh* obj)
 						   obj->selector().end<Volume>(),
 						   obj->position_accessor());
 }
-
+/// \}
 }//	end of namespace promesh
 }//	end of namespace ug
 

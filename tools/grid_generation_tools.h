@@ -42,6 +42,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 inline SmartPtr<Mesh> CloneMesh(Mesh* mesh)
 {
 	return make_sp(new Mesh(*mesh));
@@ -596,7 +598,7 @@ inline void CreatePrism(Mesh* obj, int subsetInd, bool createVol)
 	sel.enable_autoselection(autoselEnabled);
 
 }
-
+/// \}
 }}// end of namespace
 
 #endif

@@ -46,6 +46,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 inline bool LoadMesh(Mesh* obj, const char* filename)
 {
 	const char* pSuffix = strrchr(filename, '.');
@@ -135,6 +137,7 @@ inline bool ExportToUG3(Mesh* obj, const char* filenamePrefix, const char* lgmNa
 	return saveOk;
 }
 
+/// \}
 }}// end of namespace
 
 #endif

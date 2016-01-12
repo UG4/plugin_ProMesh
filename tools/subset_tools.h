@@ -42,6 +42,9 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
+
 inline void AssignSubset(Mesh* obj, int newIndex)
 {
 	Selector& sel = obj->selector();
@@ -396,6 +399,8 @@ inline void CopySubsetIndicesToSides(Mesh* obj, bool selectionOnly,
 		CopySubsetIndicesToSides(sh, toUnassignedOnly);
 	}
 }
+
+/// \}
 
 }}// end of namespace
 

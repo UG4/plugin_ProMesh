@@ -51,6 +51,9 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
+
 inline void SimplifyPolylines(Mesh* m, number curvatureThreshold){
 	Grid& grid = m->grid();
 	Selector& sel = m->selector();
@@ -539,6 +542,8 @@ inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers, bool allowForTetsAndP
 	ExtrudeLayers(obj->grid(), layers, obj->position_accessor(),
 				  obj->subset_handler(), allowForTetsAndPyras);
 }
+
+/// \}
 
 }}// end of namespace
 

@@ -40,6 +40,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 enum RegistryTargets{
 	RT_NONE		= 0,
 	RT_UGSCRIPT	= 1,
@@ -194,6 +196,8 @@ class UG_API ProMeshRegistry{
 		bridge::Registry* 	m_reg;
 		ProMeshFunctionSet	m_funcSet;
 };
+
+/// \}
 
 }//	end of namespace
 }//	end of namespace

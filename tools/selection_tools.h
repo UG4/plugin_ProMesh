@@ -119,6 +119,9 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
+
 inline void ClearSelection(Mesh* obj)
 {
 	obj->selector().clear();
@@ -1028,6 +1031,8 @@ inline void UnmarkSelection(Mesh* obj)
 		obj->selector().end<Edge>(),
 		ug::REM_NONE);
 }
+
+/// \}
 
 }}// end of namespace
 

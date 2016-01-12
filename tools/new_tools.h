@@ -40,6 +40,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 class Box{
 	public:
 		void set_min(const vector3& val)	{min = val;}
@@ -132,7 +134,7 @@ inline void SelectElementsInCylinder(Mesh* obj, const vector3& cylBase,
 		}
 	}
 }
-
+/// \}
 }}// end of namespace
 
 #endif

@@ -65,6 +65,8 @@ class ElementIterator{
 };
 
 
+/// \addtogroup promesh
+/// \{
 class Mesh
 {
 	public:
@@ -218,7 +220,7 @@ class Mesh
 
 };
 
-
+/// \}
 }}// end of namespace
 
 #endif

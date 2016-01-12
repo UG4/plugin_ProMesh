@@ -75,6 +75,8 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
 inline bool GetSelectionCenter(Mesh* obj, vector3& centerOut)
 {
 	return CalculateCenter(centerOut, obj->selector(), obj->position_accessor());
@@ -426,6 +428,8 @@ inline void SnapVerticesToVertices(Mesh* obj, Mesh* targetMesh)
 		}
 	}
 }
+
+/// \}
 
 }}// end of namespace
 

@@ -44,6 +44,9 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
+
 inline void EraseSelectedElements(Mesh* obj, bool eraseUnusedVrts,
 						   bool eraseUnusedEdges, bool eraseUnusedFaces)
 {
@@ -424,6 +427,8 @@ inline void ResolveSelfIntersections(Mesh* obj, number snapThreshold)
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
+
+/// \}
 
 }}// end of namespace
 

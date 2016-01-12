@@ -43,6 +43,9 @@
 namespace ug{
 namespace promesh{
 
+/// \addtogroup promesh
+/// \{
+
 inline void Refine(Mesh* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->grid();
@@ -256,6 +259,8 @@ inline void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
 
 	sh.enable_strict_inheritance(siEnabled);
 }
+
+/// \}
 
 }}// end of namespace
 
