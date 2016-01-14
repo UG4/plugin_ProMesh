@@ -135,6 +135,7 @@ inline void SelectElementsInCylinder(Mesh* obj, const vector3& cylBase,
 	}
 }
 /// \}
+
 }}// end of namespace
 
 #endif
