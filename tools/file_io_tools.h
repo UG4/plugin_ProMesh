@@ -34,6 +34,7 @@
 #define __H__UG_PROMESH__file_io_tools__
 
 #include "../mesh.h"
+#include "common/util/file_util.h"
 #include "lib_grid/file_io/file_io.h"
 #include "lib_grid/file_io/file_io_ug.h"
 #include "lib_grid/file_io/file_io_ugx.h"
@@ -57,9 +58,10 @@ inline bool LoadMesh(Mesh* obj, const char* filename)
 	if(strcmp(pSuffix, ".ugx") == 0)
 	{
 	//	load from ugx
+		std::string fullFileName = FindFileInStandardPaths(filename);
 		GridReaderUGX ugxReader;
-		if(!ugxReader.parse_file(filename)){
-			UG_LOG("ERROR in LoadGridFromUGX: File not found: " << filename << std::endl);
+		if(!ugxReader.parse_file(fullFileName.c_str())){
+			UG_LOG("ERROR in LoadGridFromUGX: Couldn't read file: " << fullFileName << std::endl);
 			return false;
 		}
 		else{

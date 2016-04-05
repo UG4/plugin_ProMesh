@@ -61,7 +61,11 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("MoveAlongNormal",
 				static_cast<void(*)(Mesh*, number, bool)>(&MoveAlongNormal),
 				grp, "", "mesh # offset | default | value=0.1D # use precalculated normals",
-				TOOLTIP_MOVE_ALONG_NORMAL, "", RT_NO_PROMESH);
+				TOOLTIP_MOVE_ALONG_NORMAL, "", RT_NO_PROMESH)
+			.add_function("MoveVerticesAlongEdges",
+				&MoveVerticesAlongEdges,
+				grp, "", "mesh # relative offset | default | value=0.5D",
+				TOOLTIP_MOVE_VERTICES_ALONG_EDGES, "", RT_NO_PROMESH);
 
 		grp = baseGrp + string("/Coordinate Transform/Scale");
 		reg.add_function("ScaleAroundCenter", &ScaleAroundCenter, grp, "",

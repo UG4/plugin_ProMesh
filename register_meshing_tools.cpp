@@ -99,7 +99,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 	//	refinement
 		grp = baseGrp + "/Remeshing/Refinement";
 		reg.add_function("Refine", &Refine, grp, "",
-				"mesh # strict subset inheritance", TOOLTIP_REFINE)
+				"mesh # strict subset inheritance # use snap points", TOOLTIP_REFINE)
 			.add_function("HangingNodeRefine", &HangingNodeRefine, grp, "",
 				"mesh # strict subset inheritance # anisotropic", TOOLTIP_HANGING_NODE_REFINE)
 			.add_function("RefineSmooth", &RefineSmooth, grp, "",

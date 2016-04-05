@@ -146,7 +146,9 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 		.add_method("set_min", &Box::set_min)
 		.add_method("set_max", &Box::set_max)
 		.add_method("min", &Box::get_min)
-		.add_method("max", &Box::get_max);
+		.add_method("max", &Box::get_max)
+		.add_method("local_to_global", &Box::local_to_global)
+		.add_method("global_to_local", &Box::global_to_local);
 
 	reg.add_function("GetBoundingBox", &GetBoundingBox, grp, "", "",
 					 TOOLTIP_GET_BOUNDING_BOX, "", RT_NO_PROMESH);

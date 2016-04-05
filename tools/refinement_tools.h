@@ -46,7 +46,7 @@ namespace promesh{
 /// \addtogroup promesh
 /// \{
 
-inline void Refine(Mesh* obj, bool strictSubsetInheritance)
+inline void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 {
 	Grid& grid = obj->grid();
 	Selector& sel = obj->selector();
@@ -54,7 +54,7 @@ inline void Refine(Mesh* obj, bool strictSubsetInheritance)
 	bool siEnabled = sh.strict_inheritance_enabled();
 	sh.enable_strict_inheritance(strictSubsetInheritance);
 
-	Refine(grid, sel);
+	Refine(grid, sel, NULL, useSnapPoints);
 
 	sh.enable_strict_inheritance(siEnabled);
 }

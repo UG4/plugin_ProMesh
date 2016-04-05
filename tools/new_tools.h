@@ -49,6 +49,25 @@ class Box{
 		const vector3& get_min() const		{return min;}
 		const vector3& get_max() const		{return max;}
 
+		void global_to_local (const vector3& glob, vector3& locOut)
+		{
+			for(size_t i = 0; i < 3; ++i){
+				number d = max[i] - min[i];
+				if(d != 0)
+					locOut[i] = (glob[i] - min[i]) / d;
+				else
+					locOut[i] = 0;
+			}
+		}
+
+		void local_to_global (const vector3& loc, vector3& globOut)
+		{
+			for(size_t i = 0; i < 3; ++i){
+				number d = max[i] - min[i];
+				globOut[i] = loc[i] * d + min[i];
+			}
+		}
+
 		vector3 min;
 		vector3 max;
 };
