@@ -34,9 +34,11 @@
 #define __H__UG__mesh_object__
 
 #include "lib_grid/grid/grid.h"
+#include "lib_grid/grid/geometry.h"
 #include "lib_grid/common_attachments.h"
 #include "lib_grid/selector.h"
 #include "lib_grid/subset_handler.h"
+#include "lib_grid/algorithms/refinement/projectors/projection_handler.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 
 namespace ug{
@@ -94,10 +96,14 @@ class Mesh
 
 		virtual ~Mesh()	{}
 
-		Grid&			grid()				{return m_grid;}
-		SubsetHandler&	subset_handler()	{return m_subsetHandler;}
-		SubsetHandler&	crease_handler()	{return m_creaseHandler;}
-		Selector&		selector()			{return m_selector;}
+		Grid&			grid()						{return m_grid;}
+		SubsetHandler&	subset_handler()			{return m_subsetHandler;}
+		SubsetHandler&	crease_handler()			{return m_creaseHandler;}
+		Selector&		selector()					{return m_selector;}
+		ProjectionHandler&	projection_handler()	{return m_projectionHandler;}
+
+		SmartPtr<Geometry<3, 3> >		geometry()			{return m_geometry;}
+		ConstSmartPtr<Geometry<3, 3> >	geometry() const	{return m_geometry;}
 
 	//	pivot
 		void set_pivot(const vector3& pivot)	{m_pivot = pivot;}
@@ -136,7 +142,6 @@ class Mesh
 				m_aaVolumeConstraint.invalidate();
 			}
 		}
-
 
 	///	element creation and deletion
 		Vertex*	create_vertex(const vector3& p);
@@ -212,11 +217,13 @@ class Mesh
 		SubsetHandler		m_subsetHandler;
 		SubsetHandler		m_creaseHandler;
 		Selector			m_selector;
+		ProjectionHandler	m_projectionHandler;
 		position_accessor_t	m_aaPos;
 		normal_accessor_t	m_aaNorm;
 		vector3				m_pivot;
 		volume_constraint_attachment_t		m_aVolumeConstraint;
 		volume_constraint_accessor_t		m_aaVolumeConstraint;
+		SmartPtr<Geometry<3, 3> >			m_geometry;
 
 };
 

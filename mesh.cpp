@@ -63,6 +63,9 @@ void Mesh::init()
 	m_creaseHandler.subset_info(REM_FIXED).name = "fixed";
 	m_selector.assign_grid(m_grid);
 	m_pivot = vector3(0, 0, 0);
+	m_geometry = make_sp(new Geometry<3, 3>(m_grid, aPosition));
+	m_projectionHandler.set_subset_handler(&m_subsetHandler);
+	m_projectionHandler.set_geometry(m_geometry);
 }
 
 Vertex*	Mesh::

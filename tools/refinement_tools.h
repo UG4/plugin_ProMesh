@@ -35,10 +35,13 @@
 
 #include "../mesh.h"
 #include "lib_grid/algorithms/refinement/regular_refinement.h"
+#include "lib_grid/algorithms/refinement/regular_refinement_new.h"
 #include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
-#include "lib_grid/algorithms/refinement/refinement_projectors/loop_subdivision_projectors.h"
-#include "lib_grid/algorithms/refinement/refinement_projectors/fractal_projector.h"
+#include "lib_grid/algorithms/refinement/projectors/sphere_projector.h"
+#include "lib_grid/algorithms/refinement/refinement_projectors_old/loop_subdivision_projectors.h"
+#include "lib_grid/algorithms/refinement/refinement_projectors_old/fractal_projector.h"
 #include "lib_grid/callbacks/callbacks.h"
+
 
 namespace ug{
 namespace promesh{
@@ -54,7 +57,12 @@ inline void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 	bool siEnabled = sh.strict_inheritance_enabled();
 	sh.enable_strict_inheritance(strictSubsetInheritance);
 
-	Refine(grid, sel, NULL, useSnapPoints);
+	ProjectionHandler& projector = obj->projection_handler();
+
+//	only for testing...
+	// projector.set_projector(1, make_sp(new SphereProjectorNew(obj->geometry(), vector3(0, 0, 0), 1)));
+	
+	RefineNew(grid, sel, &projector, useSnapPoints);
 
 	sh.enable_strict_inheritance(siEnabled);
 }
