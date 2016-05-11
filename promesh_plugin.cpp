@@ -152,6 +152,20 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 
 	reg.add_function("GetBoundingBox", &GetBoundingBox, grp, "", "",
 					 TOOLTIP_GET_BOUNDING_BOX, "", RT_NO_PROMESH);
+
+
+	// reg.add_projector_<RefinementProjector>("default",
+	// 		"Places new vertices at the center of their parent element.")
+	// 	.add_projector_<SphereProjectorNew>("sphere",
+	// 		"Places new vertices on a sphere. The distance of the new vertex to the center "
+	// 		"is thereby calculated as the average distance of the parent's corners "
+	// 		"to the center. The radius property is thereby ignored. The radius property "
+	// 		"is only used during reprojection of associated vertices.")
+	// 	.add_projector_<CylinderProjectorNew>("cylinder",
+	// 		"Places new vertices on a cylinder. The distance of the new vertex to the axis "
+	// 		"is thereby calculated as the average distance of the parent's corners "
+	// 		"to the axis. The radius property is thereby ignored. The radius property "
+	// 		"is only used during reprojection of associated vertices.");
 }
 
 } // end namespace promesh

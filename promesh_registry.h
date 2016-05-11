@@ -33,9 +33,15 @@
 #ifndef __H__UG_promesh_registry
 #define __H__UG_promesh_registry
 
+#include <map>
 #include <set>
 #include <string>
+#include <vector>
 #include "registry/registry.h"
+#include "lib_grid/algorithms/refinement/projectors.h"
+
+#include "boost/mpl/assert.hpp"
+#include "boost/mpl/contains.hpp"
 
 namespace ug{
 namespace promesh{
@@ -52,6 +58,8 @@ enum RegistryTargets{
 	RT_NO_UGSCRIPT = RT_PROMESH
 };
 
+
+namespace detail {
 
 ///	All functions registered in the ProMeshRegistry are encapsulated in a ProMeshFunction
 class UG_API ProMeshFunction{
@@ -88,6 +96,7 @@ class UG_API ProMeshFunction{
 		unsigned int				m_target;
 };
 
+}//	end of namespace detail
 
 ///	Register functions for ug-script and ProMesh through this class
 /** The ProMeshRegistry is a small wrapper for ug::bridge::Registry and allows
@@ -95,7 +104,7 @@ class UG_API ProMeshFunction{
  * ProMesh to automatically generate tools for all registered functions.*/
 class UG_API ProMeshRegistry{
 	public:
-		typedef std::multiset<ProMeshFunction>				ProMeshFunctionSet;
+		typedef std::multiset<detail::ProMeshFunction>		ProMeshFunctionSet;
 		typedef typename ProMeshFunctionSet::iterator		func_iter_t;
 		typedef typename ProMeshFunctionSet::const_iterator	const_func_iter_t;
 
@@ -133,7 +142,7 @@ class UG_API ProMeshRegistry{
 				m_reg->add_and_get_function(
 							funcName, func, group, retValInfos,
 							paramInfos, tooltip, help);
-			m_funcSet.insert(ProMeshFunction(ef, priority, target));
+			m_funcSet.insert(detail::ProMeshFunction(ef, priority, target));
 			return *this;
 		}
 
@@ -183,8 +192,8 @@ class UG_API ProMeshRegistry{
 													className, group, tooltip);
 		}
 
-
-		bridge::Registry* registry();
+	///	returns a pointer to the ug::bridge::Registry which is encapsulated by this class.
+		bridge::Registry* registry()				{return m_reg;}
 
 
 		func_iter_t functions_begin()				{return m_funcSet.begin();}
@@ -193,8 +202,8 @@ class UG_API ProMeshRegistry{
 		const_func_iter_t functions_end() const		{return m_funcSet.end();}
 
 	private:
-		bridge::Registry* 	m_reg;
-		ProMeshFunctionSet	m_funcSet;
+		bridge::Registry* 			m_reg;
+		ProMeshFunctionSet			m_funcSet;
 };
 
 /// \}
