@@ -38,8 +38,6 @@
 #include <string>
 #include <vector>
 #include "registry/registry.h"
-#include "lib_grid/algorithms/refinement/projectors.h"
-
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/contains.hpp"
 
