@@ -38,6 +38,7 @@
 #include "lib_grid/algorithms/refinement/regular_refinement_new.h"
 #include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
 #include "lib_grid/algorithms/refinement/projectors/sphere_projector.h"
+#include "lib_grid/algorithms/refinement/projectors/subdivision_projector.h"
 #include "lib_grid/algorithms/refinement/refinement_projectors_old/loop_subdivision_projectors.h"
 #include "lib_grid/algorithms/refinement/refinement_projectors_old/fractal_projector.h"
 #include "lib_grid/callbacks/callbacks.h"
@@ -110,28 +111,9 @@ inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	Grid::VertexAttachmentAccessor<APosition> aaPos(grid, aPosition);
 	Triangulate(grid, sel.begin<Quadrilateral>(), sel.end<Quadrilateral>(), &aaPos);
 
-//	since we use a flat hierarchy, a temporary position attachment is required
-	APosition aTmpPos;
-	grid.attach_to_vertices(aTmpPos);
-
-	CopyAttachments(grid, sel.begin<Vertex>(),
-						sel.end<Vertex>(),
-						aPosition, aTmpPos);
-
-	CopyAttachments(grid, grid.begin<Vertex>(), grid.end<Vertex>(), aPosition, aTmpPos);
-
-	SubdivisionLoopProjector<APosition>
-		refCallbackLoop(grid, aPosition, aTmpPos);
-
-	refCallbackLoop.consider_as_crease_edge(IsInSubset(obj->crease_handler(), REM_CREASE));
-	Refine(grid, sel, &refCallbackLoop);
-
-//	copy position data of selected vertices
-	CopyAttachments(grid, sel.begin<Vertex>(),
-						sel.end<Vertex>(),
-						aTmpPos, aPosition);
-
-	grid.detach_from_vertices(aTmpPos);
+	SubdivisionProjector refProj(MakeGeometry3d(grid, aPosition),
+								 IsInSubset(obj->crease_handler(), REM_CREASE));
+	RefineNew(grid, sel, &refProj);
 
 	sh.enable_strict_inheritance(siEnabled);
 }
