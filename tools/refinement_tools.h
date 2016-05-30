@@ -112,7 +112,8 @@ inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	Triangulate(grid, sel.begin<Quadrilateral>(), sel.end<Quadrilateral>(), &aaPos);
 
 	SubdivisionProjector refProj(MakeGeometry3d(grid, aPosition),
-								 IsInSubset(obj->crease_handler(), REM_CREASE));
+								 Grid::edge_traits::callback(
+								 	IsInSubset(obj->crease_handler(), REM_CREASE)));
 	RefineNew(grid, sel, &refProj);
 
 	sh.enable_strict_inheritance(siEnabled);
