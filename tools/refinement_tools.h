@@ -34,13 +34,10 @@
 #define __H__UG__refinement_tools__
 
 #include "../mesh.h"
-#include "lib_grid/algorithms/refinement/regular_refinement.h"
-#include "lib_grid/algorithms/refinement/regular_refinement_new.h"
-#include "lib_grid/algorithms/refinement/hanging_node_refiner_grid.h"
-#include "lib_grid/algorithms/refinement/projectors/sphere_projector.h"
-#include "lib_grid/algorithms/refinement/projectors/subdivision_projector.h"
-#include "lib_grid/algorithms/refinement/refinement_projectors_old/loop_subdivision_projectors.h"
-#include "lib_grid/algorithms/refinement/refinement_projectors_old/fractal_projector.h"
+#include "lib_grid/refinement/regular_refinement.h"
+#include "lib_grid/refinement/hanging_node_refiner_grid.h"
+#include "lib_grid/refinement/projectors/sphere_projector.h"
+#include "lib_grid/refinement/projectors/subdivision_projector.h"
 #include "lib_grid/callbacks/callbacks.h"
 
 
@@ -63,7 +60,7 @@ inline void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 //	only for testing...
 	// projector.set_projector(1, make_sp(new SphereProjectorNew(obj->geometry(), vector3(0, 0, 0), 1)));
 	
-	RefineNew(grid, sel, &projector, useSnapPoints);
+	Refine(grid, sel, &projector, useSnapPoints);
 
 	sh.enable_strict_inheritance(siEnabled);
 }
@@ -114,77 +111,9 @@ inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	SubdivisionProjector refProj(MakeGeometry3d(grid, aPosition),
 								 Grid::edge_traits::callback(
 								 	IsInSubset(obj->crease_handler(), REM_CREASE)));
-	RefineNew(grid, sel, &refProj);
+	Refine(grid, sel, &refProj);
 
 	sh.enable_strict_inheritance(siEnabled);
-}
-
-inline void RefineSmoothBoundary2D(Mesh* obj, bool strictSubsetInheritance)
-{
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-	bool siEnabled = sh.strict_inheritance_enabled();
-
-	sh.enable_strict_inheritance(strictSubsetInheritance);
-
-//	since we use a flat hierarchy, a temporary position attachment is required
-	APosition aTmpPos;
-	grid.attach_to_vertices(aTmpPos);
-
-	SubdivisionLoopBoundaryProjector<APosition>
-		refCallbackLoopBnd(grid, aPosition, aTmpPos);
-
-	Refine(grid, sel, &refCallbackLoopBnd);
-
-	sh.enable_strict_inheritance(siEnabled);
-
-//	copy position data of selected vertices
-	CopyAttachments(grid, sel.begin<Vertex>(),
-						sel.end<Vertex>(),
-						aTmpPos, aPosition);
-
-	grid.detach_from_vertices(aTmpPos);
-}
-
-inline void CreateFractal(Mesh* obj, size_t numIterations, number scaleFac)
-{
-	Grid& grid = obj->grid();
-
-//	we'll use a hanging-node refiner
-	FractalProjector refCallback(grid, scaleFac);
-	HangingNodeRefiner_Grid href(grid);
-	href.set_refinement_callback(&refCallback);
-
-//	iterate for the specified number of times
-	for(size_t i = 0; i < numIterations; ++i){
-		if(grid.num_volumes() > 0){
-		//	iterate over all faces and mark them for refinement, if they are boundary faces.
-			for(FaceIterator iter = grid.faces_begin();
-				iter != grid.faces_end(); ++iter)
-			{
-				if(IsVolumeBoundaryFace(grid, *iter)){
-					href.mark(*iter);
-				}
-
-			}
-		}
-		else if(grid.num_faces() > 0){
-		//	markall faces
-			href.mark(grid.faces_begin(), grid.faces_end());
-		}
-		else{
-		//	mark all edges
-			href.mark(grid.edges_begin(), grid.edges_end());
-		}
-
-	//	refine them
-		href.refine();
-
-	//	change the scalefac
-		refCallback.set_scale_fac(-0.5 * refCallback.get_scale_fac());
-		//refCallback.set_scale_fac(refCallback.get_scale_fac() * refCallback.get_scale_fac());
-	}
 }
 
 inline void InsertCenter(Mesh* obj, bool strictSubsetInheritance)

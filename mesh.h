@@ -38,7 +38,7 @@
 #include "lib_grid/common_attachments.h"
 #include "lib_grid/selector.h"
 #include "lib_grid/subset_handler.h"
-#include "lib_grid/algorithms/refinement/projectors/projection_handler.h"
+#include "lib_grid/refinement/projectors/projection_handler.h"
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment.h"
 
 namespace ug{

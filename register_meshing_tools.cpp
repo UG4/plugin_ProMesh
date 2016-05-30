@@ -104,10 +104,6 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh # strict subset inheritance # anisotropic", TOOLTIP_HANGING_NODE_REFINE)
 			.add_function("RefineSmooth", &RefineSmooth, grp, "",
 				"mesh # strict subset inheritance", TOOLTIP_REFINE_SMOOTH)
-			.add_function("RefineSmoothBoundary2D", &RefineSmoothBoundary2D, grp, "",
-				"mesh # strict subset inheritance", TOOLTIP_REFINE_SMOOTH_BOUNDARY_2D)
-			.add_function("CreateFractal", &CreateFractal, grp, "",
-				"mesh # num iterations # scale factor", TOOLTIP_CREATE_FRACTAL)
 			.add_function("InsertCenter", &InsertCenter, grp, "",
 				"", TOOLTIP_INSERT_CENTER);
 
