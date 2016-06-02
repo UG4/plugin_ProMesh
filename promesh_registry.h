@@ -103,8 +103,8 @@ class UG_API ProMeshFunction{
 class UG_API ProMeshRegistry{
 	public:
 		typedef std::multiset<detail::ProMeshFunction>		ProMeshFunctionSet;
-		typedef typename ProMeshFunctionSet::iterator		func_iter_t;
-		typedef typename ProMeshFunctionSet::const_iterator	const_func_iter_t;
+		typedef ProMeshFunctionSet::iterator				func_iter_t;
+		typedef ProMeshFunctionSet::const_iterator			const_func_iter_t;
 
 		ProMeshRegistry(bridge::Registry* reg) : m_reg(reg) {}
 
