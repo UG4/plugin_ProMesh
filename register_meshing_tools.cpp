@@ -170,11 +170,34 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 
 		grp = baseGrp + "/Remeshing/Extrusion";
-		reg.add_function("Extrude", &Extrude, grp, "",
-				"mesh # total direction # num steps # create faces # create volumes",
-				TOOLTIP_EXTRUDE)
+		reg.add_function("Extrude", &ExtrudeAndMove, grp, "",
+				"mesh #"
+				"total direction | default | value=[0,0,1] #"
+				"num steps | default | min=1;value=1 #"
+				"create faces | default | value=true #"
+				"create volumes | default | value=true",
+				TOOLTIP_EXTRUDE_AND_MOVE)
+			.add_function("ExtrudeAndMove", &ExtrudeAndMove, grp, "",
+				"mesh #"
+				"total direction | default | value=[0,0,1] #"
+				"num steps | default | min=1;value=1 #"
+				"create faces | default | value=true #"
+				"create volumes | default | value=true",
+				TOOLTIP_EXTRUDE_AND_MOVE)
+			.add_function("ExtrudeAndScale", &ExtrudeAndScale, grp, "",
+				"mesh #"
+				"total scale | default | value=2D #"
+				"scale around pivot #"
+				"num steps | default | min=1;value=1 #"
+				"create faces | default | value=true #"
+				"create volumes | default | value=true",
+				TOOLTIP_EXTRUDE_AND_SCALE)
 			.add_function("ExtrudeCylinders", &ExtrudeCylinders, grp, "",
-				"mesh # height # radius # snap threshold", TOOLTIP_EXTRUDE_CYLINDERS);
+				"mesh #"
+				"height | default | value=1D #"
+				"radius | default | value=1D #"
+				"snap threshold | default | min=0D;value=0.001D ",
+				TOOLTIP_EXTRUDE_CYLINDERS);
 
 	//	topology
 		grp = baseGrp + "/Remeshing";
