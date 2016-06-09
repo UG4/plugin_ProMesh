@@ -57,9 +57,6 @@ inline void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 
 	ProjectionHandler& projector = obj->projection_handler();
 
-//	only for testing...
-	// projector.set_projector(1, make_sp(new SphereProjectorNew(obj->geometry(), vector3(0, 0, 0), 1)));
-	
 	Refine(grid, sel, &projector, useSnapPoints);
 
 	sh.enable_strict_inheritance(siEnabled);
