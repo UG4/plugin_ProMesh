@@ -84,6 +84,7 @@
 #define	TOOLTIP_DUPLICATE "Duplicates the selected geometry."
 #define	TOOLTIP_EXTRUDE_AND_MOVE "Extrudes selected geometry (vertices, edges, faces) and moves new vertices by the specified offset."
 #define	TOOLTIP_EXTRUDE_AND_SCALE "Extrudes selected geometry (vertices, edges, faces) and scales new vertices by the specified scale."
+#define	TOOLTIP_EXTRUDE_ALONG_NORMAL "Extrudes selected geometry (vertices, edges, faces) and moves new vertices along their normal."
 #define	TOOLTIP_EXTRUDE_CYLINDERS "Extrudes cylinders around selected points of a 2d manifold."
 #define TOOLTIP_CREATE_SHRINK_GEOMETRY "Creates new elements from existing ones, providing each with a unique set of corner vertices. Those corners are scaled towards the center using the given scale-parameter."
 #define TOOLTIP_EXTRUDE_FACES_WITH_TETS "Experimental function to create 'plaque'-like geometry based on extruding faces with tetrahedrons."

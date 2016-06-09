@@ -192,6 +192,13 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"create faces | default | value=true #"
 				"create volumes | default | value=true",
 				TOOLTIP_EXTRUDE_AND_SCALE)
+			.add_function("ExtrudeAlongNormal", &ExtrudeAlongNormal, grp, "",
+				"mesh #"
+				"total length | default | value=1D #"
+				"num steps | default | min=1;value=1 #"
+				"create faces | default | value=true #"
+				"create volumes | default | value=true",
+				TOOLTIP_EXTRUDE_ALONG_NORMAL)
 			.add_function("ExtrudeCylinders", &ExtrudeCylinders, grp, "",
 				"mesh #"
 				"height | default | value=1D #"

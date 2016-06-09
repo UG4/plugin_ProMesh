@@ -506,6 +506,99 @@ inline void ExtrudeAndScale(Mesh* obj, number totalScale, bool scaleAroundPivot,
 	sel.select(faces.begin(), faces.end());
 }
 
+
+inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
+							   int numSteps, bool createFaces, bool createVolumes)
+{
+	using namespace std;
+	if(numSteps < 1)
+		return;
+
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	vector<Vertex*> vrts;
+	vrts.assign(sel.vertices_begin(), sel.vertices_end());
+	vector<Edge*> edges;
+	edges.assign(sel.edges_begin(), sel.edges_end());
+	vector<Face*> faces;
+	faces.assign(sel.faces_begin(), sel.faces_end());
+
+	uint extrusionOptions = 0;
+	if(createFaces)
+		extrusionOptions |= EO_CREATE_FACES;
+	if(createVolumes)
+		extrusionOptions |= EO_CREATE_VOLUMES;
+
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+	Mesh::normal_accessor_t aaNorm = obj->normal_accessor();
+
+	vector<vector3>	from;
+	vector<vector3>	stepOffsets;
+	from.reserve(vrts.size());
+	stepOffsets.reserve(vrts.size());
+
+	Grid::face_traits::secure_container	assFaces;
+	Grid::edge_traits::secure_container	assEdges;
+
+	for(size_t ivrt = 0; ivrt < vrts.size(); ++ivrt){
+		Vertex* vrt = vrts[ivrt];
+		from.push_back(aaPos[vrt]);
+		vector3 n(0, 0, 0);
+		grid.associated_elements(assFaces, vrt);
+		if(assFaces.size() > 0){
+			for(size_t iface = 0; iface < assFaces.size(); ++iface){
+				n += aaNorm[assFaces[iface]];
+			}
+		}
+		else{
+			grid.associated_elements(assEdges, vrt);
+			for(size_t iedge = 0; iedge < assEdges.size(); ++iedge){
+				Edge* e = assEdges[iedge];
+				vector3 tmpN;
+				VecSubtract(tmpN, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
+				number t = tmpN.x();
+				tmpN.x() = tmpN.y();
+				tmpN.y() = -t;
+				tmpN.z() = 0;
+				VecAdd(n, n, tmpN);
+			}
+		}
+
+		VecNormalize(n, n);
+
+		n *= totalLength / (number)numSteps;
+		stepOffsets.push_back(n);
+	}
+
+//	we use sel to collect the newly created volumes
+	bool strictInheritanceEnabled = sh.strict_inheritance_enabled();
+	sh.enable_strict_inheritance(false);
+//	mark all elements that were already in the selector.
+	for(int i = 0; i < numSteps; ++i)
+	{
+		Extrude(grid, &vrts, &edges, &faces, vector3(0, 0, 0),
+					extrusionOptions, obj->position_attachment());
+
+		for(size_t ivrt = 0; ivrt < vrts.size(); ++ivrt){
+			VecScaleAdd(aaPos[vrts[ivrt]], 1, from[ivrt], i+1, stepOffsets[ivrt]);
+		}
+	}
+
+	sh.enable_strict_inheritance(strictInheritanceEnabled);
+
+//	select faces, edges and vertices from the new top-layer.
+	sel.clear<Vertex>();
+	sel.clear<Edge>();
+	sel.clear<Face>();
+	sel.clear<Volume>();
+	sel.select(vrts.begin(), vrts.end());
+	sel.select(edges.begin(), edges.end());
+	sel.select(faces.begin(), faces.end());
+}
+
+
 inline void ExtrudeCylinders(Mesh* obj, number height, number radius, number snapThreshold)
 {
 	using namespace std;
