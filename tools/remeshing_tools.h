@@ -400,6 +400,8 @@ inline void ExtrudeAndMove(Mesh* obj, const vector3& totalDir, int numSteps,
 	Selector& sel = obj->selector();
 	SubsetHandler& sh = obj->subset_handler();
 
+	SelectAssociatedGridObjects(sel);
+
 	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
 	vector<Edge*> edges;
@@ -446,6 +448,8 @@ inline void ExtrudeAndScale(Mesh* obj, number totalScale, bool scaleAroundPivot,
 	Selector& sel = obj->selector();
 	SubsetHandler& sh = obj->subset_handler();
 
+	SelectAssociatedGridObjects(sel);
+
 	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
 	vector<Edge*> edges;
@@ -475,6 +479,8 @@ inline void ExtrudeAndScale(Mesh* obj, number totalScale, bool scaleAroundPivot,
 		vector3 dir;
 		VecSubtract(dir, from.back(), center);
 		dir *= totalScale;
+	//	create a directional vector relative to from
+		dir += center;
 		VecSubtract(dir, dir, from.back());
 		dir *= 1. / (number)numSteps;
 		stepOffsets.push_back(dir);
@@ -518,6 +524,8 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 	Selector& sel = obj->selector();
 	SubsetHandler& sh = obj->subset_handler();
 
+	SelectAssociatedGridObjects(sel);
+
 	vector<Vertex*> vrts;
 	vrts.assign(sel.vertices_begin(), sel.vertices_end());
 	vector<Edge*> edges;
@@ -548,12 +556,19 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 		vector3 n(0, 0, 0);
 		grid.associated_elements(assFaces, vrt);
 		if(assFaces.size() > 0){
+			vector3 nSel(0, 0, 0);
 			for(size_t iface = 0; iface < assFaces.size(); ++iface){
-				n += aaNorm[assFaces[iface]];
+				Face* f = assFaces[iface];
+				n += aaNorm[f];
+				if(sel.is_selected(f))
+					nSel += aaNorm[f];
 			}
+			if(VecLengthSq(nSel) > 0)
+				n = nSel;
 		}
 		else{
 			grid.associated_elements(assEdges, vrt);
+			vector3 nSel(0, 0, 0);
 			for(size_t iedge = 0; iedge < assEdges.size(); ++iedge){
 				Edge* e = assEdges[iedge];
 				vector3 tmpN;
@@ -562,8 +577,12 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 				tmpN.x() = tmpN.y();
 				tmpN.y() = -t;
 				tmpN.z() = 0;
-				VecAdd(n, n, tmpN);
+				n += tmpN;
+				if(sel.is_selected(e))
+					nSel += tmpN;
 			}
+			if(VecLengthSq(nSel) > 0)
+				n = nSel;
 		}
 
 		VecNormalize(n, n);
