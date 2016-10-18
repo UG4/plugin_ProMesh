@@ -115,6 +115,8 @@
 #define TOOLTIP_SELECT_SHORT_POLYCHAINS "Selects polygonal chains which are shorter than the given threshold."
 #define TOOLTIP_SELECT_INTERFACE_ELEMENTS "Selects elements which are adjacent to higher dimensional elements of different subsets."
 #define TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS "Selects elements and associated long edges wich have a shortest-to-longest edge ratio smaller than the specified one."
+#define TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE "Selects elements whose center lies in front of the specified plane."
+#define TOOLTIP_SELECT_EDGES_BY_DIRECTION "Selects all edges which do not deviate further from the specified direction than the given angle. A minimal required deviation angle can also be specified."
 
 namespace ug{
 namespace promesh{
@@ -619,6 +621,36 @@ inline void SelectShortPolychains(Mesh* m, number maxChainLength, bool closedCha
 						  closedChainsOnly, m->position_accessor());
 }
 
+inline void SelectEdgesByDirection(
+				Mesh* m,
+				const vector3& dir,
+				number minDeviationAngle,
+				number maxDeviationAngle,
+				bool selectFlipped)
+{
+	Grid& g = m->grid();
+	Selector& sel = m->selector();
+	Mesh::position_accessor_t aaPos = m->position_accessor();
+
+	vector3 n;
+	VecNormalize(n, dir);
+
+	number maxDot = cos(deg_to_rad(minDeviationAngle));
+	number minDot = cos(deg_to_rad(maxDeviationAngle));
+
+	lg_for_each(Edge, e, g){
+		vector3 dir;
+		VecSubtract(dir, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
+		VecNormalize(dir, dir);
+		number d = VecDot(dir, n);
+		if((d >= minDot - SMALL && d <= maxDot + SMALL) ||
+			(selectFlipped && (-d >= minDot - SMALL && -d <= maxDot + SMALL)))
+		{
+			sel.select(e);
+		}
+	}lg_end_for;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
 inline void SelectBoundaryFaces(Mesh* obj)
@@ -1031,6 +1063,50 @@ inline void UnmarkSelection(Mesh* obj)
 		obj->selector().end<Edge>(),
 		ug::REM_NONE);
 }
+
+template <class elem_t, class vector_t, class AAPos> void
+SelectElementsBySplitPlane_IMPL(
+		Grid& g,
+		Selector& sel,
+		const vector_t& pivot,
+		const vector_t& normal,
+		AAPos aaPos)
+{
+	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+
+	for(iter_t iter = g.begin<elem_t>(); iter != g.end<elem_t>(); ++ iter) {
+		elem_t* elem = *iter;
+		vector_t p = CalculateCenter(elem, aaPos);
+		vector_t dir;
+		VecSubtract(dir, p, pivot);
+		if(VecDot(dir, normal) >= 0)
+			sel.select(elem);
+	}
+}
+
+inline void SelectElementsBySplitPlane(
+				Mesh* obj,
+				bool selectVrts,
+				bool selectEdges,
+				bool selectFaces,
+				bool selectVols,
+				const vector3& pivot,
+				const vector3& normal)
+{
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	if(selectVrts)
+		SelectElementsBySplitPlane_IMPL<Vertex>(g, sel, pivot, normal, aaPos);
+	if(selectEdges)
+		SelectElementsBySplitPlane_IMPL<Edge>(g, sel, pivot, normal, aaPos);
+	if(selectFaces)
+		SelectElementsBySplitPlane_IMPL<Face>(g, sel, pivot, normal, aaPos);
+	if(selectVols)
+		SelectElementsBySplitPlane_IMPL<Volume>(g, sel, pivot, normal, aaPos);
+}
+
 
 /// \}
 

@@ -66,7 +66,10 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectSelectionBoundary", &SelectSelectionBoundary, grp, "",
 				"mesh", TOOLTIP_SELECT_SELECTION_BOUNDARY)
 			.add_function("CloseSelection", &CloseSelection, grp, "",
-				"mesh", TOOLTIP_CLOSE_SELECTION);
+				"mesh", TOOLTIP_CLOSE_SELECTION)
+			.add_function("SelectElementsBySplitPlane", &SelectElementsBySplitPlane, grp, "",
+				"mesh # select vrts # select edges # select faces # select volumes # pivot # normal",
+				TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE);
 
 		grp = baseGrp + "/Vertices";
 		reg.add_function("SelectVertexByCoordinate", &SelectElemByCoordinate<Vertex>, grp, "",
@@ -154,7 +157,14 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectEdgesInCylinder", &SelectElementsInCylinder<Edge>, grp, "",
 				"mesh # base # top # radius", TOOLTIP_SELECT_EDGE_IN_CYLINDER)
 			.add_function("SelectInterfaceEdges", &SelectInterfaceElements<Edge>, grp, "",
-				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS);
+				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS)
+			.add_function("SelectEdgesByDirection", &SelectEdgesByDirection, grp, "",
+				"mesh #"
+				"direction #"
+				"min deviation angle | default | value = 0D; min = 0D; max = 180D #"
+				"max deviation angle | default | value = 1D; min = 0D; max = 180D #"
+				"select flipped edges | default | value = true",
+				TOOLTIP_SELECT_EDGES_BY_DIRECTION);
 			
 		grp = baseGrp + "/Faces";
 		reg.add_function("SelectFaceByCoordinate", &SelectElemByCoordinate<Face>, grp, "",
