@@ -65,6 +65,7 @@
 #define TOOLTIP_MESH_LAYERS "Creates triangle/quadrilateral grids for the given raster-layers"
 #define TOOLTIP_MESH_LAYER_BOUNDARIES "Creates boundary grids for the given raster-layers"
 #define TOOLTIP_EXTRUDE_LAYERS "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface."
+#define TOOLTIP_EXTRUDE_LAYERS_AND_ADD_PROJECTOR "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface. It also generates a raster-based refinement-projector for the whole geometry."
 
 //remeshing tools
 #define TOOLTIP_SIMPLIFY_POLYLINES "Removes vertices from the selected polyline which have a smaller curvature than the specified angle."

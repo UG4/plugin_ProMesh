@@ -47,6 +47,7 @@
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/remeshing/simplify_polychain.h"
+#include "lib_grid/refinement/projectors/raster_layers_projector.h"
 
 namespace ug{
 namespace promesh{
@@ -727,6 +728,22 @@ inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
 inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers, bool allowForTetsAndPyras){
 	ExtrudeLayers(obj->grid(), layers, obj->position_accessor(),
 				  obj->subset_handler(), allowForTetsAndPyras);
+}
+
+inline void ExtrudeLayersAndAddProjector(
+					Mesh* obj,
+					SPRasterLayers layers,
+					bool allowForTetsAndPyras)
+{
+	SPRasterLayersProjector proj
+		= make_sp(new RasterLayersProjector(obj->geometry(), layers));
+
+	ANumber aRelZ = proj->rel_z_attachment();
+	ExtrudeLayers(obj->grid(), *layers, obj->position_accessor(),
+				  obj->subset_handler(), allowForTetsAndPyras,
+				  &aRelZ);
+
+	obj->projection_handler().set_default_projector(proj);
 }
 
 /// \}

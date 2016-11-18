@@ -81,6 +81,9 @@ inline bool LoadMesh(Mesh* obj, const char* filename)
 				if(ugxReader.num_selectors(0) > 0)
 					ugxReader.selector(obj->selector(), 0, 0);
 
+				if(ugxReader.num_projection_handlers(0) > 0)
+					ugxReader.projection_handler(obj->projection_handler(), 0, 0);
+				
 				return true;
 			}
 		}
@@ -104,6 +107,7 @@ inline bool SaveMesh(Mesh* obj, const char* filename)
 		ugxWriter.add_subset_handler(obj->subset_handler(), "defSH", 0);
 		ugxWriter.add_subset_handler(obj->crease_handler(), "markSH", 0);
 		ugxWriter.add_selector(obj->selector(), "defSel", 0);
+		ugxWriter.add_projection_handler(obj->projection_handler(), "defPH", 0);
 
 		return ugxWriter.write_to_file(filename);
 	}
