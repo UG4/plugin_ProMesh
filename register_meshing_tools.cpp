@@ -156,6 +156,10 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
 				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
 
+		grp = baseGrp + "/Remeshing/Quadrilaterals";
+		reg.add_function("ConvertToQuadrilaterals", &ConvertToQuadrilaterals, grp, "",
+				"mesh", TOOLTIP_CONVERT_TO_QUADRILATERALS);
+
 		grp = baseGrp + "/Remeshing/Tetrahedra";
 		reg.add_function("ConvertToTetrahedra",
 				static_cast<void (*)(Mesh*)>(&ConvertToTetrahedra), grp, "",

@@ -36,6 +36,7 @@
 #include <vector>
 #include "../mesh.h"
 #include "lib_grid/algorithms/duplicate.h"
+#include "lib_grid/algorithms/quadrilateral_util.h"
 #include "lib_grid/algorithms/remove_duplicates_util.h"
 #include "lib_grid/algorithms/extrusion/extrusion.h"
 #include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
@@ -83,6 +84,28 @@ inline void ConvertToTriangles(Mesh* obj)
 
 	Triangulate(grid, sel.begin<Quadrilateral>(),
 				sel.end<Quadrilateral>(), &aaPos);
+}
+
+inline void ConvertToQuadrilaterals(Mesh* obj)
+{
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+
+	if(sel.num<Face>() > 0){
+		ReplaceByQuadrilaterals_FaceBased(
+				grid,
+				sel.begin<Face>(),
+				sel.end<Face>(),
+				obj->position_accessor());
+	}
+
+	if(sel.num<Edge>() > 0){
+		ReplaceByQuadrilaterals_EdgeBased(
+				grid,
+				sel.begin<Edge>(),
+				sel.end<Edge>(),
+				obj->position_accessor());
+	}
 }
 
 inline void ExtrudeFacesWithTets(Mesh* obj, int fromSi, int toSi, const number factor)

@@ -71,6 +71,7 @@
 #define TOOLTIP_SIMPLIFY_POLYLINES "Removes vertices from the selected polyline which have a smaller curvature than the specified angle."
 #define TOOLTIP_SIMPLIFY_SMOOTHED_POLYLINES "Removes vertices from the selected polyline which have a smaller smoothed curvature than the specified angle."
 #define	TOOLTIP_CONVERT_TO_TRIANGLES "Converts selected quadrilaterals to triangles."
+#define TOOLTIP_CONVERT_TO_QUADRILATERALS "Converts selected triangles or triangles connected by selected edges to quadrilaterals."
 #define	TOOLTIP_TRIANGLE_FILL "Performs triangle fill using the sweep-line algorithm followed by an optional Constrained Delaunay retriangulation."
 #define	TOOLTIP_RETRIANGULATE "Inserts vertices as required and performs Constrained Delaunay triangulation."
 #define	TOOLTIP_ADJUST_EDGE_LENGTH "Remeshes the active grid so that all edges approximatly have a certain length."
