@@ -538,7 +538,8 @@ inline void ExtrudeAndScale(Mesh* obj, number totalScale, bool scaleAroundPivot,
 
 
 inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
-							   int numSteps, bool createFaces, bool createVolumes)
+							   int numSteps, bool createFaces, bool createVolumes,
+							   bool usePrecalculatedNormals)
 {
 	using namespace std;
 	if(numSteps < 1)
@@ -583,9 +584,18 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 			vector3 nSel(0, 0, 0);
 			for(size_t iface = 0; iface < assFaces.size(); ++iface){
 				Face* f = assFaces[iface];
-				n += aaNorm[f];
-				if(sel.is_selected(f))
-					nSel += aaNorm[f];
+				if(usePrecalculatedNormals){
+					n += aaNorm[f];
+					if(sel.is_selected(f))
+						nSel += aaNorm[f];
+				}
+				else{
+					vector3 fn;
+					CalculateNormal(fn, f, aaPos);
+					n += fn;
+					if(sel.is_selected(f))
+						nSel += fn;
+				}
 			}
 			if(VecLengthSq(nSel) > 0)
 				n = nSel;
