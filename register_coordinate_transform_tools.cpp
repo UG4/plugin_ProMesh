@@ -55,13 +55,8 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh # offset", TOOLTIP_MOVE)
 			.add_function("MoveMeshTo", &MoveMeshTo, grp, "",
 				"mesh # new position", TOOLTIP_MOVE_MESH_TO) 
-			.add_function("MoveAlongNormal",
-				static_cast<void(*)(Mesh*, number)>(&MoveAlongNormal),
-				grp, "", "mesh # offset | default | value=0.1D", TOOLTIP_MOVE_ALONG_NORMAL)
-			.add_function("MoveAlongNormal",
-				static_cast<void(*)(Mesh*, number, bool)>(&MoveAlongNormal),
-				grp, "", "mesh # offset | default | value=0.1D # use precalculated normals",
-				TOOLTIP_MOVE_ALONG_NORMAL, "", RT_NO_PROMESH)
+			.add_function("MoveAlongNormal", &MoveAlongNormal, grp, "",
+				"mesh # offset | default | value=0.1D", TOOLTIP_MOVE_ALONG_NORMAL)
 			.add_function("MoveVerticesAlongEdges",
 				&MoveVerticesAlongEdges,
 				grp, "", "mesh # relative offset | default | value=0.5D",

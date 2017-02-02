@@ -111,12 +111,11 @@ inline void MoveMeshTo(Mesh* obj, const vector3& newPos)
 	obj->set_pivot(newPos);
 }
 
-inline void MoveAlongNormal(Mesh* obj, number offset, bool usePrecalculatedNormals)
+inline void MoveAlongNormal(Mesh* obj, number offset)
 {
 	Grid& grid = obj->grid();
 	Selector& sel = obj->selector();
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
-	Mesh::normal_accessor_t& aaNorm = obj->normal_accessor();
 
 	Grid::face_traits::secure_container faces;
 	std::vector<Vertex*> vrts;
@@ -128,27 +127,16 @@ inline void MoveAlongNormal(Mesh* obj, number offset, bool usePrecalculatedNorma
 	//	calculate vertex normal by averaging face normals
 		vector3 n(0, 0, 0);
 		grid.associated_elements(faces, *iter);
-		if(usePrecalculatedNormals){
-			for(size_t i = 0; i < faces.size(); ++i)
-				VecAdd(n, n, aaNorm[faces[i]]);
-		}
-		else{
-			for(size_t i = 0; i < faces.size(); ++i){
-				vector3 fn;
-				CalculateNormal(fn, faces[i], aaPos);
-				VecAdd(n, n, fn);
-			}
+		for(size_t i = 0; i < faces.size(); ++i){
+			vector3 fn;
+			CalculateNormal(fn, faces[i], aaPos);
+			VecAdd(n, n, fn);
 		}
 
 		VecNormalize(n, n);
 
 		VecScaleAdd(p, 1., p, offset, n);
 	}
-}
-
-inline void MoveAlongNormal(Mesh* obj, number offset)
-{
-	MoveAlongNormal(obj, offset, true);
 }
 
 inline void MoveVerticesAlongEdges(Mesh* obj, number relVal)

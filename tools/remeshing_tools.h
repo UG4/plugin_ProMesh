@@ -564,7 +564,6 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 		extrusionOptions |= EO_CREATE_VOLUMES;
 
 	Mesh::position_accessor_t aaPos = obj->position_accessor();
-	Mesh::normal_accessor_t aaNorm = obj->normal_accessor();
 
 	vector<vector3>	from;
 	vector<vector3>	stepOffsets;
@@ -583,9 +582,11 @@ inline void ExtrudeAlongNormal(Mesh* obj, number totalLength,
 			vector3 nSel(0, 0, 0);
 			for(size_t iface = 0; iface < assFaces.size(); ++iface){
 				Face* f = assFaces[iface];
-				n += aaNorm[f];
+				vector3 fn;
+				CalculateNormal(fn, f, aaPos);
+				n += fn;
 				if(sel.is_selected(f))
-					nSel += aaNorm[f];
+					nSel += fn;
 			}
 			if(VecLengthSq(nSel) > 0)
 				n = nSel;
