@@ -46,6 +46,7 @@
 
 // grid generation tools
 #define	TOOLTIP_NEW_OBJECT "Creates a new empty object."
+#define TOOLTIP_NEW_CSG_OBJECT "Creates a new csg object."
 #define	TOOLTIP_MERGE_OBJECTS "Merges the selected objects into a new one."
 #define TOOLTIP_CLONE_MESH "Creates a new mesh and copies all content from the given mesh into the new instance."
 #define	TOOLTIP_COPY_SELECTION "Copies the selected elements to a new mesh."
@@ -90,6 +91,9 @@
 #define	TOOLTIP_EXTRUDE_CYLINDERS "Extrudes cylinders around selected points of a 2d manifold."
 #define TOOLTIP_CREATE_SHRINK_GEOMETRY "Creates new elements from existing ones, providing each with a unique set of corner vertices. Those corners are scaled towards the center using the given scale-parameter."
 #define TOOLTIP_EXTRUDE_FACES_WITH_TETS "Experimental function to create 'plaque'-like geometry based on extruding faces with tetrahedrons."
+#define TOOLTIP_CSG_FACE_UNION "Performs a union operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
+#define TOOLTIP_CSG_FACE_INTERSECTION "Performs an intersection operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
+#define TOOLTIP_CSG_FACE_DIFFERENCE "Performs a difference operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
 
 //refinement tools
 #define	TOOLTIP_REFINE "Refines selected elements and builds a regular closure."

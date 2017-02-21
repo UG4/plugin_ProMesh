@@ -278,6 +278,15 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh", TOOLTIP_MERGE_AT_CENTER)
 			.add_function("MergeAtLast", &MergeAtLast, grp, "",
 				"mesh", TOOLTIP_MERGE_AT_LAST);
+
+		grp = baseGrp + "/Remeshing/Boolean Operations";
+		reg.add_function("FaceUnion", &CSGFaceUnion, grp, "",
+				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_UNION)
+			.add_function("FaceIntersection", &CSGFaceIntersection, grp, "",
+				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_INTERSECTION)
+			.add_function("FaceDifference", &CSGFaceDifference, grp, "",
+				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_DIFFERENCE);
+
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }

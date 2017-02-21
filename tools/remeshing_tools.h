@@ -35,10 +35,13 @@
 
 #include <vector>
 #include "../mesh.h"
+#include "topology_tools.h"
 #include "lib_grid/algorithms/duplicate.h"
+#include "lib_grid/algorithms/grid_util.h"
 #include "lib_grid/algorithms/quadrilateral_util.h"
 #include "lib_grid/algorithms/remove_duplicates_util.h"
 #include "lib_grid/algorithms/extrusion/extrusion.h"
+#include "lib_grid/algorithms/geom_obj_util/face_util.h"
 #include "lib_grid/algorithms/grid_generation/horizontal_layers_mesher.h"
 #include "lib_grid/algorithms/grid_generation/tetrahedralization.h"
 #include "lib_grid/algorithms/grid_generation/triangle_fill_sweep_line.h"
@@ -48,6 +51,7 @@
 #include "lib_grid/algorithms/remeshing/edge_length_adjustment_extended.h"
 #include "lib_grid/algorithms/remeshing/simplification.h"
 #include "lib_grid/algorithms/remeshing/simplify_polychain.h"
+#include "lib_grid/algorithms/space_partitioning/lg_ntree.h"
 #include "lib_grid/refinement/projectors/raster_layers_projector.h"
 
 namespace ug{
@@ -770,6 +774,155 @@ inline void ExtrudeLayersAndAddProjector(
 	obj->projection_handler().set_default_projector(proj);
 }
 
+
+enum CSGOperation {
+	CSG_UNION,
+	CSG_INTERSECTION,
+	CSG_DIFFERENCE
+};
+
+inline void CSGFaceOperation(
+				Mesh* obj,
+				CSGOperation op,
+				int subsetIndex0,
+				int subsetIndex1,
+				number snapThreshold)
+{
+//	both subsets have to be homeomorphic to the sphere!
+
+	Grid& grid = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
+
+	Mesh::position_attachment_t aPos = obj->position_attachment();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+//	in order to create one octree for each subset, we'll copy the
+//	triangles of each subset to a fresh grid and create an octree
+//	on that grid.
+
+	typedef lg_ntree<3, 3, Face> octree_t;
+	octree_t octree[2];
+	Grid octreeGrid[2];
+	Mesh::position_accessor_t aaPosOT[2];
+	int si[2] = {subsetIndex0, subsetIndex1};
+	for(int i = 0; i < 2; ++i){
+		ug::Triangulate(grid, sh.begin<Quadrilateral>(si[i]),
+						sh.end<Quadrilateral>(si[i]),
+						&aaPos);
+		sel.clear();
+		sel.select(sh.begin<Triangle>(si[i]), sh.end<Triangle>(si[i]));
+		
+		Grid& og = octreeGrid[i];
+		og.attach_to_vertices(aPos);
+		aaPosOT[i].access(og, aPos);
+		CopySelection(sel, og, aaPos, aaPosOT[i]);
+		
+
+		octree[i].set_grid(og, aPos);
+		octree[i].create_tree(og.begin<Triangle>(), og.end<Triangle>());
+	}
+
+	sel.clear();
+	SelectSubsetElements<Face>(sel, sh, si[0]);
+	SelectSubsetElements<Face>(sel, sh, si[1]);
+
+	ResolveSelfIntersections(obj, snapThreshold);
+
+	
+//	remove unnecessary points/edges/faces
+	sel.clear();
+	std::vector<RayElemIntersectionRecord<Face*> > intersections;
+
+	int remainder[2] = {
+		(op == CSG_UNION || op == CSG_DIFFERENCE) ? 1 : 0,
+		(op == CSG_UNION) ? 1 : 0
+	};
+
+	for(int isub = 0; isub < 2; ++isub){
+		const int iOtherSub = (isub + 1) % 2;
+		octree_t& otree = octree[iOtherSub];
+
+		for(FaceIterator iface = sh.begin<Face>(isub);
+			iface != sh.end<Face>(isub); ++iface)
+		{
+			Face* f = *iface;
+			vector3 center = CalculateCenter(f, aaPos);
+
+		//	check if the center lies inside the other object.
+		//	do this by shooting a ray from the center into an arbitrary direction
+		//	and count the number of intersections.
+			const int maxNumTries = 5;
+			for(int itry = 0; itry < maxNumTries; ++itry){
+				vector3 dir(urand<number>(-1, 1), urand<number>(-1, 1), urand<number>(-1, 1));
+				if(VecLengthSq(dir) == 0)
+					continue;
+				VecNormalize(dir, dir);
+
+				intersections.clear();
+
+				RayElementIntersections(intersections, otree, center, dir);
+
+				bool repeatTest = false;
+				int numPositiveIntersections = 0;
+				for(size_t is = 0; is < intersections.size(); ++is){
+					RayElemIntersectionRecord<Face*>& rec = intersections[is];
+				//	todo:	Check the intersection records to make sure
+				//			that the result is reliable. If not, continue
+				//			with the next try.
+					if(rec.smin == rec.smax && rec.smin > 0){
+						++numPositiveIntersections;
+					}
+					else if(rec.smin != rec.smax){
+						numPositiveIntersections = 0;
+						repeatTest = true;
+						break;
+					}
+				}
+
+				if(numPositiveIntersections % 2 == remainder[isub]){
+					sel.select(f);
+				}
+
+				if(!repeatTest)
+					break;
+			}
+		}
+	}
+
+	EraseSelectedElements(obj, true, true, false);
+}
+
+
+inline void CSGFaceUnion(
+				Mesh* obj,
+				int subsetIndex0,
+				int subsetIndex1,
+				number snapThreshold)
+{
+	CSGFaceOperation(obj, CSG_UNION, subsetIndex0, subsetIndex1, snapThreshold);
+}
+
+inline void CSGFaceIntersection(
+				Mesh* obj,
+				int subsetIndex0,
+				int subsetIndex1,
+				number snapThreshold)
+{
+	CSGFaceOperation(obj, CSG_INTERSECTION, subsetIndex0, subsetIndex1, snapThreshold);
+}
+
+inline void CSGFaceDifference(
+				Mesh* obj,
+				int subsetIndex0,
+				int subsetIndex1,
+				number snapThreshold)
+{
+	CSGFaceOperation(obj, CSG_DIFFERENCE, subsetIndex0, subsetIndex1, snapThreshold);
+}
+
+
+// }
 /// \}
 
 }}// end of namespace
