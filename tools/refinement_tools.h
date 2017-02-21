@@ -34,6 +34,7 @@
 #define __H__UG__refinement_tools__
 
 #include "../mesh.h"
+#include "lib_grid/algorithms/geom_obj_util/edge_util.h"
 #include "lib_grid/refinement/regular_refinement.h"
 #include "lib_grid/refinement/hanging_node_refiner_grid.h"
 #include "lib_grid/refinement/projectors/sphere_projector.h"
