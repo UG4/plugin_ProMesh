@@ -788,6 +788,7 @@ inline void CSGFaceOperation(
 				int subsetIndex1,
 				number snapThreshold)
 {
+	using namespace std;
 //	both subsets have to be homeomorphic to the sphere!
 
 	Grid& grid = obj->grid();
@@ -840,11 +841,11 @@ inline void CSGFaceOperation(
 	};
 
 	for(int isub = 0; isub < 2; ++isub){
-		const int iOtherSub = (isub + 1) % 2;
-		octree_t& otree = octree[iOtherSub];
+		const int thisSub = si[isub];
+		octree_t& otree = octree[(isub + 1) % 2];
 
-		for(FaceIterator iface = sh.begin<Face>(isub);
-			iface != sh.end<Face>(isub); ++iface)
+		for(FaceIterator iface = sh.begin<Face>(thisSub);
+			iface != sh.end<Face>(thisSub); ++iface)
 		{
 			Face* f = *iface;
 			vector3 center = CalculateCenter(f, aaPos);
@@ -870,27 +871,39 @@ inline void CSGFaceOperation(
 				//	todo:	Check the intersection records to make sure
 				//			that the result is reliable. If not, continue
 				//			with the next try.
-					if(rec.smin == rec.smax && rec.smin > 0){
-						++numPositiveIntersections;
+					if(rec.smin == rec.smax){
+						if(rec.smin > SMALL)
+							++numPositiveIntersections;
+						else if(rec.smin > -SMALL){
+						//	we most likely have a coplanar face here. In this case
+						//	we'll set the number of positive intersections to 1.
+							numPositiveIntersections = 1;
+							break;
+						}
 					}
-					else if(rec.smin != rec.smax){
+					else{
 						numPositiveIntersections = 0;
 						repeatTest = true;
 						break;
 					}
 				}
 
-				if(numPositiveIntersections % 2 == remainder[isub]){
-					sel.select(f);
-				}
+				if(!repeatTest){
+					if(numPositiveIntersections % 2 == remainder[isub]){
+						sel.select(f);
+					}
 
-				if(!repeatTest)
 					break;
+				}
 			}
 		}
 	}
 
 	EraseSelectedElements(obj, true, true, false);
+
+	sel.clear();
+	SelectSubsetElements<Face>(sel, sh, si[0]);
+	SelectSubsetElements<Face>(sel, sh, si[1]);
 }
 
 

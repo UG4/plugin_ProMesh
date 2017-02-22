@@ -281,12 +281,20 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp + "/Remeshing/Boolean Operations";
 		reg.add_function("FaceUnion", &CSGFaceUnion, grp, "",
-				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_UNION)
+				"mesh#"
+				 "subset 1  | default | value=0#"
+				 "subset 2  | default | value=1#"
+				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_UNION)
 			.add_function("FaceIntersection", &CSGFaceIntersection, grp, "",
-				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_INTERSECTION)
+				"mesh#"
+				 "subset 1  | default | value=0#"
+				 "subset 2  | default | value=1#"
+				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_INTERSECTION)
 			.add_function("FaceDifference", &CSGFaceDifference, grp, "",
-				"mesh # subset 1 # subset 2 # snap threshold", TOOLTIP_CSG_FACE_DIFFERENCE);
-
+				 "mesh#"
+				 "subset 1  | default | value=0#"
+				 "subset 2  | default | value=1#"
+				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_DIFFERENCE);
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }

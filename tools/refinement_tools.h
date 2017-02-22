@@ -171,7 +171,7 @@ inline void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
 	for(size_t i = 0; i < edges.size(); ++i){
 		Edge* e = edges[i];
 		vector3 center = CalculateCenter(e, aaPos);
-		RegularVertex* vrt = SplitEdge<RegularVertex>(grid, e);
+		RegularVertex* vrt = ug::SplitEdge<RegularVertex>(grid, e);
 		aaPos[vrt] = center;
 	}
 
