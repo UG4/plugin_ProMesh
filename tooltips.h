@@ -65,6 +65,8 @@
 
 #define TOOLTIP_MESH_LAYERS "Creates triangle/quadrilateral grids for the given raster-layers"
 #define TOOLTIP_MESH_LAYER_BOUNDARIES "Creates boundary grids for the given raster-layers"
+#define TOOLTIP_PROJECT_TO_LAYER "Projects a (surface-)mesh to the specified raster-layer. Only height values in valid regions are adjusted."
+#define TOOLTIP_PROJECT_TO_TOP_LAYER "Projects a (surface-)mesh to the top-layer of the specified raster-stack. Only height values in valid regions are adjusted."
 #define TOOLTIP_EXTRUDE_LAYERS "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface."
 #define TOOLTIP_EXTRUDE_LAYERS_AND_ADD_PROJECTOR "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface. It also generates a raster-based refinement-projector for the whole geometry."
 

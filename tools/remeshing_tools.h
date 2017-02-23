@@ -753,6 +753,16 @@ inline void MeshLayerBoundaries(Mesh* m, const RasterLayers& layers)
 	MeshLayerBoundaries(m->grid(), layers, m->position_accessor(), &m->subset_handler());
 }
 
+
+inline void ProjectToLayer(Mesh* obj, RasterLayers& layers, int layerIndex){
+	ProjectToLayer(obj->grid(), layers, layerIndex, obj->position_accessor());
+}
+
+inline void ProjectToTopLayer(Mesh* obj, RasterLayers& layers){
+	UG_COND_THROW(layers.size() == 0, "No top-layer exists in ProjectToTopLayer");
+	ProjectToLayer(obj->grid(), layers, layers.size() - 1, obj->position_accessor());
+}
+
 inline void ExtrudeLayers(Mesh* obj, RasterLayers& layers, bool allowForTetsAndPyras){
 	ExtrudeLayers(obj->grid(), layers, obj->position_accessor(),
 				  obj->subset_handler(), allowForTetsAndPyras);

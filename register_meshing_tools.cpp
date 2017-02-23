@@ -99,8 +99,17 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh #"
 				"layers #"
 				"allow for tets and pyras || value = true",
-				TOOLTIP_EXTRUDE_LAYERS_AND_ADD_PROJECTOR, "", RT_NO_PROMESH);
-		
+				TOOLTIP_EXTRUDE_LAYERS_AND_ADD_PROJECTOR, "", RT_NO_PROMESH)
+			.add_function("ProjectToLayer", &ProjectToLayer, grp, "",
+				"mesh #"
+				"layers #"
+				"layer index",
+				TOOLTIP_PROJECT_TO_LAYER, "", RT_NO_PROMESH)
+			.add_function("ProjectToTopLayer", &ProjectToTopLayer, grp, "",
+				"mesh #"
+				"layers",
+				TOOLTIP_PROJECT_TO_TOP_LAYER, "", RT_NO_PROMESH);
+			
 	//	refinement
 		grp = baseGrp + "/Remeshing/Refinement";
 		reg.add_function("Refine", &Refine, grp, "",

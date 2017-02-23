@@ -117,6 +117,8 @@
 #define TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS "Selects elements and associated long edges wich have a shortest-to-longest edge ratio smaller than the specified one."
 #define TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE "Selects elements whose center lies in front of the specified plane."
 #define TOOLTIP_SELECT_EDGES_BY_DIRECTION "Selects all edges which do not deviate further from the specified direction than the given angle. A minimal required deviation angle can also be specified."
+#define TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE "Selects all elements whose center lies in the specified range."
+#define TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE "Deselects all elements whose center lies in the specified range."
 
 namespace ug{
 namespace promesh{
@@ -1107,6 +1109,45 @@ inline void SelectElementsBySplitPlane(
 		SelectElementsBySplitPlane_IMPL<Volume>(g, sel, pivot, normal, aaPos);
 }
 
+
+template <int icoord, int selFlag, class TElem>
+inline void SelectElementsInCoordinateRange(
+				Mesh* obj,
+				number min,
+				number max)
+{
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	for(typename Grid::traits<TElem>::iterator iter = g.begin<TElem>();
+		iter != g.end<TElem>(); ++iter)
+	{
+		vector3 c = CalculateCenter(*iter, aaPos);
+		if(c[icoord] >= min && c[icoord] <= max)
+			sel.select(*iter, selFlag);
+	}
+}
+
+template <int icoord, int selFlag>
+inline void SelectElementsInCoordinateRange(
+				Mesh* mesh,
+				number min,
+				number max,
+				bool vrts,
+				bool edges,
+				bool faces,
+				bool vols)
+{
+	if(vrts)
+		SelectElementsInCoordinateRange<icoord, selFlag, Vertex>(mesh, min, max);
+	if(edges)
+		SelectElementsInCoordinateRange<icoord, selFlag, Edge>(mesh, min, max);
+	if(faces)
+		SelectElementsInCoordinateRange<icoord, selFlag, Face>(mesh, min, max);
+	if(vols)
+		SelectElementsInCoordinateRange<icoord, selFlag, Volume>(mesh, min, max);
+}
 
 /// \}
 

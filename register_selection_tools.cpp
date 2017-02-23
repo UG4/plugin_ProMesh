@@ -70,6 +70,32 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectElementsBySplitPlane", &SelectElementsBySplitPlane, grp, "",
 				"mesh # select vrts # select edges # select faces # select volumes # pivot # normal",
 				TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE);
+		
+		grp = baseGrp + "/Coordinate Range";
+		reg.add_function("SelectElementsByRangeX", &SelectElementsInCoordinateRange<0, 1>,
+				grp, "",
+				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
+			.add_function("SelectElementsByRangeY", &SelectElementsInCoordinateRange<1, 1>,
+				grp, "",
+				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
+			.add_function("SelectElementsByRangeZ", &SelectElementsInCoordinateRange<2, 1>,
+				grp, "",
+				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
+			.add_function("DeselectElementsByRangeX", &SelectElementsInCoordinateRange<0, 0>,
+				grp, "",
+				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE)
+			.add_function("DeselectElementsByRangeY", &SelectElementsInCoordinateRange<1, 0>,
+				grp, "",
+				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE)
+			.add_function("DeselectElementsByRangeZ", &SelectElementsInCoordinateRange<2, 0>,
+				grp, "",
+				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE);
 
 		grp = baseGrp + "/Vertices";
 		reg.add_function("SelectVertexByCoordinate", &SelectElemByCoordinate<Vertex>, grp, "",
