@@ -57,18 +57,18 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 		grp = baseGrp + string("/Coordinate Transform/Move");
 		reg.add_function("GetSelectionCenter", &GetSelectionCenter, grp, "",
 				"mesh # centerOut", TOOLTIP_GET_SELECTION_CENTER, "", RT_NO_PROMESH)
-			.add_function("MoveSelectionTo", &MoveSelectionTo, grp, "",
-				"mesh # center", TOOLTIP_MOVE_SELECTION_TO)
 			.add_function("Move", &Move, grp, "",
 				"mesh # offset", TOOLTIP_MOVE)
 			.add_function("MoveMeshTo", &MoveMeshTo, grp, "",
 				"mesh # new position", TOOLTIP_MOVE_MESH_TO) 
+			.add_function("MoveSelectionTo", &MoveSelectionTo, grp, "",
+				"mesh # center", TOOLTIP_MOVE_SELECTION_TO)
 			.add_function("MoveAlongNormal", &MoveAlongNormal, grp, "",
 				"mesh # offset | default | value=0.1D", TOOLTIP_MOVE_ALONG_NORMAL)
 			.add_function("MoveVerticesAlongEdges",
 				&MoveVerticesAlongEdges,
 				grp, "", "mesh # relative offset | default | value=0.5D",
-				TOOLTIP_MOVE_VERTICES_ALONG_EDGES, "", RT_NO_PROMESH);
+				TOOLTIP_MOVE_VERTICES_ALONG_EDGES);
 
 		grp = baseGrp + string("/Coordinate Transform/Scale");
 		reg.add_function("ScaleAroundCenter", &ScaleAroundCenter, grp, "",
@@ -105,29 +105,33 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			// 			  "dot threshold | default | min=-1D; max=1D; value=-1D#"
 			// 			  "num iterations | default | min=0; value=10",
 			// 			  TOOLTIP_WEIGHTED_NORMAL_SMOOTH)
-			.add_function("SlopeSmooth", &SlopeSmooth, grp, "",
-						  "mesh#"
-						  "alpha | default | min=0D; max=1D; value=0.25D#"
-						  "num iterations | default | min=0; value=10",
-						  TOOLTIP_SLOPE_SMOOTH)
 			.add_function("TangentialSmooth", &TangentialSmooth, grp, "",
 				"mesh # alpha | default | value=0.25D # num iterations | default | value=10",
-				TOOLTIP_TANGENTIAL_SMOOTH);
+				TOOLTIP_TANGENTIAL_SMOOTH)
+			.add_function("SlopeSmooth", &SlopeSmooth, grp, "",
+				"mesh#"
+				"alpha | default | min=0D; max=1D; value=0.25D#"
+				"num iterations | default | min=0; value=10",
+				TOOLTIP_SLOPE_SMOOTH);
+
+
+		grp = baseGrp + string("/Coordinate Transform");
+		reg.add_function("ProjectToPlane", &ProjectToPlane, grp, "",
+				"mesh # plane point # plane normal || value=[0,0,1]",
+				TOOLTIP_RPOJECT_TO_PLANE)
+			.add_function("ConeTransform", &ConeTransform, grp, "",
+				"mesh # base # axis || value=[0,0,1] # scaleAtTip | default | value=1", TOOLTIP_CONE_TRANSFORM)
+			.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "",
+				"mesh # step size | default | value=0.01D # num iterations | default | value=100",
+				TOOLTIP_FLATTEN_BENT_QUADRILATERALS)
+			.add_function("SnapVerticesToVertices", &SnapVerticesToVertices, grp, "",
+				"mesh # targetMesh", TOOLTIP_SNAP_VERTICES_TO_VERTICES, "", RT_NO_PROMESH);
 
 		grp = baseGrp + string("/Coordinate Transform/Subdivision Projection");
 		reg.add_function("ProjectToLimitPiecewiseLoop", &ProjectToLimitPLoop, grp, "",
 				"mesh", TOOLTIP_PROJECT_TO_LIMIT_PLOOP)  
 			.add_function("ProjectToLimitSmoothBoundary", &ProjectToLimitSmoothBoundary, grp, "",
 				"mesh", TOOLTIP_PROJECT_TO_LIMIT_SMOOTH_BOUNDARY);
-
-		grp = baseGrp + string("/Coordinate Transform");
-		reg.add_function("ConeTransform", &ConeTransform, grp, "",
-				"mesh # base # axis # scaleAtTip | default | value=1", TOOLTIP_CONE_TRANSFORM)
-			.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "",
-				"mesh # step size | default | value=0.01D # num iterations | default | value=100",
-				TOOLTIP_FLATTEN_BENT_QUADRILATERALS)
-			.add_function("SnapVerticesToVertices", &SnapVerticesToVertices, grp, "",
-				"mesh # targetMesh", TOOLTIP_SNAP_VERTICES_TO_VERTICES, "", RT_NO_PROMESH);
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }
