@@ -97,6 +97,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("CreatePrism", &CreatePrism, grp, "",
 				"mesh # subset # fill", TOOLTIP_CREATE_PRISM);
 
+
 	//	layer meshing
 		grp = baseGrp + "/Raster Layers";
 		reg.add_function("MeshLayers", &MeshLayers, grp, "",
@@ -123,7 +124,21 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"layers",
 				TOOLTIP_PROJECT_TO_TOP_LAYER, "", RT_NO_PROMESH);
 			
-	//	refinement
+
+
+	//	REMESHING
+		grp = baseGrp + "/Remeshing";
+		reg.add_function("EraseSelectedElements", &EraseSelectedElements, grp, "",
+				"mesh #"
+				"erase unused vertices || value=true #"
+				"erase unused edges || value=true #"
+				"erase unused faces || value=true",
+				TOOLTIP_ERASE_SELECTED_ELEMENTS)
+			.add_function("Duplicate", &Duplicate, grp, "",
+				"mesh # offset #"
+				"deselect old || value=true #"
+				"select new || value=true", TOOLTIP_DUPLICATE);
+
 		grp = baseGrp + "/Remeshing/Refinement";
 		reg.add_function("Refine", &Refine, grp, "",
 				"mesh # strict subset inheritance # use snap points", TOOLTIP_REFINE)
@@ -132,51 +147,84 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("RefineSmooth", &RefineSmooth, grp, "",
 				"mesh # strict subset inheritance", TOOLTIP_REFINE_SMOOTH)
 			.add_function("InsertCenter", &InsertCenter, grp, "",
-				"", TOOLTIP_INSERT_CENTER);
+				"", TOOLTIP_INSERT_CENTER)
+			.add_function("PlaneCut", &PlaneCut, grp, "",
+				"mesh #"
+				"plane center #"
+				"plane normal || value=[0,0,1]", TOOLTIP_PLANE_CUT);
 
-	//	remeshing
-		grp = baseGrp + "/Remeshing/Polylines";
-		reg.add_function("SimplifyPolylines", &SimplifyPolylines, grp, "",
+
+		grp = baseGrp + "/Remeshing/Remove Doubles";
+		reg.add_function("RemoveDoubles", &RemoveDoubles, grp, "",
+				"mesh # threshold || value=0.0001D", TOOLTIP_REMOVE_DOUBLES)
+			.add_function("RemoveDoubleEdges", &RemoveDoubleEdges, grp, "",
+				"mesh", TOOLTIP_REMOVE_DOUBLE_EDGES)
+			.add_function("RemoveDoubleFaces", &RemoveDoubleFaces, grp, "",
+				"mesh", TOOLTIP_REMOVE_DOUBLE_FACES);
+
+		grp = baseGrp + "/Remeshing/Merge Vertices";
+		reg.add_function("MergeAtFirst", &MergeAtFirst, grp, "",
+				"mesh", TOOLTIP_MERGE_AT_FIRST)
+			.add_function("MergeAtCenter", &MergeAtCenter, grp, "",
+				"mesh", TOOLTIP_MERGE_AT_CENTER)
+			.add_function("MergeAtLast", &MergeAtLast, grp, "",
+				"mesh", TOOLTIP_MERGE_AT_LAST);
+
+
+		grp = baseGrp + "/Remeshing/Edges";
+		reg.add_function("CollapseEdge", &CollapseEdge, grp, "",
+				"mesh", TOOLTIP_COLLAPSE_EDGE)
+			.add_function("SplitEdge", &SplitEdge, grp, "",
+				"mesh", TOOLTIP_SPLIT_EDGE)
+			.add_function("SwapEdge", &SwapEdge, grp, "",
+				"mesh", TOOLTIP_SWAP_EDGE)
+			.add_function("SimplifyPolylines", &SimplifyPolylines, grp, "",
 				"mesh # "
-				"max curvature angle | default | min=0.0D; max=180.0D; value=5.D # ",
+				"max curvature angle || min=0.0D; max=180.0D; value=5.D # ",
 				TOOLTIP_SIMPLIFY_POLYLINES)
 			.add_function("SimplifySmoothedPolylines", &SimplifySmoothedPolylines, grp, "",
 				"mesh # "
-				"max curvature angle | default | min=0.0D; max=180.0D; value=5.D # "
-				"smoothing alpha | default | min=0.0D; value=0.9D # "
-				"smoothing iterations | default | min=0; value=10 # ",
+				"max curvature angle || min=0.0D; max=180.0D; value=5.D # "
+				"smoothing alpha || min=0.0D; value=0.9D # "
+				"smoothing iterations || min=0; value=10 # ",
 				TOOLTIP_SIMPLIFY_SMOOTHED_POLYLINES);
-			
-		grp = baseGrp + "/Remeshing/Triangulation";
+
+		grp = baseGrp + "/Remeshing/Triangles";
 		reg.add_function("ConvertToTriangles", &ConvertToTriangles, grp, "",
 				"mesh", TOOLTIP_CONVERT_TO_TRIANGLES)
 			.add_function("TriangleFill", &TriangleFill, grp, "",
-				"mesh # quality generation # min angle # subset", TOOLTIP_TRIANGLE_FILL)
+				"mesh #"
+				"quality generation || value=true #"
+				"min angle || value=20; min=0; max=30; step=1 #"
+				"subset || value=0", TOOLTIP_TRIANGLE_FILL)
 			.add_function("Retriangulate", &Retriangulate, grp, "",
-				"mesh # min angle", TOOLTIP_RETRIANGULATE)
+				"mesh #"
+				"min angle || value=20; min=0; max=30; step=1", TOOLTIP_RETRIANGULATE)
 			.add_function("AdjustEdgeLength", &AdjustEdgeLength, grp, "",
 				"mesh # "
-				"min edge length | default | min=0.0D; value=1.D # "
-				"max edge length | default | min=0.0D; value=2.D # "
-				"num iterations | default | min=1; value=10 # "
-				"adaptive | default | value=true # "
-				"automark boundaries | default | value=true",
+				"min edge length || min=0.0D; value=1.D # "
+				"max edge length || min=0.0D; value=2.D # "
+				"num iterations || min=1; value=10 # "
+				"adaptive || value=true # "
+				"automark boundaries || value=true",
 				TOOLTIP_ADJUST_EDGE_LENGTH)
 			.add_function("AdjustEdgeLengthExtended", &AdjustEdgeLengthExtended, grp, "",
 				"mesh # "
-				"min edge length | default | min=0.0D; value=1.D # "
-				"max edge length | default | min=0.0D; value=2.D # "
-				"approximation | default | min=0.0D; max=1.0D; value=0.9D # "
-				"triangle quality | default | min=0.0D; max=1.0D; value=0.9D # "
-				"num iterations | default | min=1; value=10 # "
-				"automark boundaries | default |value=true",
+				"min edge length || min=0.0D; value=1.D # "
+				"max edge length || min=0.0D; value=2.D # "
+				"approximation || min=0.0D; max=1.0D; value=0.99D # "
+				"triangle quality || min=0.0D; max=1.0D; value=0.9D # "
+				"num iterations || min=1; value=10 # "
+				"automark boundaries ||value=true",
 				TOOLTIP_ADJUST_EDGE_LENGTH)
 			.add_function("AdaptSurfaceToCylinder", &AdaptSurfaceToCylinder, grp, "",
-				"mesh # radius # threshold", TOOLTIP_ADAPT_SURFACE_TO_CYLINDER)
+				"mesh #"
+				"radius || value=1; min=0 #"
+				"threshold || value=0.01D; min=0", TOOLTIP_ADAPT_SURFACE_TO_CYLINDER)
 			.add_function("ReplaceValence3Vertices", &ReplaceValence3Vertices, grp, "",
-				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_VALENCE_3_VERTICES)
+				"mesh # max relative height || min=0; value = 0.0001D", TOOLTIP_REPLACE_VALENCE_3_VERTICES)
 			.add_function("ReplaceLowValenceVertices", &ReplaceLowValenceVertices, grp, "",
-				"mesh # max relative height | default | min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
+				"mesh # max relative height || min=0; value = 0.0001D", TOOLTIP_REPLACE_LOW_VALENCE_VERTICES);
 
 		grp = baseGrp + "/Remeshing/Quadrilaterals";
 		reg.add_function("ConvertToQuadrilaterals", &ConvertToQuadrilaterals, grp, "",
@@ -186,76 +234,66 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("ConvertToTetrahedra",
 				static_cast<void (*)(Mesh*)>(&ConvertToTetrahedra), grp, "",
 				"mesh", TOOLTIP_CONVERT_TO_TETRAHEDRA)
-			.add_function("Tetrahedralize", &Tetrahedralize, grp, "",
-				"mesh # quality # preserve outer # preserve all # "
-				"separate volumes # append subsets at end # verbosity", TOOLTIP_TETRAHEDRALIZE)
-			.add_function("AssignVolumeConstraints", &AssignVolumeConstraints, grp, "",
-				"mesh # volume constraint", TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS)
 			.add_function("ClearVolumeConstraints", &ClearVolumeConstraints, grp, "",
 				"mesh", TOOLTIP_CLEAR_VOLUME_CONSTRAINTS)
+			.add_function("Tetrahedralize", &Tetrahedralize, grp, "",
+				"mesh #"
+				"quality || value=5; min=0; max=18; step=1 #"
+				"preserve outer #"
+				"preserve all #"
+				"separate volumes || value=true #"
+				"append subsets at end || value=true#"
+				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_TETRAHEDRALIZE)
 			.add_function("Retetrahedralize", &Retetrahedralize, grp, "",
-				"mesh # quality # preserve outer # preserve all # "
-				"apply volume constraint # verbosity", TOOLTIP_RETETRAHEDRALIZE)
+				"mesh #"
+				"quality || value=5; min=0; max=18; step=1 #"
+				"preserve outer #"
+				"preserve all #"
+				"apply volume constraint #"
+				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_RETETRAHEDRALIZE)
+			.add_function("AssignVolumeConstraints", &AssignVolumeConstraints, grp, "",
+				"mesh # volume constraint", TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS)
 		    .add_function("ExtrudeFacesWithTets", &ExtrudeFacesWithTets, grp, "",
-		    	"mesh # from subset # to subset # factor", TOOLTIP_EXTRUDE_FACES_WITH_TETS);
+		    	"mesh # from subset # to subset # factor", TOOLTIP_EXTRUDE_FACES_WITH_TETS,
+		    	"", RT_NO_PROMESH);
 
 
 		grp = baseGrp + "/Remeshing/Extrusion";
 		reg.add_function("Extrude", &ExtrudeAndMove, grp, "",
 				"mesh #"
-				"total direction | default | value=[0,0,1] #"
-				"num steps | default | min=1;value=1 #"
-				"create faces | default | value=true #"
-				"create volumes | default | value=true",
-				TOOLTIP_EXTRUDE_AND_MOVE)
+				"total direction || value=[0,0,1] #"
+				"num steps || min=1;value=1 #"
+				"create faces || value=true #"
+				"create volumes || value=true",
+				TOOLTIP_EXTRUDE_AND_MOVE, "", RT_NO_PROMESH)
 			.add_function("ExtrudeAndMove", &ExtrudeAndMove, grp, "",
 				"mesh #"
-				"total direction | default | value=[0,0,1] #"
-				"num steps | default | min=1;value=1 #"
-				"create faces | default | value=true #"
-				"create volumes | default | value=true",
+				"total direction || value=[0,0,1] #"
+				"num steps || min=1;value=1 #"
+				"create faces || value=true #"
+				"create volumes || value=true",
 				TOOLTIP_EXTRUDE_AND_MOVE)
 			.add_function("ExtrudeAndScale", &ExtrudeAndScale, grp, "",
 				"mesh #"
-				"total scale | default | value=2D #"
+				"total scale || value=2D #"
 				"scale around pivot #"
-				"num steps | default | min=1;value=1 #"
-				"create faces | default | value=true #"
-				"create volumes | default | value=true",
+				"num steps || min=1;value=1 #"
+				"create faces || value=true #"
+				"create volumes || value=true",
 				TOOLTIP_EXTRUDE_AND_SCALE)
 			.add_function("ExtrudeAlongNormal", &ExtrudeAlongNormal, grp, "",
 				"mesh #"
-				"total length | default | value=1D #"
-				"num steps | default | min=1;value=1 #"
-				"create faces | default | value=true #"
-				"create volumes | default | value=true",
+				"total length || value=1D #"
+				"num steps || min=1;value=1 #"
+				"create faces || value=true #"
+				"create volumes || value=true",
 				TOOLTIP_EXTRUDE_ALONG_NORMAL)
 			.add_function("ExtrudeCylinders", &ExtrudeCylinders, grp, "",
 				"mesh #"
-				"height | default | value=1D #"
-				"radius | default | value=1D #"
-				"snap threshold | default | min=0D;value=0.001D ",
+				"height || value=1D #"
+				"radius || value=1D #"
+				"snap threshold || min=0D;value=0.001D ",
 				TOOLTIP_EXTRUDE_CYLINDERS);
-
-	//	topology
-		grp = baseGrp + "/Remeshing";
-		reg.add_function("EraseSelectedElements", &EraseSelectedElements, grp, "",
-				"mesh # erase unused vertices # erase unused edges # erase unused faces",
-				TOOLTIP_ERASE_SELECTED_ELEMENTS)
-			.add_function("Duplicate", &Duplicate, grp, "",
-				"mesh # offset # deselect old # select new", TOOLTIP_DUPLICATE)
-			.add_function("PlaneCut", &PlaneCut, grp, "",
-				"mesh # plane center # plane normal", TOOLTIP_PLANE_CUT)
-			.add_function("CreateShrinkGeometry", &CreateShrinkGeometry, grp, "",
-				"mesh # scale", TOOLTIP_CREATE_SHRINK_GEOMETRY);
-
-		grp = baseGrp + "/Remeshing/Edge Operations";
-		reg.add_function("CollapseEdge", &CollapseEdge, grp, "",
-				"mesh", TOOLTIP_COLLAPSE_EDGE)
-			.add_function("SplitEdge", &SplitEdge, grp, "",
-				"mesh", TOOLTIP_SPLIT_EDGE)
-			.add_function("SwapEdge", &SwapEdge, grp, "",
-				"mesh", TOOLTIP_SWAP_EDGE);
 
 		grp = baseGrp + "/Remeshing/Orientation";
 		reg.add_function("AdjustEdgeOrientation", &AdjustEdgeOrientation, grp, "",
@@ -271,52 +309,46 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp + "/Remeshing/Resolve Intersections";
 		reg.add_function("ResolveSelfIntersections", &ResolveSelfIntersections, grp, "",
-			"mesh # snap threshold", TOOLTIP_RESOLVE_SELF_INTERSECTIONS);
+			"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+			TOOLTIP_RESOLVE_SELF_INTERSECTIONS);
 
 		grp = baseGrp + "/Remeshing/Resolve Intersections/Advanced";
 		reg.add_function("ProjectVerticesToCloseEdges", &ProjectVerticesToCloseEdges, grp, "",
-				"mesh # snap threshold", TOOLTIP_PROJECT_VERTICES_TO_CLOSE_EDGES)
+				"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+				TOOLTIP_PROJECT_VERTICES_TO_CLOSE_EDGES)
 			.add_function("ProjectVerticesToCloseFaces", &ProjectVerticesToCloseFaces, grp, "",
-				"mesh # snap threshold", TOOLTIP_PROJECT_VERTICES_TO_CLOSE_FACES)
+				"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+				TOOLTIP_PROJECT_VERTICES_TO_CLOSE_FACES)
 			.add_function("IntersectCloseEdges", &IntersectCloseEdges, grp, "",
-				"mesh # snap threshold", TOOLTIP_INTERSECT_CLOSE_EDGES)
+				"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+				TOOLTIP_INTERSECT_CLOSE_EDGES)
 			.add_function("ResolveEdgeIntersection", &ResolveEdgeIntersection, grp, "",
-				"mesh # snap threshold", TOOLTIP_RESOLVE_EDGE_INTERSECTIONS) 
+				"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+				TOOLTIP_RESOLVE_EDGE_INTERSECTIONS) 
 			.add_function("ResolveTriangleIntersections", &ResolveTriangleIntersections, grp, "",
-				"mesh # snap threshold", TOOLTIP_RESOLVE_TRIANGLE_INTERSECTIONS);
-		
-		grp = baseGrp + "/Remeshing/Remove Doubles";
-		reg.add_function("RemoveDoubles", &RemoveDoubles, grp, "",
-				"mesh # threshold", TOOLTIP_REMOVE_DOUBLES)
-			.add_function("RemoveDoubleEdges", &RemoveDoubleEdges, grp, "",
-				"mesh", TOOLTIP_REMOVE_DOUBLE_EDGES)
-			.add_function("RemoveDoubleFaces", &RemoveDoubleFaces, grp, "",
-				"mesh", TOOLTIP_REMOVE_DOUBLE_FACES);
-
-		grp = baseGrp + "/Remeshing/Merge Vertices";
-		reg.add_function("MergeAtFirst", &MergeAtFirst, grp, "",
-				"mesh", TOOLTIP_MERGE_AT_FIRST)
-			.add_function("MergeAtCenter", &MergeAtCenter, grp, "",
-				"mesh", TOOLTIP_MERGE_AT_CENTER)
-			.add_function("MergeAtLast", &MergeAtLast, grp, "",
-				"mesh", TOOLTIP_MERGE_AT_LAST);
+				"mesh # snap threshold || value=0.000001D; min=0; step=0.001D",
+				TOOLTIP_RESOLVE_TRIANGLE_INTERSECTIONS);
 
 		grp = baseGrp + "/Remeshing/Boolean Operations";
 		reg.add_function("FaceUnion", &CSGFaceUnion, grp, "",
 				"mesh#"
-				 "subset 1  | default | value=0#"
-				 "subset 2  | default | value=1#"
-				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_UNION)
+				 "subset 1  || value=0#"
+				 "subset 2  || value=1#"
+				 "snap threshold || value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_UNION)
 			.add_function("FaceIntersection", &CSGFaceIntersection, grp, "",
 				"mesh#"
-				 "subset 1  | default | value=0#"
-				 "subset 2  | default | value=1#"
-				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_INTERSECTION)
+				 "subset 1  || value=0#"
+				 "subset 2  || value=1#"
+				 "snap threshold || value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_INTERSECTION)
 			.add_function("FaceDifference", &CSGFaceDifference, grp, "",
 				 "mesh#"
-				 "subset 1  | default | value=0#"
-				 "subset 2  | default | value=1#"
-				 "snap threshold | default | value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_DIFFERENCE);
+				 "subset 1  || value=0#"
+				 "subset 2  || value=1#"
+				 "snap threshold || value=0.000001D;min=0;step=0.000001D", TOOLTIP_CSG_FACE_DIFFERENCE);
+		
+		grp = baseGrp + "/Remeshing";
+		reg.add_function("CreateShrinkGeometry", &CreateShrinkGeometry, grp, "",
+				"mesh # scale || value=0.9D", TOOLTIP_CREATE_SHRINK_GEOMETRY);
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }
