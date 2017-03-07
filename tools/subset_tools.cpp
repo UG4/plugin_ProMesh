@@ -65,6 +65,43 @@ void AssignSubset(Mesh* obj, int newIndex, bool vertices, bool edges,
 		sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
 }
 
+void AssignNewSubset(
+			Mesh* obj,
+			const char* name,
+			bool vertices,
+			bool edges,
+			bool faces,
+			bool volumes)
+{
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	int newIndex = sh.num_subsets();
+	sh.subset_info(newIndex).name = name;
+
+	if(vertices)
+		sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), newIndex);
+
+	if(edges)
+		sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), newIndex);
+	
+	if(faces)
+		sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), newIndex);
+
+	if(volumes)
+		sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
+}
+
+void UnassignSubset(
+			Mesh* obj,
+			bool vertices,
+			bool edges,
+			bool faces,
+			bool volumes)
+{
+	AssignSubset(obj, -1, vertices, edges, faces, volumes);
+}
+
 void SetSubsetName(Mesh* obj, int si, const char* name)
 {
 	SubsetHandler& sh = obj->subset_handler();

@@ -920,9 +920,9 @@ void ClearMarks(Mesh* obj)
 
 void MarkCornersOfMarkedEdges(Mesh* obj, number angle)
 {
-	Selector& sel = obj->selector();
+	Grid& grid = obj->grid();
 	MarkCorners(obj->grid(), obj->crease_handler(),
-				sel.begin<Vertex>(), sel.end<Vertex>(),
+				grid.begin<Vertex>(), grid.end<Vertex>(),
 				IsInSubset(obj->crease_handler(), ug::REM_CREASE),
 				ug::REM_FIXED, angle, obj->position_attachment());
 }
@@ -956,6 +956,22 @@ void UnmarkSelection(Mesh* obj)
 		obj->selector().end<Edge>(),
 		ug::REM_NONE);
 }
+
+void MarkCreaseEdges(Mesh* obj, number minAngle, bool clearMarks)
+{
+	if(clearMarks)
+		obj->crease_handler().clear();
+
+	MarkCreaseEdges(obj->grid(),
+					obj->crease_handler(),
+					obj->grid().begin<Edge>(),
+					obj->grid().end<Edge>(),
+					REM_CREASE, minAngle);
+	MarkFixedCreaseVertices(obj->grid(),
+							obj->crease_handler(),
+							REM_CREASE, REM_FIXED);
+}
+
 
 template <class elem_t, class vector_t, class AAPos>
 static void

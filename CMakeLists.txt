@@ -42,6 +42,7 @@ set(SOURCES		mesh.cpp
 				register_mesh.cpp
 				register_meshing_tools.cpp
 				register_selection_tools.cpp
+				register_subset_tools.cpp
 				tools/coordinate_transform_tools.cpp
 				tools/file_io_tools.cpp
 				tools/grid_generation_tools.cpp

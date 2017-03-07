@@ -41,6 +41,7 @@ namespace promesh{
 	void RegisterMesh(ProMeshRegistry& reg, std::string grp);
 	void RegisterCoordinateTransformTools(ProMeshRegistry& reg, std::string grp);
 	void RegisterSelectionTools(ProMeshRegistry& reg, std::string grp);
+	void RegisterSubsetTools(ProMeshRegistry& reg, std::string grp);
 	void RegisterMeshingTools(ProMeshRegistry& reg, std::string grp);
 }//	end of namespace
 }//	end of namespace

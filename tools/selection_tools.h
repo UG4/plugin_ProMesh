@@ -370,6 +370,8 @@ void MarkSelection(Mesh* obj);
 
 void UnmarkSelection(Mesh* obj);
 
+void MarkCreaseEdges(Mesh* obj, number minAngle, bool clearMarks);
+
 void SelectElementsBySplitPlane(
 			Mesh* obj,
 			bool selectVrts,

@@ -33,7 +33,6 @@
 #include "registration_routines.h"
 #include "registry/registry.h"
 #include "bridge/util.h"
-#include "tooltips.h"
 #include "tools/new_tools.h"
 #include "tools/selection_tools.h"
 
@@ -294,6 +293,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh", TOOLTIP_MARK_SELECTION)
 			.add_function("UnmarkSelection", &UnmarkSelection, grp, "",
 				"mesh", TOOLTIP_UNMARK_SELECTION)
+			.add_function("MarkCreaseEdges", &MarkCreaseEdges, grp, "",
+				"mesh # min angle || value=25D; min=0; max=180; step=1# clear marks",
+				TOOLTIP_MARK_CREASE_EDGES)
 			.add_function("MarkCornersOfMarkedEdges", &MarkCornersOfMarkedEdges, grp, "",
 				"mesh # min angle | default | value=75D",
 				 TOOLTIP_MARK_CORNERS_OF_MARKED_EDGES);

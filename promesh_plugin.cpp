@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015:  G-CSC, Goethe University Frankfurt
+ * Copyright (c) 2013-2017:  G-CSC, Goethe University Frankfurt
  * Author: Sebastian Reiter
  * 
  * This file is part of UG4.
@@ -38,7 +38,6 @@
 
 #include "tools/file_io_tools.h"
 #include "tools/new_tools.h"
-#include "tools/subset_tools.h"
 #include "tools/measure_tools.h"
 #include "bridge/util.h"
 
@@ -68,56 +67,6 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 			"mesh # filename", TOOLTIP_SAVE_MESH, "", RT_NO_PROMESH)
 		.add_function("ExportToUG3", &ExportToUG3, grp, "",
 			"mesh # filenamePrefix # lgmName # problemName", TOOLTIP_EXPORT_TO_UG3, "", RT_NO_PROMESH);
-
-//	subset tools
-	grp = baseGrp + "/Subsets";
-	reg.add_function("AssignSubset",
-			static_cast<void (*)(Mesh*, int)>(&AssignSubset), grp, "",
-			"mesh # subset index", TOOLTIP_ASSIGN_SUBSET)
-		.add_function("AssignSubset",
-			static_cast<void (*)(Mesh*, int, bool, bool, bool, bool)>(&AssignSubset), grp, "",
-			"mesh # subset index # assign vertices # assign edges # assign faces # assign volumes", TOOLTIP_ASSIGN_SUBSET)
-		.add_function("SetSubsetName", &SetSubsetName, grp, "",
-			"mesh # subset index # name ", TOOLTIP_SET_SUBSET_NAME)
-		.add_function("AssignSubsetColors", &AssignSubsetColors, grp, "", "mesh", TOOLTIP_ASSIGN_SUBSET_COLORS)
-		.add_function("MoveSubset", &MoveSubset, grp, "",
-			"mesh # old subset index # new subset index", TOOLTIP_MOVE_SUBSET)
-		.add_function("SwapSubsets", &SwapSubsets, grp, "",
-			"mesh # subset index 1 # subset index 2", TOOLTIP_SWAP_SUBSETS)
-		.add_function("JoinSubsets", &JoinSubsets, grp, "",
-			"mesh # target subset index # subset index 1 # subset index 2", TOOLTIP_JOIN_SUBSETS)
-		.add_function("EraseSubset", &EraseSubset, grp, "",
-			"mesh # subset index # erase geometry", TOOLTIP_ERASE_SUBSET)
-		.add_function("EraseEmptySubsets", &EraseEmptySubsets, grp, "",
-			"mesh", TOOLTIP_ERASE_EMPTY_SUBSETS)
-		.add_function("AdjustSubsetsForUG3", &AdjustSubsetsForUG3, grp, "",
-			"mesh # keep interface subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG3, "", RT_NO_PROMESH)
-		.add_function("AdjustSubsetsForUG4", &AdjustSubsetsForUG4, grp, "",
-			"mesh # preserve existing subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG4, "", RT_NO_PROMESH)
-		.add_function("AssignSubsetsByQuality", &AssignSubsetsByQuality, grp, "",
-			"mesh # num sections", TOOLTIP_ASSIGN_SUBSETS_BY_QUALITY)
-		.add_function("CopySubsetIndicesToSides", &CopySubsetIndicesToSides, grp, "",
-			"mesh # selection only # to unassigned elements only", TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES)
-		.add_function("AssignSubsetsByElementType", &AssignSubsetsByElementType, grp, "",
-			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE);
-
-	grp = baseGrp + "/Subsets/Separate";
-	reg.add_function("SeparateFacesByEdgeSubsets", &SeparateFacesByEdgeSubsets, grp, "",
-			"mesh", TOOLTIP_SEPARATE_FACES_BY_EDGE_SUBSETS)
-		.add_function("SeparateFacesBySelectedEdges", &SeparateFacesBySelectedEdges, grp, "",
-			"mesh", TOOLTIP_SEPARATE_FACES_BY_SELECTED_EDGES)
-		.add_function("SeparateVolumesByFaceSubsets", &SeparateVolumesByFaceSubsets, grp, "",
-			"mesh", TOOLTIP_SEPARATE_VOLUMES_BY_FACE_SUBSETS)
-		.add_function("SeparateVolumesBySelectedFaces", &SeparateVolumesBySelectedFaces, grp, "",
-			"mesh", TOOLTIP_SEPARATE_VOLUMES_BY_SELECTED_FACES)
-		.add_function("SeparateIrregularManifoldSubsets", &SeparateIrregularManifoldSubsets, grp, "",
-			"mesh", TOOLTIP_SEPARATE_IRREGULAR_MANIFOLD_SUBSETS)
-		.add_function("SeparateFaceSubsetsByNormal", &SeparateFaceSubsetsByNormal, grp, "",
-			"mesh", TOOLTIP_SEPARATE_FACE_SUBSETS_BY_NORMAL)
-		.add_function("SeparateFaceSubsetByNormal", &SeparateFaceSubsetByNormal, grp, "",
-			"mesh # subset index", TOOLTIP_SEPARATE_FACE_SUBSET_BY_NORMAL)
-		.add_function("SeparateDegeneratedBoundaryFaceSubsets", &SeparateDegeneratedBoundaryFaceSubsets, grp, "",
-			"mesh # angle", TOOLTIP_SEPARATE_DEGENERATED_BOUNDARY_FACE_SUBSETS);
 
 //	info tools
 	grp = baseGrp + string("/Info/Measure length, area, volume");
@@ -174,6 +123,7 @@ InitUGPlugin_ProMesh(Registry* reg, string grp)
 		RegisterMesh(pmreg, grp);
 		RegisterCoordinateTransformTools(pmreg, grp);
 		RegisterSelectionTools(pmreg, grp);
+		RegisterSubsetTools(pmreg, grp);
 		RegisterMeshingTools(pmreg, grp);
 		RegisterMisc(pmreg, grp);
 	}
