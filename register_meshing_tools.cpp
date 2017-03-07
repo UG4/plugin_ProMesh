@@ -79,23 +79,31 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh #"
 				"width || value = 1 #"
 				"height || value = 1 #"
-				"center # subset # fill",
+				"center #"
+				"subset #"
+				"fill || value=true",
 				TOOLTIP_CREATE_PLANE)
 			.add_function("CreateCircle", &CreateCircle, grp, "",
-				"mesh # center # radius || value=1 # rim vertices || value=12 # subset # fill",
+				"mesh #"
+				"center #"
+				"radius || value=1 #"
+				"rim vertices || value=12 #"
+				"subset #"
+				"fill || value=true",
 				TOOLTIP_CREATE_CIRCLE);
 
 		grp = baseGrp + "/Grid Generation/Geometries/3D";
 		reg.add_function("CreateBox", &CreateBox, grp, "",
-				"mesh # min corner # max corner # subset # fill", TOOLTIP_CREATE_BOX)
+				"mesh # min corner # max corner # subset # fill || value=true",
+				TOOLTIP_CREATE_BOX)
 			.add_function("CreateSphere", &CreateSphere, grp, "",
 				"mesh # center # radius # refinements # subset", TOOLTIP_CREATE_SPHERE)
 			.add_function("CreateTetrahedron", &CreateTetrahedron, grp, "",
-				"mesh # subset # fill", TOOLTIP_CREATE_TETRAHEDRON)
+				"mesh # subset # fill || value=true", TOOLTIP_CREATE_TETRAHEDRON)
 			.add_function("CreatePyramid", &CreatePyramid, grp, "",
-				"mesh # subset # fill", TOOLTIP_CREATE_PYRAMID)
+				"mesh # subset # fill || value=true", TOOLTIP_CREATE_PYRAMID)
 			.add_function("CreatePrism", &CreatePrism, grp, "",
-				"mesh # subset # fill", TOOLTIP_CREATE_PRISM);
+				"mesh # subset # fill || value=true", TOOLTIP_CREATE_PRISM);
 
 
 	//	layer meshing
@@ -133,15 +141,16 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"erase unused vertices || value=true #"
 				"erase unused edges || value=true #"
 				"erase unused faces || value=true",
-				TOOLTIP_ERASE_SELECTED_ELEMENTS)
+				TOOLTIP_ERASE_SELECTED_ELEMENTS, "", RT_DEFAULT, Key_Delete)
 			.add_function("Duplicate", &Duplicate, grp, "",
 				"mesh # offset #"
 				"deselect old || value=true #"
-				"select new || value=true", TOOLTIP_DUPLICATE);
+				"select new || value=true", TOOLTIP_DUPLICATE, "", RT_DEFAULT, Key_D);
 
 		grp = baseGrp + "/Remeshing/Refinement";
 		reg.add_function("Refine", &Refine, grp, "",
-				"mesh # strict subset inheritance # use snap points", TOOLTIP_REFINE)
+				"mesh # strict subset inheritance # use snap points",
+				TOOLTIP_REFINE, "", RT_DEFAULT, Key_R)
 			.add_function("HangingNodeRefine", &HangingNodeRefine, grp, "",
 				"mesh # strict subset inheritance # anisotropic", TOOLTIP_HANGING_NODE_REFINE)
 			.add_function("RefineSmooth", &RefineSmooth, grp, "",
@@ -166,7 +175,8 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("MergeAtFirst", &MergeAtFirst, grp, "",
 				"mesh", TOOLTIP_MERGE_AT_FIRST)
 			.add_function("MergeAtCenter", &MergeAtCenter, grp, "",
-				"mesh", TOOLTIP_MERGE_AT_CENTER)
+				"mesh", TOOLTIP_MERGE_AT_CENTER, "", RT_DEFAULT,
+				Key_O)
 			.add_function("MergeAtLast", &MergeAtLast, grp, "",
 				"mesh", TOOLTIP_MERGE_AT_LAST);
 
@@ -175,9 +185,11 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("CollapseEdge", &CollapseEdge, grp, "",
 				"mesh", TOOLTIP_COLLAPSE_EDGE)
 			.add_function("SplitEdge", &SplitEdge, grp, "",
-				"mesh", TOOLTIP_SPLIT_EDGE)
+				"mesh", TOOLTIP_SPLIT_EDGE, "", RT_DEFAULT,
+				Key_T)
 			.add_function("SwapEdge", &SwapEdge, grp, "",
-				"mesh", TOOLTIP_SWAP_EDGE)
+				"mesh", TOOLTIP_SWAP_EDGE, "", RT_DEFAULT,
+				Key_W)
 			.add_function("SimplifyPolylines", &SimplifyPolylines, grp, "",
 				"mesh # "
 				"max curvature angle || min=0.0D; max=180.0D; value=5.D # ",
@@ -228,7 +240,8 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp + "/Remeshing/Quadrilaterals";
 		reg.add_function("ConvertToQuadrilaterals", &ConvertToQuadrilaterals, grp, "",
-				"mesh", TOOLTIP_CONVERT_TO_QUADRILATERALS);
+				"mesh", TOOLTIP_CONVERT_TO_QUADRILATERALS, "", RT_DEFAULT,
+				Key_Q);
 
 		grp = baseGrp + "/Remeshing/Tetrahedra";
 		reg.add_function("ConvertToTetrahedra",

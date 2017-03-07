@@ -42,7 +42,7 @@
 #define TOOLTIP_SET_SUBSET_NAME ""
 #define	TOOLTIP_ASSIGN_SUBSET "Assigns the selected elements to a subset."
 #define TOOLTIP_ASSIGN_NEW_SUBSET "Assigns selected elements to a new subset."
-#define TOOLTIP_UNASSIGN_SUBSET "Unassigns selected elements from any subset."
+#define TOOLTIP_UNASSIGN_SUBSETS "Unassigns selected elements from any subset."
 #define	TOOLTIP_ASSIGN_SUBSET_COLORS "assigns subset colors by a procedural scheme."
 #define	TOOLTIP_SEPARATE_FACES_BY_EDGE_SUBSETS "Assigns faces that are surrounded by a set of edge-subsets to a common subset."
 #define	TOOLTIP_SEPARATE_FACES_BY_SELECTED_EDGES "Assigns faces that are surrounded by a set of selected edges to a common subset."
@@ -87,7 +87,7 @@ void AssignNewSubset(
 			bool faces,
 			bool volumes);
 
-void UnassignSubset(
+void UnassignSubsets(
 			Mesh* obj,
 			bool vertices,
 			bool edges,

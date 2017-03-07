@@ -62,12 +62,12 @@ void RegisterSubsetTools(ProMeshRegistry& reg, std::string baseGrp)
 			"assign edges || value=true #"
 			"assign faces || value=true #"
 			"assign volumes || value=true ", TOOLTIP_ASSIGN_NEW_SUBSET)
-		.add_function("UnassignSubset", &UnassignSubset, grp, "",
+		.add_function("UnassignSubsets", &UnassignSubsets, grp, "",
 			"mesh #"
 			"unassign vertices || value=true #"
 			"unassign edges || value=true #"
 			"unassign faces || value=true #"
-			"unassign volumes || value=true ", TOOLTIP_UNASSIGN_SUBSET)
+			"unassign volumes || value=true ", TOOLTIP_UNASSIGN_SUBSETS)
 		.add_function("SetSubsetName", &SetSubsetName, grp, "",
 			"mesh # subset index # name ", TOOLTIP_SET_SUBSET_NAME, "", RT_NO_PROMESH)
 		.add_function("MoveSubset", &MoveSubset, grp, "",

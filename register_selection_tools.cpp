@@ -52,7 +52,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("ClearSelection", &ClearSelection, grp, "",
 				"mesh", TOOLTIP_CLEAR_SELECTION)
 			.add_function("CloseSelection", &CloseSelection, grp, "",
-				"mesh", TOOLTIP_CLOSE_SELECTION)
+				"mesh", TOOLTIP_CLOSE_SELECTION, "", RT_DEFAULT, Key_C)
 			.add_function("SelectSelectionBoundary", &SelectSelectionBoundary, grp, "",
 				"mesh", TOOLTIP_SELECT_SELECTION_BOUNDARY);
 
@@ -290,7 +290,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("ClearMarks", &ClearMarks, grp, "",
 				"mesh", TOOLTIP_CLEAR_MARKS)
 			.add_function("MarkSelection", &MarkSelection, grp, "",
-				"mesh", TOOLTIP_MARK_SELECTION)
+				"mesh", TOOLTIP_MARK_SELECTION, "", RT_DEFAULT, Key_M)
 			.add_function("UnmarkSelection", &UnmarkSelection, grp, "",
 				"mesh", TOOLTIP_UNMARK_SELECTION)
 			.add_function("MarkCreaseEdges", &MarkCreaseEdges, grp, "",

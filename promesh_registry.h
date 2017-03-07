@@ -37,10 +37,10 @@
 #include <set>
 #include <string>
 #include <vector>
+#include "keys.h"
 #include "registry/registry.h"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/contains.hpp"
-
 namespace ug{
 namespace promesh{
 
@@ -56,20 +56,25 @@ enum RegistryTargets{
 	RT_NO_UGSCRIPT = RT_PROMESH
 };
 
-
 namespace detail {
 
 ///	All functions registered in the ProMeshRegistry are encapsulated in a ProMeshFunction
+/**	shortcut keys are specified as enumerated in ug::promesh::ShortcutKeys*/
 class UG_API ProMeshFunction{
 	public:
 		ProMeshFunction (	bridge::ExportedFunction* exportedFunction,
 							int priority,
 							int groupPriority,
-							unsigned int target) :
+							unsigned int target,
+							int shortcutKey = 0,
+							ModifierKeys modifierKey = MK_NONE)
+		:
 			m_exportedFunction(exportedFunction),
 			m_priority(priority),
 			m_groupPriority(groupPriority),
-			m_target(target)
+			m_target(target),
+			m_shortcutKey(shortcutKey),
+			m_modifierKey(modifierKey)
 		{}
 
 		bridge::ExportedFunction*
@@ -96,11 +101,16 @@ class UG_API ProMeshFunction{
 			return m_exportedFunction->num_parameter() < f.exported_function()->num_parameter();
 		}
 
+		int shortcut_key() const					{return m_shortcutKey;}
+		ModifierKeys shortcut_modifier_key() const	{return m_modifierKey;}
+
 	private:
 		bridge::ExportedFunction*	m_exportedFunction;
 		int							m_priority;
 		int							m_groupPriority;
 		unsigned int				m_target;
+		int							m_shortcutKey;
+		ModifierKeys				m_modifierKey;
 };
 
 }//	end of namespace detail
@@ -141,7 +151,9 @@ class UG_API ProMeshRegistry{
 										std::string paramInfos = "",
 										std::string tooltip = "",
 										std::string help = "",
-										unsigned int target = RT_DEFAULT)
+										unsigned int target = RT_DEFAULT,
+										int shortcutKey = 0,
+										ModifierKeys modifyerKey = MK_NONE)
 		{
 			using namespace bridge;
 			ExportedFunction* ef =
@@ -155,8 +167,8 @@ class UG_API ProMeshRegistry{
 			}
 
 			m_funcSet.insert(
-					detail::ProMeshFunction(ef, m_counter,
-											groupPriority, target));
+					detail::ProMeshFunction(ef, m_counter, groupPriority,
+											target, shortcutKey, modifyerKey));
 			++m_counter;
 			return *this;
 		}

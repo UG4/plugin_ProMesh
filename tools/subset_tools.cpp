@@ -92,7 +92,7 @@ void AssignNewSubset(
 		sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
 }
 
-void UnassignSubset(
+void UnassignSubsets(
 			Mesh* obj,
 			bool vertices,
 			bool edges,
