@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2015:  G-CSC, Goethe University Frankfurt
+# Copyright (c) 2013-2017:  G-CSC, Goethe University Frankfurt
 # Author: Sebastian Reiter
 # 
 # This file is part of UG4.
@@ -41,7 +41,15 @@ set(SOURCES		mesh.cpp
 				register_coordinate_transform_tools.cpp
 				register_mesh.cpp
 				register_meshing_tools.cpp
-				register_selection_tools.cpp)
+				register_selection_tools.cpp
+				tools/coordinate_transform_tools.cpp
+				tools/file_io_tools.cpp
+				tools/grid_generation_tools.cpp
+				tools/refinement_tools.cpp
+				tools/remeshing_tools.cpp
+				tools/selection_tools.cpp
+				tools/subset_tools.cpp
+				tools/topology_tools.cpp)
 
 
 ################################################################################

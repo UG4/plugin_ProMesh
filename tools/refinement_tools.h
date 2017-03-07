@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015:  G-CSC, Goethe University Frankfurt
+ * Copyright (c) 2013-2017:  G-CSC, Goethe University Frankfurt
  * Author: Sebastian Reiter
  * 
  * This file is part of UG4.
@@ -41,6 +41,13 @@
 #include "lib_grid/refinement/projectors/subdivision_projector.h"
 #include "lib_grid/callbacks/callbacks.h"
 
+#define	TOOLTIP_REFINE "Refines selected elements and builds a regular closure."
+#define	TOOLTIP_HANGING_NODE_REFINE "Refines selected elements using hanging nodes"
+#define	TOOLTIP_REFINE_SMOOTH "Refines selected elements using piecewise smooth refinement."
+#define	TOOLTIP_REFINE_SMOOTH_BOUNDARY_2D "Refines selected elements using smooth subdivision rules on the boundary edges."
+#define	TOOLTIP_FRACTURED_MEDIA_REFINE "Refines selected elements using hanging nodes. Fractures are refined anisotropic."
+#define	TOOLTIP_CREATE_FRACTAL "Refines the whole geometry using a fractal-refinement scheme-"
+#define	TOOLTIP_INSERT_CENTER "Inserts a central vertex in all selected elements."
 
 namespace ug{
 namespace promesh{
@@ -48,135 +55,13 @@ namespace promesh{
 /// \addtogroup promesh
 /// \{
 
-inline void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
-{
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-	bool siEnabled = sh.strict_inheritance_enabled();
-	sh.enable_strict_inheritance(strictSubsetInheritance);
+void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints);
 
-	ProjectionHandler& projector = obj->projection_handler();
+void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic);
 
-	Refine(grid, sel, &projector, useSnapPoints);
+void RefineSmooth(Mesh* obj, bool strictSubsetInheritance);
 
-	sh.enable_strict_inheritance(siEnabled);
-}
-
-inline void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic)
-{
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-	bool siEnabled = sh.strict_inheritance_enabled();
-
-	sh.enable_strict_inheritance(strictSubsetInheritance);
-
-	HangingNodeRefiner_Grid refiner(grid);
-	//refiner.enable_automark_objects_of_higher_dim(true);
-	//refiner.enable_node_dependency_order_1(false);
-
-	if(anisotropic){
-		refiner.mark(sel.edges_begin(), sel.edges_end(), RM_ANISOTROPIC);
-		refiner.mark(sel.faces_begin(), sel.faces_end(), RM_ANISOTROPIC);
-		refiner.mark(sel.volumes_begin(), sel.volumes_end(), RM_ANISOTROPIC);
-	}
-	else{
-		refiner.mark(sel.edges_begin(), sel.edges_end(), RM_REFINE);
-		refiner.mark(sel.faces_begin(), sel.faces_end(), RM_REFINE);
-		refiner.mark(sel.volumes_begin(), sel.volumes_end(), RM_REFINE);
-	}
-
-	refiner.refine();
-
-	sh.enable_strict_inheritance(siEnabled);
-}
-
-inline void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
-{
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-	bool siEnabled = sh.strict_inheritance_enabled();
-
-	sh.enable_strict_inheritance(strictSubsetInheritance);
-
-//	currently only triangles are supported in smooth refinement.
-//	convert all selected quads to triangles first.
-	Grid::VertexAttachmentAccessor<APosition> aaPos(grid, aPosition);
-	Triangulate(grid, sel.begin<Quadrilateral>(), sel.end<Quadrilateral>(), &aaPos);
-
-	SubdivisionProjector refProj(MakeGeometry3d(grid, aPosition),
-								 Grid::edge_traits::callback(
-								 	IsInSubset(obj->crease_handler(), REM_CREASE)));
-	Refine(grid, sel, &refProj);
-
-	sh.enable_strict_inheritance(siEnabled);
-}
-
-inline void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
-{
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-	bool siEnabled = sh.strict_inheritance_enabled();
-
-	sh.enable_strict_inheritance(strictSubsetInheritance);
-
-//	access position attachment
-	Grid::VertexAttachmentAccessor<APosition> aaPos(grid, aPosition);
-
-	std::vector<Edge*> edges;
-	std::vector<Face*> faces;
-	std::vector<Volume*> vols;
-	vols.assign(sel.begin<Volume>(), sel.end<Volume>());
-
-//todo: support insert center for all selections
-	if(grid.num<Volume>()){
-		if(sel.num<Face>() > 0){
-			UG_LOG("InsertCenter for faces is currently not supported if"
-					" volumes are present.\n");
-		}
-	}
-	else
-		faces.assign(sel.begin<Face>(), sel.end<Face>());
-
-//todo: support insert center for all selections
-	if(grid.num<Face>() > 0){
-		if(sel.num<Edge>() > 0){
-			UG_LOG("InsertCenter for edges is currently not supported if"
-					" faces are present.\n");
-		}
-	}
-	else
-		edges.assign(sel.begin<Edge>(), sel.end<Edge>());
-
-//	insert centers
-	for(size_t i = 0; i < vols.size(); ++i){
-		Volume* vol = vols[i];
-		RegularVertex* vrt = *grid.create<RegularVertex>(vol);
-		aaPos[vrt] = CalculateCenter(vol, aaPos);
-		InsertCenterVertex(grid, vol, vrt, true);
-	}
-
-//	insert centers
-	for(size_t i = 0; i < faces.size(); ++i){
-		Face* f = faces[i];
-		RegularVertex* vrt = *grid.create<RegularVertex>(f);
-		aaPos[vrt] = CalculateCenter(f, aaPos);
-		InsertCenterVertex(grid, f, vrt, true);
-	}
-
-//	split edges
-	for(size_t i = 0; i < edges.size(); ++i){
-		Edge* e = edges[i];
-		vector3 center = CalculateCenter(e, aaPos);
-		RegularVertex* vrt = ug::SplitEdge<RegularVertex>(grid, e);
-		aaPos[vrt] = center;
-	}
-
-	sh.enable_strict_inheritance(siEnabled);
-}
+void InsertCenter(Mesh* obj, bool strictSubsetInheritance);
 
 /// \}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015:  G-CSC, Goethe University Frankfurt
+ * Copyright (c) 2013-2017:  G-CSC, Goethe University Frankfurt
  * Author: Sebastian Reiter
  * 
  * This file is part of UG4.
@@ -39,366 +39,86 @@
 #include "lib_grid/algorithms/subset_util.h"
 #include "lib_grid/algorithms/grid_statistics.h"
 
+#define TOOLTIP_SET_SUBSET_NAME ""
+#define	TOOLTIP_ASSIGN_SUBSET "Assigns the selected elements to a subset."
+#define	TOOLTIP_ASSIGN_SUBSET_COLORS "assigns subset colors by a procedural scheme."
+#define	TOOLTIP_SEPARATE_FACES_BY_EDGE_SUBSETS "Assigns faces that are surrounded by a set of edge-subsets to a common subset."
+#define	TOOLTIP_SEPARATE_FACES_BY_SELECTED_EDGES "Assigns faces that are surrounded by a set of selected edges to a common subset."
+#define	TOOLTIP_SEPARATE_VOLUMES_BY_FACE_SUBSETS "Assigns volumes that are surrounded by a set of face-subsets to a common subset."
+#define	TOOLTIP_SEPARATE_VOLUMES_BY_SELECTED_FACES "Assigns volumes that are surrounded by a set of selected faces to a common subset."
+#define	TOOLTIP_SEPARATE_IRREGULAR_MANIFOLD_SUBSETS "After this algorithm all face-subsets are regular manifolds."
+#define	TOOLTIP_MOVE_SUBSET "Moves a subset to another index."
+#define	TOOLTIP_SWAP_SUBSETS "Swaps two subsets"
+#define	TOOLTIP_JOIN_SUBSETS "Joins two subsets"
+#define	TOOLTIP_ERASE_SUBSET "Erases a subset, but not its associated geometry."
+#define	TOOLTIP_ERASE_EMPTY_SUBSETS "Erases Subsets, which do not contain any elements at all."
+#define	TOOLTIP_ADJUST_SUBSETS_FOR_UG3 "Assigns face and edge indices so that the geometry can be used with ug3."
+#define	TOOLTIP_ADJUST_SUBSETS_FOR_UG4 "Adjusts subsets for simulation with ug4."
+#define	TOOLTIP_SEPARATE_FACE_SUBSETS_BY_NORMAL "Collects faces of each subset that have a similar normal and assigns them to new subsets."
+#define	TOOLTIP_SEPARATE_FACE_SUBSET_BY_NORMAL "Collects faces of a given subset that have a similar normal and assigns them to new subsets."
+#define	TOOLTIP_ASSIGN_SUBSETS_BY_QUALITY "Assigns the selected to a subset depending on their quality."
+#define	TOOLTIP_SEPARATE_DEGENERATED_BOUNDARY_FACE_SUBSETS "Separates degenerated boundary face subsets at sharp creases."
+#define	TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES "Copies subset indices of selected elements to sides of those elements."
+#define	TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE "Assigns elemets to subsets based on their concrete type."
+
 namespace ug{
 namespace promesh{
 
 /// \addtogroup promesh
 /// \{
 
-inline void AssignSubset(Mesh* obj, int newIndex)
-{
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
+void AssignSubset(Mesh* obj, int newIndex);
 
-	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), newIndex);
-	sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), newIndex);
-	sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), newIndex);
-	sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
-}
+void AssignSubset(
+			Mesh* obj,
+			int newIndex,
+			bool vertices,
+			bool edges,
+			bool faces,
+			bool volumes);
 
-inline void AssignSubset(Mesh* obj, int newIndex, bool vertices, bool edges,
-						 bool faces, bool volumes)
-{
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
+void SetSubsetName(Mesh* obj, int si, const char* name);
 
-	if(vertices)
-		sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), newIndex);
+void AssignSubsetColors(Mesh* obj);
 
-	if(edges)
-		sh.assign_subset(sel.begin<Edge>(), sel.end<Edge>(), newIndex);
-	
-	if(faces)
-		sh.assign_subset(sel.begin<Face>(), sel.end<Face>(), newIndex);
+void SeparateFacesByEdgeSubsets(Mesh* obj);
 
-	if(volumes)
-		sh.assign_subset(sel.begin<Volume>(), sel.end<Volume>(), newIndex);
-}
+void SeparateFacesBySelectedEdges(Mesh* obj);
 
-inline void SetSubsetName(Mesh* obj, int si, const char* name)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	sh.subset_info(si).name = name;
-}
+void SeparateVolumesByFaceSubsets(Mesh* obj);
 
-inline void AssignSubsetColors(Mesh* obj)
-{
-	AssignSubsetColors(obj->subset_handler());
-}
+void SeparateVolumesBySelectedFaces(Mesh* obj);
 
-inline void SeparateFacesByEdgeSubsets(Mesh* obj)
-{
-	Grid& grid = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
-	SeparateSubsetsByLowerDimSubsets<Face>(grid, sh);
-}
+void SeparateIrregularManifoldSubsets(Mesh* obj);
 
-inline void SeparateFacesBySelectedEdges(Mesh* obj)
-{
-	Grid& grid = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
-	Selector& sel = obj->selector();
-	SeparateSubsetsByLowerDimSelection<Face>(grid, sh, sel);
-}
+void MoveSubset(Mesh* obj, int oldIndex, int newIndex);
 
-inline void SeparateVolumesByFaceSubsets(Mesh* obj)
-{
-	Grid& grid = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
-	SeparateSubsetsByLowerDimSubsets<Volume>(grid, sh);
-}
+void SwapSubsets(Mesh* obj, int oldIndex, int newIndex);
 
-inline void SeparateVolumesBySelectedFaces(Mesh* obj)
-{
-	Grid& grid = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
-	Selector& sel = obj->selector();
-	SeparateSubsetsByLowerDimSelection<Volume>(grid, sh, sel);
-}
+void JoinSubsets(Mesh* obj, int target, int si1, int si2, bool eraseUnused);
 
-inline void SeparateIrregularManifoldSubsets(Mesh* obj)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	for(int i = 0; i < sh.num_subsets(); ++i){
-		int firstFree = GetMaxSubsetIndex<Face>(sh) + 1;
-		SplitIrregularManifoldSubset(sh, i, firstFree);
-	}
-}
+void EraseSubset(Mesh* obj, int si, bool eraseGeometry);
 
-inline void MoveSubset(Mesh* obj, int oldIndex, int newIndex)
-{
-	if(newIndex != oldIndex){
-		SubsetHandler& sh = obj->subset_handler();
-		sh.move_subset(oldIndex, newIndex);
-	}
-}
+void EraseEmptySubsets(Mesh* obj);
 
-inline void SwapSubsets(Mesh* obj, int oldIndex, int newIndex)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	if(newIndex != oldIndex && newIndex < sh.num_subsets()
-		&& oldIndex < sh.num_subsets())
-	{
-		sh.swap_subsets(oldIndex, newIndex);
-	}
-}
+void AdjustSubsetsForUG3(Mesh* obj, bool keepIntfSubs);
 
-inline void JoinSubsets(Mesh* obj, int target, int si1, int si2, bool eraseUnused)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	sh.join_subsets(target, si1, si2, eraseUnused);
-}
+void AdjustSubsetsForUG4(Mesh* obj, bool preserveExistingSubsets);
 
-inline void EraseSubset(Mesh* obj, int si, bool eraseGeometry)
-{
-	Grid& grid = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
+void SeparateFaceSubsetsByNormal(Mesh* obj);
 
-	if(si < sh.num_subsets())
-	{
-		if(eraseGeometry){
-			grid.erase(sh.begin<Volume>(si), sh.end<Volume>(si));
-			grid.erase(sh.begin<Face>(si), sh.end<Face>(si));
-			grid.erase(sh.begin<Edge>(si), sh.end<Edge>(si));
-			grid.erase(sh.begin<Vertex>(si), sh.end<Vertex>(si));
-		}
-		sh.erase_subset(si);
-	}
-}
+void SeparateFaceSubsetByNormal(Mesh* obj, int si);
 
-inline void EraseEmptySubsets(Mesh* obj)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	int i = 0;
-	while(i < sh.num_subsets()){
-		if(sh.empty(i))
-			sh.erase_subset(i);
-		else
-			++i;
-	}
-}
+void AssignSubsetsByQuality(Mesh* obj, int numSections);
 
-inline void AdjustSubsetsForUG3(Mesh* obj, bool keepIntfSubs)
-{
-	AdjustSubsetsForLgmNg(obj->grid(), obj->subset_handler(), keepIntfSubs);
-}
+void SeparateDegeneratedBoundaryFaceSubsets(Mesh* obj, number angle);
 
-inline void AdjustSubsetsForUG4(Mesh* obj, bool preserveExistingSubsets)
-{
-	AdjustSubsetsForSimulation(obj->subset_handler(), preserveExistingSubsets);
-}
+void AssignSubsetsByElementType(Mesh* obj);
 
-inline void SeparateFaceSubsetsByNormal(Mesh* obj)
-{
-	ug::SeparateFaceSubsetsByNormal(obj->grid(), obj->subset_handler());
-}
-
-inline void SeparateFaceSubsetByNormal(Mesh* obj, int si)
-{
-	if(si < obj->subset_handler().num_subsets())
-		SeparateFaceSubsetsByNormal(obj->grid(), obj->subset_handler(),
-									obj->position_attachment(), NULL, si);
-}
-
-inline void AssignSubsetsByQuality(Mesh* obj, int numSections)
-{
-	using namespace std;
-	std::vector<number> intervals;
-	intervals.push_back(0);
-	for(int i = 1; i < numSections; ++i)
-		intervals.push_back((number)i / (number)numSections);
-	intervals.push_back(1.);
-
-	Grid& grid = obj->grid();
-	Selector& sel = obj->selector();
-	SubsetHandler& sh = obj->subset_handler();
-
-	ug::AssignSubsetsByQuality(grid, sh, sel.begin<Face>(),
-								sel.end<Face>(), intervals);
-
-//	log how many faces were assigned to the different subsets.
-//	since potentially only a subset of faces has been considered,
-//	we may not simply output the subset sizes.
-
-	UG_LOG("Assigned faces to subsets:\n");
-	for(size_t i = 0; i < intervals.size() - 1; ++i){
-	//	count the number of selected faces in this section
-		size_t counter = 0;
-		for(FaceIterator iter = sel.begin<Face>(); iter != sel.end<Face>(); ++iter)
-		{
-			if(sh.get_subset_index(*iter) == (int)i)
-				++counter;
-		}
-
-		UG_LOG("  quality " << intervals[i] << " - " << intervals[i+1] << ": \t" << counter << "\n");
-	}
-
-	UG_LOG(endl);
-}
-
-inline void SeparateDegeneratedBoundaryFaceSubsets(Mesh* obj, number angle)
-{
-	using namespace std;
-	number thresholdDot = cos(deg_to_rad(angle));
-
-	Grid& g = obj->grid();
-	SubsetHandler& sh = obj->subset_handler();
-	Mesh::position_accessor_t& aaPos = obj->position_accessor();
-
-	vector<Edge*> edges;
-	vector<Edge*> edges2;
-	vector<Face*> faces;
-	vector<Face*> assembledSubset;
-	queue<Face*> queFaces;
-
-//	we'll use this vector to check whether we have to assign faces which
-//	we assembled to a subset to a new subset or whether it can stay where it
-//	is. The first assembled face-pack can always stay in its subset.
-	vector<bool> vAssignNewSubset(sh.num_subsets(), false);
-
-//	the index at which we'll add new subsets (increases during the algorithm)
-	int newSI = GetMaxSubsetIndex<Face>(sh) + 1;
-
-//	we use marks to mark all processed elements
-	g.begin_marking();
-
-//	iterate over all faces and search for a degenerated boundary face.
-	for(FaceIterator iter = g.begin<Face>(); iter != g.end<Face>(); ++iter){
-		Face* f = *iter;
-	//	the face may have been marked during subset assembly below
-		if(g.is_marked(f))
-			continue;
-		g.mark(f);
-
-		if(IsDegenerated(f, aaPos)){
-			if(IsVolumeBoundaryFace(g, f)){
-			//	the face is a candidate. Get subset index and push it to the queue
-				int origSI = sh.get_subset_index(f);
-				queFaces.push(f);
-				assembledSubset.clear();
-
-				while(!queFaces.empty()){
-					Face* curFace = queFaces.front();
-					queFaces.pop();
-					assembledSubset.push_back(curFace);
-
-				//	check all degenerated neighbor faces
-					CollectAssociated(edges, g, curFace);
-
-					vector3 dir(0, 0, 0);
-					bool gotOne = false;
-				//	the first non-degenerated edge defines the direction of the face
-					for(size_t i_edge = 0; i_edge < edges.size(); ++i_edge){
-						Edge* e = edges[i_edge];
-						if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) >= SMALL*SMALL){
-							VecSubtract(dir, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
-							VecNormalize(dir, dir);
-							gotOne = true;
-							break;
-						}
-					}
-
-				//	if we haven't found a non-degenerated edge, we won't continue.
-					if(!gotOne)
-						continue;
-
-				//	now find associated degenerated faces
-					for(size_t i_edge = 0; i_edge < edges.size(); ++i_edge){
-						Edge* e = edges[i_edge];
-
-					//	we have to know whether the edge is degenerated or not.
-						bool bDegEdge = (VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) < SMALL*SMALL);
-
-						CollectAssociated(faces, g, e);
-
-						for(size_t i_face = 0; i_face < faces.size(); ++i_face){
-							Face* nbrFace = faces[i_face];
-							if(!g.is_marked(nbrFace) && sh.get_subset_index(nbrFace) == origSI){
-								if(IsVolumeBoundaryFace(g, nbrFace)){
-									if(IsDegenerated(nbrFace, aaPos)){
-									//	if the edge was non-degenerated, it is automatically part of the
-									//	assembled subset.
-										if(!bDegEdge){
-											g.mark(nbrFace);
-											queFaces.push(nbrFace);
-										}
-										else{
-										//	we have to compare the directions of the faces
-											CollectAssociated(edges2, g, nbrFace);
-
-											vector3 dir2(0, 0, 0);
-											bool gotOne2 = false;
-										//	the first non-degenerated edge defines the direction of the face
-											for(size_t i_edge = 0; i_edge < edges2.size(); ++i_edge){
-												Edge* e = edges2[i_edge];
-												if(VecDistanceSq(aaPos[e->vertex(0)], aaPos[e->vertex(1)]) >= SMALL*SMALL){
-													VecSubtract(dir2, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
-													VecNormalize(dir2, dir2);
-													gotOne2 = true;
-													break;
-												}
-											}
-
-											if(gotOne2){
-											//	we now got both directions. compare the angle.
-												if(fabs(VecDot(dir, dir2)) >= thresholdDot){
-												//	both are in the same subset
-													g.mark(nbrFace);
-													queFaces.push(nbrFace);
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-
-				}
-
-			//	now add the assembledSubset to its new destination
-				if(vAssignNewSubset[origSI]){
-					sh.assign_subset(assembledSubset.begin(), assembledSubset.end(), newSI);
-					++newSI;
-				}
-				else{
-				//	if more degenerated faces are contained in this subset, they shall be
-				//	assigned to another subset.
-					vAssignNewSubset[origSI] = true;
-				}
-			}
-		}
-	}
-
-	g.end_marking();
-}
-
-inline void AssignSubsetsByElementType(Mesh* obj)
-{
-	SubsetHandler& sh = obj->subset_handler();
-	AssignSubsetsByElementType(sh, obj->selector().get_grid_objects());
-	int i = 0;
-	while(i < sh.num_subsets()){
-		if(sh.empty(i))
-			sh.erase_subset(i);
-		else
-			++i;
-	}
-}
-
-inline void CopySubsetIndicesToSides(Mesh* obj, bool selectionOnly,
-							  bool toUnassignedOnly)
-{
-	SubsetHandler& sh = obj->subset_handler();
-
-	if(selectionOnly){
-		Selector& sel = obj->selector();
-		CopySubsetIndicesToSides(sh, sel.get_grid_objects(), toUnassignedOnly);
-	}
-	else{
-		CopySubsetIndicesToSides(sh, toUnassignedOnly);
-	}
-}
+void CopySubsetIndicesToSides(
+			Mesh* obj,
+			bool selectionOnly,
+			bool toUnassignedOnly);
 
 /// \}
 
