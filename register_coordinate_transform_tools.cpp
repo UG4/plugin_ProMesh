@@ -46,7 +46,15 @@ namespace promesh{
 void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 {
 	try{
-		string grp = baseGrp + string("/Coordinate Transform/Move");
+		string grp = baseGrp + string("/Coordinate Transform/Pivot");
+		reg.add_function("SetPivot", &SetPivot, grp, "",
+				"mesh # position", TOOLTIP_SET_PIVOT) 
+			.add_function("SetPivotToSelectionCenter", &SetPivotToSelectionCenter, grp, "",
+				"mesh", TOOLTIP_SET_PIVOT_TO_SELECTION_CENTER)
+			.add_function("SetPivotToMeshCenter", &SetPivotToMeshCenter, grp, "",
+				"mesh", TOOLTIP_SET_PIVOT_TO_MESH_CENTER);
+
+		grp = baseGrp + string("/Coordinate Transform/Move");
 		reg.add_function("GetSelectionCenter", &GetSelectionCenter, grp, "",
 				"mesh # centerOut", TOOLTIP_GET_SELECTION_CENTER, "", RT_NO_PROMESH)
 			.add_function("MoveSelectionTo", &MoveSelectionTo, grp, "",
@@ -76,9 +84,6 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("RotateAroundPivot", &RotateAroundPivot, grp, "",
 				"mesh # rotation", TOOLTIP_ROTATE_AROUND_PIVOT);
 
-		grp = baseGrp + string("/Coordinate Transform");
-		reg.add_function("ConeTransform", &ConeTransform, grp, "",
-				"mesh # base # axis # scaleAtTip | default | value=1", TOOLTIP_CONE_TRANSFORM);
 
 		grp = baseGrp + string("/Coordinate Transform/Smoothing");
 		reg.add_function("LaplacianSmooth", &LaplacianSmooth, grp, "",
@@ -116,21 +121,13 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh", TOOLTIP_PROJECT_TO_LIMIT_SMOOTH_BOUNDARY);
 
 		grp = baseGrp + string("/Coordinate Transform");
-		reg.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "",
+		reg.add_function("ConeTransform", &ConeTransform, grp, "",
+				"mesh # base # axis # scaleAtTip | default | value=1", TOOLTIP_CONE_TRANSFORM)
+			.add_function("FlattenBentQuadrilaterals", &FlattenBentQuadrilaterals, grp, "",
 				"mesh # step size | default | value=0.01D # num iterations | default | value=100",
 				TOOLTIP_FLATTEN_BENT_QUADRILATERALS)
-			
 			.add_function("SnapVerticesToVertices", &SnapVerticesToVertices, grp, "",
 				"mesh # targetMesh", TOOLTIP_SNAP_VERTICES_TO_VERTICES, "", RT_NO_PROMESH);
-
-
-		grp = baseGrp + string("/Coordinate Transform/Pivot");
-		reg.add_function("SetPivot", &SetPivot, grp, "",
-				"mesh # position", TOOLTIP_SET_PIVOT) 
-			.add_function("SetPivotToSelectionCenter", &SetPivotToSelectionCenter, grp, "",
-				"mesh", TOOLTIP_SET_PIVOT_TO_SELECTION_CENTER)
-			.add_function("SetPivotToMeshCenter", &SetPivotToMeshCenter, grp, "",
-				"mesh", TOOLTIP_SET_PIVOT_TO_MESH_CENTER);
 	}
 	UG_REGISTRY_CATCH_THROW(baseGrp);
 }

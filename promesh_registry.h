@@ -64,9 +64,11 @@ class UG_API ProMeshFunction{
 	public:
 		ProMeshFunction (	bridge::ExportedFunction* exportedFunction,
 							int priority,
+							int groupPriority,
 							unsigned int target) :
 			m_exportedFunction(exportedFunction),
 			m_priority(priority),
+			m_groupPriority(groupPriority),
 			m_target(target)
 		{}
 
@@ -77,12 +79,18 @@ class UG_API ProMeshFunction{
 		exported_function() const						{return m_exportedFunction;}
 
 		int priority() const							{return m_priority;}
+		int group_priority() const						{return m_groupPriority;}
+
 		bool has_target(RegistryTargets t) const 		{return (m_target & t) == t;}
 
 		bool operator < (const ProMeshFunction& f) const
 		{
 			if(m_priority != f.priority())
 				return m_priority < f.priority();
+			if(m_groupPriority != f.group_priority())
+				return m_groupPriority < f.group_priority();
+			if(m_exportedFunction->group() != f.exported_function()->group())
+				return m_exportedFunction->group() < f.exported_function()->group();
 			if(m_exportedFunction->name() != f.exported_function()->name())
 				return m_exportedFunction->name() < f.exported_function()->name();
 			return m_exportedFunction->num_parameter() < f.exported_function()->num_parameter();
@@ -91,6 +99,7 @@ class UG_API ProMeshFunction{
 	private:
 		bridge::ExportedFunction*	m_exportedFunction;
 		int							m_priority;
+		int							m_groupPriority;
 		unsigned int				m_target;
 };
 
@@ -106,7 +115,7 @@ class UG_API ProMeshRegistry{
 		typedef ProMeshFunctionSet::iterator				func_iter_t;
 		typedef ProMeshFunctionSet::const_iterator			const_func_iter_t;
 
-		ProMeshRegistry(bridge::Registry* reg) : m_reg(reg) {}
+		ProMeshRegistry(bridge::Registry* reg) : m_reg(reg), m_counter(0) {}
 
 	/**
 	 * @brief adds a function to the registry
@@ -132,15 +141,23 @@ class UG_API ProMeshRegistry{
 										std::string paramInfos = "",
 										std::string tooltip = "",
 										std::string help = "",
-										unsigned int target = RT_DEFAULT,
-										int priority = 0)
+										unsigned int target = RT_DEFAULT)
 		{
 			using namespace bridge;
 			ExportedFunction* ef =
 				m_reg->add_and_get_function(
 							funcName, func, group, retValInfos,
 							paramInfos, tooltip, help);
-			m_funcSet.insert(detail::ProMeshFunction(ef, priority, target));
+			
+			int& groupPriority = m_groupPriority[group];
+			if(!groupPriority){
+				groupPriority = m_counter;
+			}
+
+			m_funcSet.insert(
+					detail::ProMeshFunction(ef, m_counter,
+											groupPriority, target));
+			++m_counter;
 			return *this;
 		}
 
@@ -202,6 +219,8 @@ class UG_API ProMeshRegistry{
 	private:
 		bridge::Registry* 			m_reg;
 		ProMeshFunctionSet			m_funcSet;
+		int							m_counter;
+		std::map<std::string, int>	m_groupPriority;
 };
 
 /// \}

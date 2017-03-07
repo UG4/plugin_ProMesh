@@ -91,9 +91,9 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 		.add_function("EraseEmptySubsets", &EraseEmptySubsets, grp, "",
 			"mesh", TOOLTIP_ERASE_EMPTY_SUBSETS)
 		.add_function("AdjustSubsetsForUG3", &AdjustSubsetsForUG3, grp, "",
-			"mesh # keep interface subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG3)
+			"mesh # keep interface subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG3, "", RT_NO_PROMESH)
 		.add_function("AdjustSubsetsForUG4", &AdjustSubsetsForUG4, grp, "",
-			"mesh # preserve existing subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG4)
+			"mesh # preserve existing subsets", TOOLTIP_ADJUST_SUBSETS_FOR_UG4, "", RT_NO_PROMESH)
 		.add_function("AssignSubsetsByQuality", &AssignSubsetsByQuality, grp, "",
 			"mesh # num sections", TOOLTIP_ASSIGN_SUBSETS_BY_QUALITY)
 		.add_function("CopySubsetIndicesToSides", &CopySubsetIndicesToSides, grp, "",

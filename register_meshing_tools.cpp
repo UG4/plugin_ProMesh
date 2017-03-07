@@ -58,31 +58,44 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp + "/Grid Generation/Basic Elements";
 		reg.add_function("CreateVertex", &CreateVertex, grp, "",
-				"mesh # position # subset index", TOOLTIP_CREATE_VERTEX)
+				"mesh # position # subset", TOOLTIP_CREATE_VERTEX)
 			.add_function("CreateEdge", &CreateEdge, grp, "",
-				"mesh # subset index", TOOLTIP_CREATE_EDGE)
+				"mesh # subset", TOOLTIP_CREATE_EDGE)
 			.add_function("CreateFace", &CreateFace, grp, "",
-				"mesh # subset index", TOOLTIP_CREATE_FACE)
+				"mesh # subset", TOOLTIP_CREATE_FACE)
 			.add_function("CreateVolume", &CreateVolume, grp, "",
-				"mesh # subset index", TOOLTIP_CREATE_VOLUME);
+				"mesh # subset", TOOLTIP_CREATE_VOLUME);
 
-		grp = baseGrp + "/Grid Generation/Geometries";
-		reg.add_function("CreatePlane", &CreatePlane, grp, "",
-				"mesh # upLeft # upRight # lowLeft # lowRight # subset index # fill",
+		grp = baseGrp + "/Grid Generation/Geometries/2D";
+		reg.add_function("CreatePlane",
+				static_cast<void (*)(Mesh*, const vector3&, const vector3&,
+							const vector3&, const vector3&, int, bool)> (&CreatePlane),
+				grp, "",
+				"mesh # upLeft # upRight # lowLeft # lowRight # subset # fill",
+				TOOLTIP_CREATE_PLANE, "", RT_NO_PROMESH)
+			.add_function("CreatePlane",
+				static_cast<void (*)(Mesh*, number, number,
+							const vector3&, int, bool)> (&CreatePlane), grp, "",
+				"mesh #"
+				"width || value = 1 #"
+				"height || value = 1 #"
+				"center # subset # fill",
 				TOOLTIP_CREATE_PLANE)
 			.add_function("CreateCircle", &CreateCircle, grp, "",
-				"mesh # center # radius || value=1 # num rim vertices || value=12 # subset index # fill",
-				TOOLTIP_CREATE_CIRCLE)
-			.add_function("CreateBox", &CreateBox, grp, "",
-				"mesh # boxMin # boxMax # subset index # create volume", TOOLTIP_CREATE_BOX)
+				"mesh # center # radius || value=1 # rim vertices || value=12 # subset # fill",
+				TOOLTIP_CREATE_CIRCLE);
+
+		grp = baseGrp + "/Grid Generation/Geometries/3D";
+		reg.add_function("CreateBox", &CreateBox, grp, "",
+				"mesh # min corner # max corner # subset # fill", TOOLTIP_CREATE_BOX)
 			.add_function("CreateSphere", &CreateSphere, grp, "",
-				"mesh # center # radius # num refinements # subset index", TOOLTIP_CREATE_SPHERE)
+				"mesh # center # radius # refinements # subset", TOOLTIP_CREATE_SPHERE)
 			.add_function("CreateTetrahedron", &CreateTetrahedron, grp, "",
-				"mesh # subset index # create volume", TOOLTIP_CREATE_TETRAHEDRON)
+				"mesh # subset # fill", TOOLTIP_CREATE_TETRAHEDRON)
 			.add_function("CreatePyramid", &CreatePyramid, grp, "",
-				"mesh # subset index # create volume", TOOLTIP_CREATE_PYRAMID)
+				"mesh # subset # fill", TOOLTIP_CREATE_PYRAMID)
 			.add_function("CreatePrism", &CreatePrism, grp, "",
-				"mesh # subset index # create volume", TOOLTIP_CREATE_PRISM);
+				"mesh # subset # fill", TOOLTIP_CREATE_PRISM);
 
 	//	layer meshing
 		grp = baseGrp + "/Raster Layers";
@@ -138,7 +151,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("ConvertToTriangles", &ConvertToTriangles, grp, "",
 				"mesh", TOOLTIP_CONVERT_TO_TRIANGLES)
 			.add_function("TriangleFill", &TriangleFill, grp, "",
-				"mesh # quality generation # min angle # subset index", TOOLTIP_TRIANGLE_FILL)
+				"mesh # quality generation # min angle # subset", TOOLTIP_TRIANGLE_FILL)
 			.add_function("Retriangulate", &Retriangulate, grp, "",
 				"mesh # min angle", TOOLTIP_RETRIANGULATE)
 			.add_function("AdjustEdgeLength", &AdjustEdgeLength, grp, "",

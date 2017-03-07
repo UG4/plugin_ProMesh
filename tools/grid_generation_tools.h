@@ -343,6 +343,23 @@ inline void CreatePlane(Mesh* obj, const vector3& upLeft, const vector3& upRight
 	sel.enable_autoselection(autoselEnabled);
 }
 
+inline void CreatePlane(Mesh* obj, number width, number height,
+						const vector3& center, int subsetInd, bool fill)
+{
+	const number wh = 0.5 * width;
+	const number hh = 0.5 * height;
+	const number cx = center.x();
+	const number cy = center.y();
+	const number cz = center.z();
+
+	const vector3 upLeft (cx - wh, cy + hh, cz);
+	const vector3 upRight (cx + wh, cy + hh, cz);
+	const vector3 lowLeft (cx - wh, cy - hh, cz);
+	const vector3 lowRight (cx + wh, cy - hh, cz);
+
+	CreatePlane(obj, upLeft, upRight, lowLeft, lowRight, subsetInd, fill);
+}
+
 
 inline void CreateCircle(Mesh* obj, const vector3& center, number radius,
 				  int numRimVertices, int subsetInd, bool fill)
