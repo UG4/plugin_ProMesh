@@ -148,19 +148,44 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"select new || value=true", TOOLTIP_DUPLICATE, "", RT_DEFAULT, Key_D);
 
 		grp = baseGrp + "/Remeshing/Refinement";
-		reg.add_function("Refine", &Refine, grp, "",
-				"mesh # strict subset inheritance # use snap points",
-				TOOLTIP_REFINE, "", RT_DEFAULT, Key_R)
-			.add_function("HangingNodeRefine", &HangingNodeRefine, grp, "",
-				"mesh # strict subset inheritance # anisotropic", TOOLTIP_HANGING_NODE_REFINE)
-			.add_function("RefineSmooth", &RefineSmooth, grp, "",
-				"mesh # strict subset inheritance", TOOLTIP_REFINE_SMOOTH)
-			.add_function("InsertCenter", &InsertCenter, grp, "",
-				"", TOOLTIP_INSERT_CENTER)
+		reg.add_function("Refine", static_cast<void (*)(Mesh*)>(&Refine),
+				grp, "", "mesh", TOOLTIP_REFINE, "", RT_DEFAULT, Key_R)
+			.add_function("Refine", static_cast<void (*)(Mesh*, bool, bool)>(&Refine),
+				grp, "", "mesh # strict subset inheritance # use snap points",
+				TOOLTIP_REFINE, "", RT_NO_PROMESH)
+			
+			.add_function("RefineWithSnapPoints", &RefineWithSnapPoints, grp, "",
+				"mesh", TOOLTIP_REFINE_WITH_SNAP_POINTS)
+			
+			.add_function("RefineSmooth",
+				static_cast<void (*)(Mesh*)>(&RefineSmooth),
+				grp, "", "mesh", TOOLTIP_REFINE_SMOOTH)
+			.add_function("RefineSmooth",
+				static_cast<void (*)(Mesh*, bool)>(&RefineSmooth), grp, "",
+				"mesh # strict subset inheritance",
+				TOOLTIP_REFINE_SMOOTH, "", RT_NO_PROMESH)
+
+			.add_function("InsertCenter",
+				static_cast<void (*)(Mesh*)>(&InsertCenter), grp, "",
+				"mesh", TOOLTIP_INSERT_CENTER)
+
+			.add_function("InsertCenter",
+				static_cast<void (*)(Mesh*, bool)>(&InsertCenter), grp, "",
+				"mesh # strict subset inheritance", TOOLTIP_INSERT_CENTER,
+				"", RT_NO_PROMESH)
+			
 			.add_function("PlaneCut", &PlaneCut, grp, "",
 				"mesh #"
 				"plane center #"
-				"plane normal || value=[0,0,1]", TOOLTIP_PLANE_CUT);
+				"plane normal || value=[0,0,1]", TOOLTIP_PLANE_CUT)
+			
+			.add_function("HangingNodeRefine",
+				static_cast<void (*)(Mesh*, bool)>(&HangingNodeRefine), grp, "",
+				"mesh # anisotropic", TOOLTIP_HANGING_NODE_REFINE, "", RT_NO_PROMESH)
+			.add_function("HangingNodeRefine",
+				static_cast<void (*)(Mesh*, bool, bool)>(&HangingNodeRefine), grp, "",
+				"mesh # strict subset inheritance # anisotropic",
+				TOOLTIP_HANGING_NODE_REFINE, "", RT_NO_PROMESH);
 
 
 		grp = baseGrp + "/Remeshing/Remove Doubles";
@@ -176,7 +201,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh", TOOLTIP_MERGE_AT_FIRST)
 			.add_function("MergeAtCenter", &MergeAtCenter, grp, "",
 				"mesh", TOOLTIP_MERGE_AT_CENTER, "", RT_DEFAULT,
-				Key_O)
+				Key_E)
 			.add_function("MergeAtLast", &MergeAtLast, grp, "",
 				"mesh", TOOLTIP_MERGE_AT_LAST);
 
@@ -185,8 +210,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("CollapseEdge", &CollapseEdge, grp, "",
 				"mesh", TOOLTIP_COLLAPSE_EDGE)
 			.add_function("SplitEdge", &SplitEdge, grp, "",
-				"mesh", TOOLTIP_SPLIT_EDGE, "", RT_DEFAULT,
-				Key_T)
+				"mesh", TOOLTIP_SPLIT_EDGE)
 			.add_function("SwapEdge", &SwapEdge, grp, "",
 				"mesh", TOOLTIP_SWAP_EDGE, "", RT_DEFAULT,
 				Key_W)

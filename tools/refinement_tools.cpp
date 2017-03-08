@@ -50,6 +50,17 @@ void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 	sh.enable_strict_inheritance(siEnabled);
 }
 
+void Refine(Mesh* obj)
+{
+	Refine(obj, false, false);
+}
+
+void RefineWithSnapPoints(Mesh* obj)
+{
+	Refine(obj, false, true);
+}
+
+
 void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic)
 {
 	Grid& grid = obj->grid();
@@ -79,6 +90,12 @@ void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic
 	sh.enable_strict_inheritance(siEnabled);
 }
 
+void HangingNodeRefine(Mesh* obj, bool anisotropic)
+{
+	HangingNodeRefine(obj, false, anisotropic);
+}
+
+
 void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 {
 	Grid& grid = obj->grid();
@@ -100,6 +117,12 @@ void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 
 	sh.enable_strict_inheritance(siEnabled);
 }
+
+void RefineSmooth(Mesh* obj)
+{
+	RefineSmooth(obj, false);
+}
+
 
 void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
 {
@@ -163,6 +186,11 @@ void InsertCenter(Mesh* obj, bool strictSubsetInheritance)
 	}
 
 	sh.enable_strict_inheritance(siEnabled);
+}
+
+void InsertCenter(Mesh* obj)
+{
+	InsertCenter(obj, false);
 }
 
 }}//	end of namespace

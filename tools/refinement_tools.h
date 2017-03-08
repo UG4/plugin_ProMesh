@@ -42,6 +42,7 @@
 #include "lib_grid/callbacks/callbacks.h"
 
 #define	TOOLTIP_REFINE "Refines selected elements and builds a regular closure."
+#define TOOLTIP_REFINE_WITH_SNAP_POINTS "Refines selected elements so that new edges are built between midpoints of selected edges and selected vertices, if possible."
 #define	TOOLTIP_HANGING_NODE_REFINE "Refines selected elements using hanging nodes"
 #define	TOOLTIP_REFINE_SMOOTH "Refines selected elements using piecewise smooth refinement."
 #define	TOOLTIP_REFINE_SMOOTH_BOUNDARY_2D "Refines selected elements using smooth subdivision rules on the boundary edges."
@@ -55,12 +56,17 @@ namespace promesh{
 /// \addtogroup promesh
 /// \{
 
+void Refine(Mesh* obj);
+void RefineWithSnapPoints(Mesh* obj);
 void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints);
 
+void HangingNodeRefine(Mesh* obj, bool anisotropic);
 void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic);
 
+void RefineSmooth(Mesh* obj);
 void RefineSmooth(Mesh* obj, bool strictSubsetInheritance);
 
+void InsertCenter(Mesh* obj);
 void InsertCenter(Mesh* obj, bool strictSubsetInheritance);
 
 /// \}
