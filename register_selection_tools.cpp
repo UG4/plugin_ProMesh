@@ -232,9 +232,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectLinkedVolumes", &SelectLinkedElements<Volume>, grp, "",
 				"mesh", TOOLTIP_SELECT_LINKED_VOLUMES)
 			.add_function("SelectSlivers", &SelectSlivers, grp, "",
-				"mesh # threshold ratio || min=0; val=0.01D", TOOLTIP_SELECT_SLIVERS)
+				"mesh # threshold ratio || min=0; value=0.01D", TOOLTIP_SELECT_SLIVERS)
 			.add_function("SelectAnisotropicVolumes", &SelectAnisotropicElements<Volume>, grp, "",
-				"mesh # min edge ratio || 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
+				"mesh # min edge ratio || value=0.5D", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
 			.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "",
 				"mesh", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 			.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "",

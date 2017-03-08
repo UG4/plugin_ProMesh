@@ -94,16 +94,24 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp + "/Grid Generation/Geometries/3D";
 		reg.add_function("CreateBox", &CreateBox, grp, "",
-				"mesh # min corner # max corner # subset # fill || value=true",
+				"mesh #"
+				"min corner #"
+				"max corner || value=[1,1,1] #"
+				"subset #"
+				"fill",
 				TOOLTIP_CREATE_BOX)
 			.add_function("CreateSphere", &CreateSphere, grp, "",
-				"mesh # center # radius # refinements # subset", TOOLTIP_CREATE_SPHERE)
+				"mesh #"
+				"center #"
+				"radius || value=1 #"
+				"refinements || value=2 #"
+				"subset", TOOLTIP_CREATE_SPHERE)
 			.add_function("CreateTetrahedron", &CreateTetrahedron, grp, "",
-				"mesh # subset # fill || value=true", TOOLTIP_CREATE_TETRAHEDRON)
+				"mesh # subset # fill", TOOLTIP_CREATE_TETRAHEDRON)
 			.add_function("CreatePyramid", &CreatePyramid, grp, "",
-				"mesh # subset # fill || value=true", TOOLTIP_CREATE_PYRAMID)
+				"mesh # subset # fill", TOOLTIP_CREATE_PYRAMID)
 			.add_function("CreatePrism", &CreatePrism, grp, "",
-				"mesh # subset # fill || value=true", TOOLTIP_CREATE_PRISM);
+				"mesh # subset # fill", TOOLTIP_CREATE_PRISM);
 
 
 	//	layer meshing
