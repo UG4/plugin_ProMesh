@@ -74,22 +74,25 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectVertexByIndex", &SelectVertexByIndex, grp, "bool",
 				"mesh # index", TOOLTIP_SELECT_VERTEX_BY_INDEX)
 			.add_function("SelectUnconnectedVertices", &SelectUnconnectedVertices, grp, "size_t",
-				"mesh # unconnected to edges # unconnected to faces # unconnected to volumes",
+				"mesh #"
+				"unconnected to edges || value=true #"
+				"unconnected to faces || value=true #"
+				"unconnected to volumes || value=true",
 				TOOLTIP_SELECT_UNCONNECTED_VERTICES);
 			
 		grp = baseGrp + "/Vertices/Kinks";
 		reg.add_function("SelectSelectionKinkVertices", &SelectSelectionKinkVertices, grp,
 						  "num selected",
 						  "mesh #"
-						  "threshold angle | default | min=0D; value=20D; max=180D #"
-						  "select darts | default | value=true",
+						  "threshold angle || min=0D; value=20D; max=180D #"
+						  "select darts || value=true",
 						  TOOLTIP_SELECT_SELECTION_KINK_VERTICES)
 			.add_function("SelectSubsetKinkVertices", &SelectSubsetKinkVertices, grp,
 						  "num selected",
 						  "mesh #"
-						  "subset index | default | min=0; value=0 #"
-						  "threshold angle | default | min=0D; value=20D; max=180D #"
-						  "select darts | default | value=true",
+						  "subset index || min=0; value=0 #"
+						  "threshold angle || min=0D; value=20D; max=180D #"
+						  "select darts || value=true",
 						  TOOLTIP_SELECT_SUBSET_KINK_VERTICES);
 
 		grp = baseGrp + "/Vertices/Coordinate Based";
@@ -98,9 +101,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectVertexByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Vertex>, grp, "",
 				"mesh # rho # phi # z", TOOLTIP_SELECT_VERTEX_BY_CYL_COORDINATE)
 			.add_function("SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp, "",
-				"mesh # min # max", TOOLTIP_SELECT_VERTEX_IN_BOX)
+				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_VERTEX_IN_BOX)
 			.add_function("SelectVerticesInCylinder", &SelectElementsInCylinder<Vertex>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_VERTEX_IN_CYLINDER);
+				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_VERTEX_IN_CYLINDER);
 
 
 		grp = baseGrp + "/Edges";
@@ -132,19 +135,22 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectLinkedBoundaryEdges", &SelectLinkedBoundaryEdges, grp, "",
 				"mesh # stop at selected vertices", TOOLTIP_SELECT_LINKED_BOUNDARY_EDGES)
 			.add_function("SelectSmoothEdgePath", &SelectSmoothEdgePath, grp, "",
-				"mesh # max deviation angle # normal weight # stop at selected vertices",
+				"mesh #"
+				"max deviation angle || value=20D #"
+				"normal weight || value=0.9D; step=0.05D#"
+				"stop at selected vertices",
 				TOOLTIP_SELECT_SMOOTH_EDGE_PATH)
 			.add_function("SelectInterfaceEdges", &SelectInterfaceElements<Edge>, grp, "",
 				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS)
 			.add_function("SelectEdgesByDirection", &SelectEdgesByDirection, grp, "",
 				"mesh #"
-				"direction #"
-				"min deviation angle | default | value = 0D; min = 0D; max = 180D #"
-				"max deviation angle | default | value = 1D; min = 0D; max = 180D #"
-				"select flipped edges | default | value = true",
+				"direction#"
+				"min deviation angle || value = 0D; min = 0D; max = 180D #"
+				"max deviation angle || value = 1D; min = 0D; max = 180D #"
+				"select flipped edges || value = true",
 				TOOLTIP_SELECT_EDGES_BY_DIRECTION)
 			.add_function("SelectShortPolychains", &SelectShortPolychains, grp, "",
-				  "mesh # maxChainLength | default | min=0D; value=1D # closedChainsOnly",
+				  "mesh # maxChainLength || min=0D; value=1D # closedChainsOnly",
 				  TOOLTIP_SELECT_SHORT_POLYCHAINS)
 			.add_function("SelectEdgeByIndex", &SelectEdgeByIndex, grp, "",
 				"mesh # index", TOOLTIP_SELECT_EDGE_BY_INDEX);
@@ -155,9 +161,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectEdgeByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Edge>, grp, "",
 				"mesh # rho # phi # z", TOOLTIP_SELECT_EDGE_BY_CYL_COORDINATE)
 			.add_function("SelectEdgesInBox", &SelectElementsInBox<Edge>, grp, "",
-				"mesh # min # max", TOOLTIP_SELECT_EDGE_IN_BOX)  
+				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_EDGE_IN_BOX)  
 			.add_function("SelectEdgesInCylinder", &SelectElementsInCylinder<Edge>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_EDGE_IN_CYLINDER);
+				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_EDGE_IN_CYLINDER);
 			
 		grp = baseGrp + "/Faces";
 		reg
@@ -182,19 +188,24 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectLinkedBoundaryFaces", &SelectLinkedBoundaryFaces, grp, "",
 				"mesh # stop at selected edges", TOOLTIP_SELECT_LINKED_BOUNDARY_FACES)
 			.add_function("SelectLinkedFlatFaces", &SelectLinkedFlatFaces, grp, "",
-				"mesh # max deviation angle # traverse flipped faces # "
-				"traverse degenerated faces # stop at selected edges", TOOLTIP_SELECT_LINKED_FLAT_FACES)
+				"mesh #"
+				"max deviation angle || value=1 #"
+				"traverse flipped faces || value=true#"
+				"traverse degenerated faces#"
+				"stop at selected edges", TOOLTIP_SELECT_LINKED_FLAT_FACES)
 
 			.add_function("SelectInterfaceFaces", &SelectInterfaceElements<Face>, grp, "",
 				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS)
 			.add_function("SelectFacesByNormal", &SelectFacesByNormal, grp, "",
-				"mesh # normal # max deviation angle", TOOLTIP_SELECT_FACES_BY_NORMAL)
+				"mesh #"
+				"normal #"
+				"max deviation angle || value=10", TOOLTIP_SELECT_FACES_BY_NORMAL)
 			.add_function("SelectAnisotropicFaces", &SelectAnisotropicElements<Face>, grp, "",
-				"mesh # min edge ratio | default | 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
+				"mesh # min edge ratio || value=0.5D", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
 			.add_function("SelectDegenerateFaces", &SelectDegenerateFaces, grp, "",
-				"mesh # max height", TOOLTIP_SELECT_DEGENERATE_FACES)
+				"mesh # max height || value=0.01D", TOOLTIP_SELECT_DEGENERATE_FACES)
 			.add_function("SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "",
-				"mesh # dot threshold", TOOLTIP_SELECT_BENT_QUADRILATERALS)
+				"mesh # dot threshold || value = 0.95D", TOOLTIP_SELECT_BENT_QUADRILATERALS)
 			.add_function("SelectIntersectingTriangles", &SelectIntersectingTriangles, grp, "",
 				"mesh", TOOLTIP_SELECT_INTERSECTING_TRIANGLES, "", RT_NO_PROMESH)
 			.add_function("SelectFaceByIndex", &SelectFaceByIndex, grp, "",
@@ -206,9 +217,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectFaceByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Face>, grp, "",
 				"mesh # rho # phi # z", TOOLTIP_SELECT_FACE_BY_CYL_COORDINATE)
 			.add_function("SelectFacesInBox", &SelectElementsInBox<Face>, grp, "",
-				"mesh # min # max", TOOLTIP_SELECT_FACE_IN_BOX)
+				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_FACE_IN_BOX)
 			.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_FACE_IN_CYLINDER);
+				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_FACE_IN_CYLINDER);
 
 
 		grp = baseGrp + "/Volumes";
@@ -221,9 +232,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectLinkedVolumes", &SelectLinkedElements<Volume>, grp, "",
 				"mesh", TOOLTIP_SELECT_LINKED_VOLUMES)
 			.add_function("SelectSlivers", &SelectSlivers, grp, "",
-				"mesh # threshold ratio | default | min=0; val=0.01D", TOOLTIP_SELECT_SLIVERS)
+				"mesh # threshold ratio || min=0; val=0.01D", TOOLTIP_SELECT_SLIVERS)
 			.add_function("SelectAnisotropicVolumes", &SelectAnisotropicElements<Volume>, grp, "",
-				"mesh # min edge ratio | default | 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
+				"mesh # min edge ratio || 0.5", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
 			.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "",
 				"mesh", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 			.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "",
@@ -235,55 +246,116 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectVolumeByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Volume>, grp, "",
 				"mesh # rho # phi # z", TOOLTIP_SELECT_VOLUME_BY_CYL_COORDINATE)
 			.add_function("SelectVolumesInBox", &SelectElementsInBox<Volume>, grp, "",
-				"mesh # min # max", TOOLTIP_SELECT_VOLUME_IN_BOX)
+				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_VOLUME_IN_BOX)
 			.add_function("SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp, "",
-				"mesh # base # top # radius", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
+				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
 
 
 		grp = baseGrp;
 		reg.add_function("InvertSelection", &InvertSelection, grp, "",
-				"mesh # subset index # vertices # edges # faces # volumes", TOOLTIP_INVERT_SELECTION)
+				"mesh # subset index #"
+				"vertices || value=true #"
+				"edges || value=true #"
+				"faces || value=true #"
+				"volumes || value=true", TOOLTIP_INVERT_SELECTION)
 			.add_function("ExtendSelection", &ExtendSelection, grp, "",
-				"mesh # neighborhood size", TOOLTIP_EXTEND_SELECTION);
+				"mesh # neighborhood size || value=1; min=0", TOOLTIP_EXTEND_SELECTION);
 
 
 		grp = baseGrp + "/Subset Based";
 		reg.add_function("SelectSubset", &SelectSubset, grp, "",
-				"mesh # subset index # vertices # edges # faces # volumes", TOOLTIP_SELECT_SUBSET)
+				"mesh #"
+				"subset index #"
+				"vertices || value=true #"
+				"edges || value=true #"
+				"faces || value=true #"
+				"volumes || value=true",
+				TOOLTIP_SELECT_SUBSET)
 			.add_function("SelectSubsetBoundary", &SelectSubsetBoundary, grp, "",
-				"mesh # subset index # boundaries of edges # boundaries of faces # boundaries of volumes",
+				"mesh #"
+				"subset index #"
+				"boundaries of edges || value=true #"
+				"boundaries of faces || value=true #"
+				"boundaries of volumes || value=true",
 				TOOLTIP_SELECT_SUBSET_BOUNDARY)
 			.add_function("SelectUnassignedElements", &SelectUnassignedElements, grp, "",
-				"mesh # subset index # vertices # edges # faces # volumes", TOOLTIP_SELECT_UNASSIGNED_ELEMENTS);
+				"mesh #"
+				"subset index #"
+				"vertices || value=true #"
+				"edges || value=true #"
+				"faces || value=true #"
+				"volumes || value=true", TOOLTIP_SELECT_UNASSIGNED_ELEMENTS);
 
 		
 		grp = baseGrp + "/Coordinate Range";
 		reg.add_function("SelectElementsBySplitPlane", &SelectElementsBySplitPlane, grp, "",
-				"mesh # select vrts # select edges # select faces # select volumes # pivot # normal",
+				"mesh #"
+				"select vrts || value=true #"
+				"select edges || value=true #"
+				"select faces || value=true #"
+				"select volumes || value=true #"
+				"pivot #"
+				"normal",
 				TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE)
 			.add_function("SelectElementsByRangeX", &SelectElementsInCoordinateRange<0, 1>,
 				grp, "",
-				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"select vrts || value=true #"
+				"select edges || value=true #"
+				"select faces || value=true #"
+				"select volumes || value=true",
 				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
 			.add_function("SelectElementsByRangeY", &SelectElementsInCoordinateRange<1, 1>,
 				grp, "",
-				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"select vrts || value=true #"
+				"select edges || value=true #"
+				"select faces || value=true #"
+				"select volumes || value=true",
 				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
 			.add_function("SelectElementsByRangeZ", &SelectElementsInCoordinateRange<2, 1>,
 				grp, "",
-				"mesh # min # max # select vrts # select edges # select faces # select volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"select vrts || value=true #"
+				"select edges || value=true #"
+				"select faces || value=true #"
+				"select volumes || value=true",
 				TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE)
 			.add_function("DeselectElementsByRangeX", &SelectElementsInCoordinateRange<0, 0>,
 				grp, "",
-				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"deselect vrts || value=true #"
+				"deselect edges || value=true #"
+				"deselect faces || value=true #"
+				"deselect volumes || value=true",
 				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE)
 			.add_function("DeselectElementsByRangeY", &SelectElementsInCoordinateRange<1, 0>,
 				grp, "",
-				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"deselect vrts || value=true #"
+				"deselect edges || value=true #"
+				"deselect faces || value=true #"
+				"deselect volumes || value=true",
 				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE)
 			.add_function("DeselectElementsByRangeZ", &SelectElementsInCoordinateRange<2, 0>,
 				grp, "",
-				"mesh # min # max # deselect vrts # deselect edges # deselect faces # deselect volumes",
+				"mesh #"
+				"min #"
+				"max #"
+				"deselect vrts || value=true #"
+				"deselect edges || value=true #"
+				"deselect faces || value=true #"
+				"deselect volumes || value=true",
 				TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE);
 
 		grp = baseGrp + "/Marks";
