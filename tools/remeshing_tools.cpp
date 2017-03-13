@@ -757,6 +757,10 @@ void ExtrudeLayersAndAddProjector(
 	obj->projection_handler().set_default_projector(proj);
 }
 
+void SnapToHorizontalRaster(Mesh* obj, SPRasterLayers layers)
+{
+	SnapToHorizontalRaster(obj->grid(), *layers, obj->position_accessor());
+}
 
 void CSGFaceOperation(
 			Mesh* obj,

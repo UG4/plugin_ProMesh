@@ -138,7 +138,11 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("ProjectToTopLayer", &ProjectToTopLayer, grp, "",
 				"mesh #"
 				"layers",
-				TOOLTIP_PROJECT_TO_TOP_LAYER, "", RT_NO_PROMESH);
+				TOOLTIP_PROJECT_TO_TOP_LAYER, "", RT_NO_PROMESH)
+			.add_function("SnapToHorizontalRaster", &SnapToHorizontalRaster, grp, "",
+				"mesh #"
+				"layers",
+				TOOLTIP_SNAP_TO_HORIZONTAL_RASTER, "", RT_NO_PROMESH);
 			
 
 
@@ -193,7 +197,11 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("HangingNodeRefine",
 				static_cast<void (*)(Mesh*, bool, bool)>(&HangingNodeRefine), grp, "",
 				"mesh # strict subset inheritance # anisotropic",
-				TOOLTIP_HANGING_NODE_REFINE, "", RT_NO_PROMESH);
+				TOOLTIP_HANGING_NODE_REFINE, "", RT_NO_PROMESH)
+
+			.add_function("RegularizingRefinement", &RegularizingRefinement, grp, "",
+				"mesh # aspect ratio || value=0.5D; min=0; step=0.05",
+				TOOLTIP_REGULARIZING_REFINEMENT);
 
 
 		grp = baseGrp + "/Remeshing/Remove Doubles";

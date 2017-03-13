@@ -49,6 +49,7 @@
 #define	TOOLTIP_FRACTURED_MEDIA_REFINE "Refines selected elements using hanging nodes. Fractures are refined anisotropic."
 #define	TOOLTIP_CREATE_FRACTAL "Refines the whole geometry using a fractal-refinement scheme-"
 #define	TOOLTIP_INSERT_CENTER "Inserts a central vertex in all selected elements."
+#define TOOLTIP_REGULARIZING_REFINEMENT "Marks and refines elements with small aspect ratios, trying to improves said aspect ratios."
 
 namespace ug{
 namespace promesh{
@@ -68,6 +69,8 @@ void RefineSmooth(Mesh* obj, bool strictSubsetInheritance);
 
 void InsertCenter(Mesh* obj);
 void InsertCenter(Mesh* obj, bool strictSubsetInheritance);
+
+void RegularizingRefinement(Mesh* obj, const number aspectRatio);
 
 /// \}
 

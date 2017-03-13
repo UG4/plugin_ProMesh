@@ -32,6 +32,8 @@
 
 #include "refinement_tools.h"
 
+using namespace std;
+
 namespace ug{
 namespace promesh{
 
@@ -193,5 +195,163 @@ void InsertCenter(Mesh* obj)
 	InsertCenter(obj, false);
 }
 
+
+
+
+class AnisoFaceInfo {
+public:
+	AnisoFaceInfo () :
+		m_hasShortEdges (false)	{}
+
+	bool is_short_edge (size_t edgeIndex) const	{return m_isShort[edgeIndex];}
+	bool has_short_edges () const				{return m_hasShortEdges;}
+
+	template <class TAAPos>
+	void refresh (Face* f, number aspectThreshold, TAAPos aaPos)
+	{
+		m_tmpLen.clear();
+		m_isShort.clear();
+		m_hasShortEdges = false;
+		number shortest	= numeric_limits<number>::max();
+		number longest	= 0;
+		EdgeDescriptor ed;
+		const int numEdges = (int)f->num_edges();
+		for(int iedge = 0; iedge < numEdges; ++iedge){
+			f->edge_desc(iedge, ed);
+			number len = VecDistance(aaPos[ed.vertex(0)], aaPos[ed.vertex(1)]);
+			if(len > longest)	longest = len;
+			if(len < shortest)	shortest = len;
+			m_tmpLen.push_back(len);
+		}
+
+		if(longest == 0 || (shortest / longest > aspectThreshold))
+			m_isShort.resize(numEdges, false);
+		else{
+			for(int iedge = 0; iedge < numEdges; ++iedge){
+				if(m_tmpLen[iedge] / longest <= aspectThreshold){
+					m_isShort.push_back(true);
+					m_hasShortEdges = true;
+				}
+				else
+					m_isShort.push_back(false);
+			}
+		}
+	}
+
+private:
+	vector<bool>	m_isShort;
+	vector<number>	m_tmpLen;
+	bool			m_hasShortEdges;
+};
+
+
+
+namespace quad_rules {
+	bool IsRegularRefMark(int refMark)
+	{
+		int numMarked = 0;
+		bool marks[4];
+		for(size_t i = 0; i < 4; ++i){
+			int mark = (refMark >> i) & 1;	// 0 or 1
+			numMarked += mark;
+			marks[i] = mark;
+		}
+
+		return		(numMarked == 4)
+				||	(numMarked == 2 && (marks[0] == marks[2]));
+	}
+}
+
+// enum AdvancedHNodeEdgeMarks {
+// 	AHN_NONE = 0,
+// 	AHN_FULL = 1,
+// 	AHN_PARTIAL = 2
+// };
+
+// void AdvancedHNodeAdjust(	Grid& g,
+// 							vector<Edge*>& refEdges,
+// 							vector<Face*>& refFaces,
+// 							MultiElementAttachmentAccessor<AInt>& aaMark)
+// {
+
+// 	bool adjusting = true;
+// 	size_t firstRefFace = 0;
+
+// 	while(adjusting){
+// 		adjusting = false;
+
+// 		const size_t numRefFaces = refFaces.size();
+// 		for(size_t irefFace = 0; irefFace < numRefFaces; ++irefFace){
+// 			Face* refFace = refFaces[irefFace];
+// 			const int mark = aaMark[refFace];
+
+// 			}
+// 	}
+// }
+
+
+void RegularizingRefinement(Mesh* obj, const number aspectRatio)
+{
+	Grid& g = obj->grid();
+	// Selector& sel = obj->selector();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	AInt aMark;
+
+	if(g.num<Face>() == 0)
+		return;
+
+	// g.attach_to_edges(aMark);
+	g.attach_to_faces(aMark);
+	g.attach_to_volumes(aMark);
+
+	MultiElementAttachmentAccessor<AInt> aaMark(g, aMark, false, false, true, true);
+
+	AnisoFaceInfo faceInfo;
+	HangingNodeRefiner_Grid refiner(g);
+	vector<Face*> refFaces;
+
+	for(FaceIterator iface = g.faces_begin(); iface != g.faces_end(); ++iface)
+	{
+		Face* f = *iface;
+
+		if(f->num_vertices() != 4)
+			continue;
+
+		faceInfo.refresh(f, aspectRatio, aaPos);
+		int mark = 0;
+
+		if(faceInfo.has_short_edges()){
+			const size_t numEdges = f->num_edges();
+			for(size_t iedge = 0; iedge < numEdges; ++iedge){
+				if(!faceInfo.is_short_edge(iedge)){
+					mark |= 1 << iedge;
+				}
+			}
+
+
+			if(quad_rules::IsRegularRefMark(mark)){
+			//	mark for refinement
+			//	don't mark edges, since those are implicitly marked by aaMark
+				aaMark[f] = mark;
+				refiner.mark(f, RM_ANISOTROPIC);
+				for(size_t iedge = 0; iedge < numEdges; ++iedge){
+					if(mark & (1 << iedge))
+						refiner.mark(g.get_edge(f, iedge), RM_REFINE);
+				}
+				// refFaces.push_back(f);
+			}
+		}
+	}
+
+	refiner.refine();
+
+	// AdvancedHNodeAdjust(g, refFaces, aMark);
+	// AdvancedHNodeRefine(g, refFaces, aMark);
+
+
+	g.detach_from_faces(aMark);
+	g.detach_from_volumes(aMark);	
+}
 
 }}//	end of namespace

@@ -76,6 +76,15 @@
 #define	TOOLTIP_EXTRUDE_CYLINDERS "Extrudes cylinders around selected points of a 2d manifold."
 #define TOOLTIP_CREATE_SHRINK_GEOMETRY "Creates new elements from existing ones, providing each with a unique set of corner vertices. Those corners are scaled towards the center using the given scale-parameter."
 #define TOOLTIP_EXTRUDE_FACES_WITH_TETS "Experimental function to create 'plaque'-like geometry based on extruding faces with tetrahedra."
+
+#define TOOLTIP_MESH_LAYERS "Creates triangle/quadrilateral grids for the given raster-layers"
+#define TOOLTIP_MESH_LAYER_BOUNDARIES "Creates boundary grids for the given raster-layers"
+#define TOOLTIP_PROJECT_TO_LAYER "Projects a (surface-)mesh to the specified raster-layer. Only height values in valid regions are adjusted."
+#define TOOLTIP_PROJECT_TO_TOP_LAYER "Projects a (surface-)mesh to the top-layer of the specified raster-stack. Only height values in valid regions are adjusted."
+#define TOOLTIP_EXTRUDE_LAYERS "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface."
+#define TOOLTIP_EXTRUDE_LAYERS_AND_ADD_PROJECTOR "Creates volumes for a given stack of raster-layers and an initial triangulation of the surface. It also generates a raster-based refinement-projector for the whole geometry."
+#define TOOLTIP_SNAP_TO_HORIZONTAL_RASTER "Snaps all vertices of the given (surface) grid horizontally to the closest raster-node."
+
 #define TOOLTIP_CSG_FACE_UNION "Performs a union operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
 #define TOOLTIP_CSG_FACE_INTERSECTION "Performs an intersection operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
 #define TOOLTIP_CSG_FACE_DIFFERENCE "Performs a difference operation on the geometry of the two specifed subsets. IMPORTANT: Both subsets have to be closed manifolds, i.e., homeomorphic to the sphere."
@@ -235,6 +244,7 @@ void ExtrudeLayersAndAddProjector(
 			SPRasterLayers layers,
 			bool allowForTetsAndPyras);
 
+void SnapToHorizontalRaster(Mesh* obj, SPRasterLayers layers);
 
 enum CSGOperation {
 	CSG_UNION,
