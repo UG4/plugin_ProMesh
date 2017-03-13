@@ -31,6 +31,7 @@
  */
 
 #include "selection_tools.h"
+#include "lib_grid/algorithms/orientation_util.h"
 
 namespace ug{
 namespace promesh{

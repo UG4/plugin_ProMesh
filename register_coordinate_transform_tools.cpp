@@ -84,6 +84,9 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("RotateAroundPivot", &RotateAroundPivot, grp, "",
 				"mesh # rotation", TOOLTIP_ROTATE_AROUND_PIVOT);
 
+		grp = baseGrp + string("/Coordinate Transform");
+		reg.add_function("Mirror", &Mirror, grp, "",
+				"mesh # axis || value=[1, 0, 0] # origin", TOOLTIP_MIRROR);
 
 		grp = baseGrp + string("/Coordinate Transform/Smoothing");
 		reg.add_function("LaplacianSmooth", &LaplacianSmooth, grp, "",

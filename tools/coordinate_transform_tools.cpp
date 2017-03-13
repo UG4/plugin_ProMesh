@@ -31,6 +31,9 @@
  */
 
 #include "coordinate_transform_tools.h"
+#include "lib_grid/algorithms/orientation_util.h"
+
+using namespace std;
 
 namespace ug{
 namespace promesh{
@@ -75,10 +78,10 @@ void MoveAlongNormal(Mesh* obj, number offset)
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	Grid::face_traits::secure_container faces;
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, sel);
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& p = aaPos[*iter];
 	//	calculate vertex normal by averaging face normals
@@ -105,7 +108,7 @@ void MoveVerticesAlongEdges(Mesh* obj, number relVal)
 
 //	calculate offsets (do not apply, so that we correctly support cases in which
 //	both corners of an edge are selected)
-	std::vector<vector3>	offsets;
+	vector<vector3>	offsets;
 	offsets.reserve(sel.num<Vertex>());
 	lg_for_each(Vertex, vrt, sel){
 		vector3 offset(0, 0, 0);
@@ -140,11 +143,11 @@ void ScaleAroundCenter(Mesh* obj, const vector3& scale)
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		ug::vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -159,11 +162,11 @@ void ScaleAroundPivot(Mesh* obj, const vector3& scale)
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = obj->pivot();
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -178,10 +181,10 @@ void ScaleAroundPoint(Mesh* obj, const vector3& scale, const vector3& point)
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3& v = aaPos[*iter];
 		VecSubtract(v, v, point);
@@ -192,6 +195,62 @@ void ScaleAroundPoint(Mesh* obj, const vector3& scale, const vector3& point)
 	}
 }
 
+/**	call this method for edges, faces, and volumes after you performed mirroring.
+ * The method mirrors all elements of a grid which are connected to at least one
+ * of the given vertices.
+ * \WARNING	The method may produce invalid results if only a subset of vertices of
+ * 			a given element was mirrored.
+ * \NOTE	The method uses Grid::mark*/
+template <class elem_t, class vrt_iter_t>
+static void FixMirrorOrientation(Grid& g, vrt_iter_t vrtsBegin, vrt_iter_t vrtsEnd)
+{
+	g.begin_marking();
+	typename Grid::traits<elem_t>::secure_container elems;
+	for(vrt_iter_t ivrt = vrtsBegin; ivrt != vrtsEnd; ++ivrt){
+		Vertex* vrt = *ivrt;
+		g.associated_elements(elems, vrt);
+
+		for(size_t i = 0; i < elems.size(); ++i){
+			elem_t* e = elems[i];
+			if(!g.is_marked(e)){
+				g.mark(e);
+				g.flip_orientation(e);
+			}
+		}
+	}
+	g.end_marking();
+}
+
+void Mirror(Mesh* obj, const vector3& axisOrig, const vector3& origin)
+{
+	UG_COND_THROW(VecLengthSq(axisOrig) == 0, "Invalid axis specified in 'Mirror'. "
+			"Please choose an axis which differs from (0, 0, 0).");
+
+	vector3 axis;
+	VecNormalize(axis, axisOrig);
+
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+
+	vector<Vertex*> vrts;
+	CollectVerticesTouchingSelection(vrts, obj->selector());
+
+	for(vector<Vertex*>::iterator ivrt = vrts.begin();
+		ivrt != vrts.end(); ++ivrt)
+	{
+		Vertex* vrt = *ivrt;
+		vector3 p;
+		ProjectPointToPlane(p, aaPos[vrt], origin, axis);
+		VecSubtract(p, p, aaPos[vrt]);
+		p *= 2;
+		VecAdd(aaPos[vrt], aaPos[vrt], p);
+	}
+
+	FixMirrorOrientation<Edge>(g, vrts.begin(), vrts.end());
+	FixMirrorOrientation<Face>(g, vrts.begin(), vrts.end());
+	FixMirrorOrientation<Volume>(g, vrts.begin(), vrts.end());
+}
+
 void RotateAroundCenter(Mesh* obj, const vector3& rotRad)
 {
 	const vector3 rot(	deg_to_rad(rotRad.x()),
@@ -200,7 +259,7 @@ void RotateAroundCenter(Mesh* obj, const vector3& rotRad)
 
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = CalculateCenter(vrts.begin(), vrts.end(), aaPos);
 
@@ -209,7 +268,7 @@ void RotateAroundCenter(Mesh* obj, const vector3& rotRad)
 	matrix33 matRot;
 	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -227,7 +286,7 @@ void RotateAroundPivot(Mesh* obj, const vector3& rotRad)
 
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 	vector3 center = obj->pivot();
 
@@ -236,7 +295,7 @@ void RotateAroundPivot(Mesh* obj, const vector3& rotRad)
 	matrix33 matRot;
 	MatRotationYawPitchRoll(matRot, rot.x(), rot.y(), rot.z());
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		VecSubtract(v, v, center);
@@ -251,10 +310,10 @@ void ConeTransform(Mesh* obj, const vector3& base, const vector3& axis,
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		vector3 proj(0, 0, 0);
@@ -278,7 +337,7 @@ void ConeTransform(Mesh* obj, const vector3& base, const vector3& axis,
 
 void LaplacianSmooth(Mesh* obj, number alpha, int numIterations)
 {
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	ug::LaplacianSmooth(obj->grid(), vrts.begin(), vrts.end(),
@@ -302,7 +361,7 @@ void WeightedFaceSmooth(Mesh* obj, number alpha, int numIterations)
 void WeightedNormalSmooth(Mesh* obj, number alpha, number dotThreshold,
 								 int numIterations)
 {
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	ug::WeightedNormalSmooth(obj->grid(), vrts.begin(), vrts.end(),
@@ -312,7 +371,7 @@ void WeightedNormalSmooth(Mesh* obj, number alpha, number dotThreshold,
 
 void SlopeSmooth(Mesh* obj, number alpha, int numIterations)
 {
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	ug::SlopeSmooth(obj->grid(), vrts.begin(), vrts.end(),
@@ -322,7 +381,7 @@ void SlopeSmooth(Mesh* obj, number alpha, int numIterations)
 
 void TangentialSmooth(Mesh* obj, number alpha, int numIterations)
 {
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
 	ug::TangentialSmooth(obj->grid(), vrts.begin(), vrts.end(),
@@ -400,10 +459,10 @@ void ProjectToPlane(Mesh* obj, const vector3& planeCenter, const vector3& planeN
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
-	std::vector<Vertex*> vrts;
+	vector<Vertex*> vrts;
 	CollectVerticesTouchingSelection(vrts, obj->selector());
 
-	for(std::vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
+	for(vector<Vertex*>::iterator iter = vrts.begin(); iter != vrts.end(); ++iter)
 	{
 		vector3 v = aaPos[*iter];
 		ProjectPointToPlane(aaPos[*iter], v, planeCenter, planeNormal);
@@ -427,7 +486,7 @@ void SnapVerticesToVertices(Mesh* obj, Mesh* targetMesh)
 	Mesh::position_accessor_t	aaTargetPos = targetMesh->position_accessor();
 
 	Selector& srcSel = obj->selector();
-	std::vector<Vertex*> closeVrts;
+	vector<Vertex*> closeVrts;
 
 	for(VertexIterator viter = srcSel.begin<Vertex>();
 		viter != srcSel.end<Vertex>(); ++viter)

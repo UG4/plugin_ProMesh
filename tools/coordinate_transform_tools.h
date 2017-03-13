@@ -56,6 +56,7 @@
 #define	TOOLTIP_MOVE_VERTICES_ALONG_EDGES "Moves selected vertices along selected edges by an offset relative to those selected edges. If a selected vertex is connected to multiple selected edges, the new position will be averaged between the individual offsets."
 #define	TOOLTIP_SCALE "Scales the coordinates of the selected vertices around their center."
 #define	TOOLTIP_ROTATE "Rotates the geometry by the given degrees around its center."
+#define TOOLTIP_MIRROR "Mirrors the geometry at the given point along the given axis"
 #define	TOOLTIP_TRANSFORM "Transforms the vertices with the given matrix"
 #define	TOOLTIP_CONE_TRANSFORM "Transforms the vertices with the given cone transformation"
 #define	TOOLTIP_LAPLACIAN_SMOOTH "Smoothes vertices in a grid."
@@ -100,6 +101,8 @@ void ScaleAroundPoint(Mesh* obj, const vector3& scale, const vector3& point);
 void RotateAroundCenter(Mesh* obj, const vector3& rot);
 
 void RotateAroundPivot(Mesh* obj, const vector3& rot);
+
+void Mirror(Mesh* obj, const vector3& axis, const vector3& origin);
 
 void ConeTransform(	Mesh* obj,
 					const vector3& base,
