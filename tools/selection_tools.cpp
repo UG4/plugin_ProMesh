@@ -657,17 +657,17 @@ void SelectDegenerateFaces(Mesh* obj, number maxHeight)
 void SelectLinkedFlatFaces(
 			Mesh* obj,
 			number maxDeviationAngle,
-			bool traverseFlipped,
+			bool ignoreOrientation,
 			bool traverseDegeneratedFaces,
 			bool stopAtSelectedEdges)
 {
 	Selector& sel = obj->selector();
 	if(traverseDegeneratedFaces)
 		ug::SelectLinkedFlatAndDegeneratedFaces(sel, maxDeviationAngle,
-												traverseFlipped,
+												ignoreOrientation,
 												stopAtSelectedEdges);
 	else
-		ug::SelectLinkedFlatFaces(sel, maxDeviationAngle, traverseFlipped,
+		ug::SelectLinkedFlatFaces(sel, maxDeviationAngle, ignoreOrientation,
 								  stopAtSelectedEdges);
 }
 

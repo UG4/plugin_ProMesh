@@ -192,8 +192,12 @@ void ScaleAroundPoint(Mesh* obj, const vector3& scale, const vector3& point)
 	}
 }
 
-void RotateAroundCenter(Mesh* obj, const vector3& rot)
+void RotateAroundCenter(Mesh* obj, const vector3& rotRad)
 {
+	const vector3 rot(	deg_to_rad(rotRad.x()),
+						deg_to_rad(rotRad.y()),
+						deg_to_rad(rotRad.z()));
+
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;
@@ -215,8 +219,12 @@ void RotateAroundCenter(Mesh* obj, const vector3& rot)
 }
 
 
-void RotateAroundPivot(Mesh* obj, const vector3& rot)
+void RotateAroundPivot(Mesh* obj, const vector3& rotRad)
 {
+	const vector3 rot(	deg_to_rad(rotRad.x()),
+						deg_to_rad(rotRad.y()),
+						deg_to_rad(rotRad.z()));
+
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 
 	std::vector<Vertex*> vrts;

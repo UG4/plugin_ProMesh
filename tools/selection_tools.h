@@ -327,7 +327,7 @@ void SelectDegenerateFaces(Mesh* obj, number maxHeight);
 void SelectLinkedFlatFaces(
 			Mesh* obj,
 			number maxDeviationAngle,
-			bool traverseFlipped,
+			bool ignoreOrientation,
 			bool traverseDegeneratedFaces,
 			bool stopAtSelectedEdges);
 

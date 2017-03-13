@@ -190,7 +190,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectLinkedFlatFaces", &SelectLinkedFlatFaces, grp, "",
 				"mesh #"
 				"max deviation angle || value=1 #"
-				"traverse flipped faces || value=true#"
+				"ignore orientation || value=true#"
 				"traverse degenerated faces#"
 				"stop at selected edges", TOOLTIP_SELECT_LINKED_FLAT_FACES)
 
