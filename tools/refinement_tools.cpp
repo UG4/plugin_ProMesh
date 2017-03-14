@@ -296,20 +296,11 @@ void RegularizingRefinement(Mesh* obj, const number aspectRatio)
 	// Selector& sel = obj->selector();
 	Mesh::position_accessor_t aaPos = obj->position_accessor();
 
-	AInt aMark;
-
 	if(g.num<Face>() == 0)
 		return;
 
-	// g.attach_to_edges(aMark);
-	g.attach_to_faces(aMark);
-	g.attach_to_volumes(aMark);
-
-	MultiElementAttachmentAccessor<AInt> aaMark(g, aMark, false, false, true, true);
-
 	AnisoFaceInfo faceInfo;
 	HangingNodeRefiner_Grid refiner(g);
-	vector<Face*> refFaces;
 
 	for(FaceIterator iface = g.faces_begin(); iface != g.faces_end(); ++iface)
 	{
@@ -333,25 +324,18 @@ void RegularizingRefinement(Mesh* obj, const number aspectRatio)
 			if(quad_rules::IsRegularRefMark(mark)){
 			//	mark for refinement
 			//	don't mark edges, since those are implicitly marked by aaMark
-				aaMark[f] = mark;
-				refiner.mark(f, RM_ANISOTROPIC);
+				refiner.mark_aniso(f, mark);
+				// refiner.mark(f, RM_ANISOTROPIC);
 				for(size_t iedge = 0; iedge < numEdges; ++iedge){
 					if(mark & (1 << iedge))
 						refiner.mark(g.get_edge(f, iedge), RM_REFINE);
 				}
-				// refFaces.push_back(f);
 			}
 		}
 	}
 
 	refiner.refine();
 
-	// AdvancedHNodeAdjust(g, refFaces, aMark);
-	// AdvancedHNodeRefine(g, refFaces, aMark);
-
-
-	g.detach_from_faces(aMark);
-	g.detach_from_volumes(aMark);	
 }
 
 }}//	end of namespace

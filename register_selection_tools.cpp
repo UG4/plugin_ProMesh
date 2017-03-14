@@ -103,7 +103,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectVerticesInBox", &SelectElementsInBox<Vertex>, grp, "",
 				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_VERTEX_IN_BOX)
 			.add_function("SelectVerticesInCylinder", &SelectElementsInCylinder<Vertex>, grp, "",
-				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_VERTEX_IN_CYLINDER);
+				"mesh # base # top || value=[0,0,1] # radius || value=1", TOOLTIP_SELECT_VERTEX_IN_CYLINDER);
 
 
 		grp = baseGrp + "/Edges";
@@ -127,11 +127,11 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("EdgeSelectionFill", &EdgeSelectionFill, grp, "",
 				"mesh", TOOLTIP_EDGE_SELECTION_FILL)
 			.add_function("SelectShortEdges", &SelectShortEdges, grp, "",
-				"mesh # max length", TOOLTIP_SELECT_SHORT_EDGES)
+				"mesh # max length || value = 0.1D; min=0D;", TOOLTIP_SELECT_SHORT_EDGES)
 			.add_function("SelectLongEdges", &SelectLongEdges, grp, "",
-				"mesh # min length", TOOLTIP_SELECT_LONG_EDGES)
+				"mesh # min length || value = 1", TOOLTIP_SELECT_LONG_EDGES)
 			.add_function("SelectCreaseEdges", &SelectCreaseEdges, grp, "",
-				"mesh # min angle", TOOLTIP_SELECT_CREASE_EDGES)
+				"mesh # min angle || value = 20", TOOLTIP_SELECT_CREASE_EDGES)
 			.add_function("SelectLinkedBoundaryEdges", &SelectLinkedBoundaryEdges, grp, "",
 				"mesh # stop at selected vertices", TOOLTIP_SELECT_LINKED_BOUNDARY_EDGES)
 			.add_function("SelectSmoothEdgePath", &SelectSmoothEdgePath, grp, "",
@@ -163,7 +163,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectEdgesInBox", &SelectElementsInBox<Edge>, grp, "",
 				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_EDGE_IN_BOX)  
 			.add_function("SelectEdgesInCylinder", &SelectElementsInCylinder<Edge>, grp, "",
-				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_EDGE_IN_CYLINDER);
+				"mesh # base # top || value=[0,0,1] # radius || value=1", TOOLTIP_SELECT_EDGE_IN_CYLINDER);
 			
 		grp = baseGrp + "/Faces";
 		reg
@@ -207,7 +207,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "",
 				"mesh # dot threshold || value = 0.95D", TOOLTIP_SELECT_BENT_QUADRILATERALS)
 			.add_function("SelectIntersectingTriangles", &SelectIntersectingTriangles, grp, "",
-				"mesh", TOOLTIP_SELECT_INTERSECTING_TRIANGLES, "", RT_NO_PROMESH)
+				"mesh", TOOLTIP_SELECT_INTERSECTING_TRIANGLES)
 			.add_function("SelectFaceByIndex", &SelectFaceByIndex, grp, "",
 				"mesh # index", TOOLTIP_SELECT_FACE_BY_INDEX);
 
@@ -219,7 +219,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectFacesInBox", &SelectElementsInBox<Face>, grp, "",
 				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_FACE_IN_BOX)
 			.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "",
-				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_FACE_IN_CYLINDER);
+				"mesh # base # top || value=[0,0,1] # radius || value=1", TOOLTIP_SELECT_FACE_IN_CYLINDER);
 
 
 		grp = baseGrp + "/Volumes";
@@ -248,7 +248,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectVolumesInBox", &SelectElementsInBox<Volume>, grp, "",
 				"mesh # min # max || value=[1,1,1]", TOOLTIP_SELECT_VOLUME_IN_BOX)
 			.add_function("SelectVolumesInCylinder", &SelectElementsInCylinder<Volume>, grp, "",
-				"mesh # base # top # radius || value=1", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
+				"mesh # base # top || value=[0,0,1] # radius || value=1", TOOLTIP_SELECT_VOLUME_IN_CYLINDER);
 
 
 		grp = baseGrp;
