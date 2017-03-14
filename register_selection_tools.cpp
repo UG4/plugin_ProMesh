@@ -206,8 +206,6 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh # max height || value=0.01D", TOOLTIP_SELECT_DEGENERATE_FACES)
 			.add_function("SelectBentQuadrilaterals", &SelectBentQuadrilaterals, grp, "",
 				"mesh # dot threshold || value = 0.95D", TOOLTIP_SELECT_BENT_QUADRILATERALS)
-			.add_function("SelectIntersectingTriangles", &SelectIntersectingTriangles, grp, "",
-				"mesh", TOOLTIP_SELECT_INTERSECTING_TRIANGLES)
 			.add_function("SelectFaceByIndex", &SelectFaceByIndex, grp, "",
 				"mesh # index", TOOLTIP_SELECT_FACE_BY_INDEX);
 
@@ -221,6 +219,9 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectFacesInCylinder", &SelectElementsInCylinder<Face>, grp, "",
 				"mesh # base # top || value=[0,0,1] # radius || value=1", TOOLTIP_SELECT_FACE_IN_CYLINDER);
 
+		grp = baseGrp + "/Faces";
+			reg.add_function("SelectIntersectingTriangles", &SelectIntersectingTriangles, grp, "",
+				"mesh", TOOLTIP_SELECT_INTERSECTING_TRIANGLES);
 
 		grp = baseGrp + "/Volumes";
 		reg.add_function("SelectAllVolumes", &SelectAllVolumes, grp, "",
