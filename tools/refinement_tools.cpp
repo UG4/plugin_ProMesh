@@ -73,11 +73,18 @@ void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic
 	sh.enable_strict_inheritance(strictSubsetInheritance);
 
 	HangingNodeRefiner_Grid refiner(grid);
+
+	#ifdef PROMESH_DEBUG_PATH
+		string markDbgFile = string(PROMESH_DEBUG_PATH).append("/hnode-marks.ugx");
+		UG_LOG("<dbg> SAVING ADJUSTED HNODE MARKS TO " << markDbgFile << endl);
+		refiner.set_adjusted_marks_debug_filename(markDbgFile.c_str());
+	#endif
+
 	//refiner.enable_automark_objects_of_higher_dim(true);
 	//refiner.enable_node_dependency_order_1(false);
 
 	if(anisotropic){
-		refiner.mark(sel.edges_begin(), sel.edges_end(), RM_ANISOTROPIC);
+		refiner.mark(sel.edges_begin(), sel.edges_end(), RM_REFINE);
 		refiner.mark(sel.faces_begin(), sel.faces_end(), RM_ANISOTROPIC);
 		refiner.mark(sel.volumes_begin(), sel.volumes_end(), RM_ANISOTROPIC);
 	}
@@ -198,16 +205,16 @@ void InsertCenter(Mesh* obj)
 
 
 
-class AnisoFaceInfo {
+class AnisoElemInfo {
 public:
-	AnisoFaceInfo () :
+	AnisoElemInfo () :
 		m_hasShortEdges (false)	{}
 
 	bool is_short_edge (size_t edgeIndex) const	{return m_isShort[edgeIndex];}
 	bool has_short_edges () const				{return m_hasShortEdges;}
 
-	template <class TAAPos>
-	void refresh (Face* f, number aspectThreshold, TAAPos aaPos)
+	template <class TAAPos, class TElem>
+	void refresh (TElem* elem, number aspectThreshold, TAAPos aaPos)
 	{
 		m_tmpLen.clear();
 		m_isShort.clear();
@@ -215,9 +222,9 @@ public:
 		number shortest	= numeric_limits<number>::max();
 		number longest	= 0;
 		EdgeDescriptor ed;
-		const int numEdges = (int)f->num_edges();
+		const int numEdges = (int)elem->num_edges();
 		for(int iedge = 0; iedge < numEdges; ++iedge){
-			f->edge_desc(iedge, ed);
+			elem->edge_desc(iedge, ed);
 			number len = VecDistance(aaPos[ed.vertex(0)], aaPos[ed.vertex(1)]);
 			if(len > longest)	longest = len;
 			if(len < shortest)	shortest = len;
@@ -245,97 +252,56 @@ private:
 };
 
 
+template <class TElem>
+void RegularizingRefinement_IMPL(Mesh* obj, const number aspectRatio)
+{
+	typedef TElem	elem_t;
+	typedef typename Grid::traits<elem_t>::iterator	iter_t;
 
-namespace quad_rules {
-	bool IsRegularRefMark(int refMark)
+	Grid& g = obj->grid();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	AnisoElemInfo elemInfo;
+	HangingNodeRefiner_Grid refiner(g);
+	refiner.enable_node_dependency_order_1(false);
+
+	#ifdef PROMESH_DEBUG_PATH
+		string markDbgFile = string(PROMESH_DEBUG_PATH).append("/hnode-marks.ugx");
+		UG_LOG("<dbg> SAVING ADJUSTED HNODE MARKS TO " << markDbgFile << endl);
+		refiner.set_adjusted_marks_debug_filename(markDbgFile.c_str());
+	#endif
+
+	for(iter_t ielem = g.begin<elem_t>(); ielem != g.end<elem_t>(); ++ielem)
 	{
-		int numMarked = 0;
-		bool marks[4];
-		for(size_t i = 0; i < 4; ++i){
-			int mark = (refMark >> i) & 1;	// 0 or 1
-			numMarked += mark;
-			marks[i] = mark;
+		elem_t* elem = *ielem;
+
+		elemInfo.refresh(elem, aspectRatio, aaPos);
+		int mark = 0;
+
+		if(elemInfo.has_short_edges()){
+			const size_t numEdges = elem->num_edges();
+			for(size_t iedge = 0; iedge < numEdges; ++iedge){
+				if(!elemInfo.is_short_edge(iedge)){
+					mark |= 1 << iedge;
+				}
+			}
+
+			if(elem->is_regular_ref_rule(mark))
+				refiner.mark_local(elem, mark);
 		}
-
-		return		(numMarked == 4)
-				||	(numMarked == 2 && (marks[0] == marks[2]));
 	}
+
+	refiner.refine();
 }
-
-// enum AdvancedHNodeEdgeMarks {
-// 	AHN_NONE = 0,
-// 	AHN_FULL = 1,
-// 	AHN_PARTIAL = 2
-// };
-
-// void AdvancedHNodeAdjust(	Grid& g,
-// 							vector<Edge*>& refEdges,
-// 							vector<Face*>& refFaces,
-// 							MultiElementAttachmentAccessor<AInt>& aaMark)
-// {
-
-// 	bool adjusting = true;
-// 	size_t firstRefFace = 0;
-
-// 	while(adjusting){
-// 		adjusting = false;
-
-// 		const size_t numRefFaces = refFaces.size();
-// 		for(size_t irefFace = 0; irefFace < numRefFaces; ++irefFace){
-// 			Face* refFace = refFaces[irefFace];
-// 			const int mark = aaMark[refFace];
-
-// 			}
-// 	}
-// }
 
 
 void RegularizingRefinement(Mesh* obj, const number aspectRatio)
 {
 	Grid& g = obj->grid();
-	// Selector& sel = obj->selector();
-	Mesh::position_accessor_t aaPos = obj->position_accessor();
-
-	if(g.num<Face>() == 0)
-		return;
-
-	AnisoFaceInfo faceInfo;
-	HangingNodeRefiner_Grid refiner(g);
-
-	for(FaceIterator iface = g.faces_begin(); iface != g.faces_end(); ++iface)
-	{
-		Face* f = *iface;
-
-		if(f->num_vertices() != 4)
-			continue;
-
-		faceInfo.refresh(f, aspectRatio, aaPos);
-		int mark = 0;
-
-		if(faceInfo.has_short_edges()){
-			const size_t numEdges = f->num_edges();
-			for(size_t iedge = 0; iedge < numEdges; ++iedge){
-				if(!faceInfo.is_short_edge(iedge)){
-					mark |= 1 << iedge;
-				}
-			}
-
-
-			if(quad_rules::IsRegularRefMark(mark)){
-			//	mark for refinement
-			//	don't mark edges, since those are implicitly marked by aaMark
-				refiner.mark_aniso(f, mark);
-				// refiner.mark(f, RM_ANISOTROPIC);
-				for(size_t iedge = 0; iedge < numEdges; ++iedge){
-					if(mark & (1 << iedge))
-						refiner.mark(g.get_edge(f, iedge), RM_REFINE);
-				}
-			}
-		}
-	}
-
-	refiner.refine();
-
+	if(g.num<Volume>() > 0)
+		RegularizingRefinement_IMPL<Volume>(obj, aspectRatio);
+	else if(g.num<Face>() > 0)
+		RegularizingRefinement_IMPL<Face>(obj, aspectRatio);
 }
 
 }}//	end of namespace

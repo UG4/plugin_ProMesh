@@ -60,6 +60,18 @@ cmake_minimum_required(VERSION 2.6)
 
 project(UG_PLUGIN_${pluginName})
 
+
+option(DEBUG_PATH "Specify a path to which debug output may be written. Only for development builds.")
+
+message(STATUS "Info: Additional options for the ProMesh plugin:")
+message(STATUS "Info:   DEBUG_PATH   Specify a path to which debug output may be written. Only for development builds.")
+
+if(DEBUG_PATH)
+	message(STATUS "Info:   DEBUG_PATH = \"${DEBUG_PATH}\"")
+	ExportDefinitions(-DPROMESH_DEBUG_PATH=\"${DEBUG_PATH}\")
+endif(DEBUG_PATH)
+
+
 # include the definitions and dependencies for ug-plugins.
 include(${UG_ROOT_CMAKE_PATH}/ug_plugin_includes.cmake)
 
