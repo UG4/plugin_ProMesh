@@ -63,6 +63,7 @@
 #define	TOOLTIP_FIX_FACE_SUBSET_ORIENTATIONS "Iterates over all subset and tries to fix face orientation for each. Only works correctly for manifold subsets."
 #define	TOOLTIP_FIX_VOLUME_ORIENTATION "Changes orientation of selected volumes, so that they are oriented correctly."
 #define	TOOLTIP_INVERT_FACE_ORIENTATION "Inverts the orientation of all selected faces."
+#define TOOLTIP_CREATE_HEXAHEDRA_FROM_SELECTED_PRISMS "Creates hexahedra from pairs of selected prisms which share a quadrilateral side. For best performance, matching prisms should be selected directly after one another."
 
 
 namespace ug{
@@ -118,6 +119,8 @@ void ProjectVerticesToCloseFaces(Mesh* obj, number snapThreshold);
 void IntersectCloseEdges(Mesh* obj, number snapThreshold);
 
 void ResolveSelfIntersections(Mesh* obj, number snapThreshold);
+
+void CreateHexahedraFromSelectedPrisms(Mesh* obj);
 
 /// \}
 

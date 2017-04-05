@@ -30,7 +30,12 @@
  * GNU Lesser General Public License for more details.
  */
 
+#include <vector>
 #include "topology_tools.h"
+#include "lib_grid/algorithms/hexahedron_util.h"
+
+using namespace std;
+
 
 namespace ug{
 namespace promesh{
@@ -418,5 +423,46 @@ void ResolveSelfIntersections(Mesh* obj, number snapThreshold)
 	ug::RemoveDoubles<3>(grid, sel.begin<Vertex>(), sel.end<Vertex>(),
 					 obj->position_attachment(), snapThreshold);
 }
+
+
+void CreateHexahedraFromSelectedPrisms(Mesh* obj)
+{
+//	todo: better worst case performance
+	vector<Volume*>	delVols;
+	vector<Volume*> newVols;
+
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+
+	for(PrismIterator iprism = sel.begin<Prism>();
+		iprism != sel.end<Prism>(); ++iprism)
+	{
+		Prism* p0 = *iprism;
+
+		PrismIterator iOtherPrism = iprism;
+		++iOtherPrism;
+		for(;iOtherPrism != sel.end<Prism>(); ++iOtherPrism)
+		{
+			Prism* p1 = *iOtherPrism;
+			Hexahedron* hex = CreateHexahedronFromPrisms(grid, p0, p1);
+			if(hex){
+				newVols.push_back(hex);
+				delVols.push_back(p0);
+				delVols.push_back(p1);
+				sel.deselect(p1);
+				break;
+			}
+		}
+	}
+
+	sel.clear();
+	if(!delVols.empty()){
+		sel.select(delVols.begin(), delVols.end());
+		EraseSelectedElements(obj, true, true, true);
+	}
+	if(!newVols.empty())
+		sel.select(newVols.begin(), newVols.end());
+}
+
 
 }}//	end of namespace

@@ -311,6 +311,11 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		    	"", RT_NO_PROMESH);
 
 
+		grp = baseGrp + "/Remeshing/Hexahedra";
+		reg.add_function("CreateHexahedraFromSelectedPrisms",
+				&CreateHexahedraFromSelectedPrisms, grp, "",
+				"mesh", TOOLTIP_CREATE_HEXAHEDRA_FROM_SELECTED_PRISMS);
+
 		grp = baseGrp + "/Remeshing/Extrusion";
 		reg.add_function("Extrude", &ExtrudeAndMove, grp, "",
 				"mesh #"
