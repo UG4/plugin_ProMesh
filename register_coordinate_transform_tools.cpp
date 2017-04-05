@@ -68,7 +68,12 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("MoveVerticesAlongEdges",
 				&MoveVerticesAlongEdges,
 				grp, "", "mesh # relative offset | default | value=0.5D",
-				TOOLTIP_MOVE_VERTICES_ALONG_EDGES);
+				TOOLTIP_MOVE_VERTICES_ALONG_EDGES)
+			.add_function("MoveVerticesToEdgeLength",
+				&MoveVerticesToEdgeLength,
+				grp, "", "mesh # edge length | default | value=1.D",
+				TOOLTIP_MOVE_VERTICES_TO_EDGE_LENGTH);
+			
 
 		grp = baseGrp + string("/Coordinate Transform/Scale");
 		reg.add_function("ScaleAroundCenter", &ScaleAroundCenter, grp, "",
