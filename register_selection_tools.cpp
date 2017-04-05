@@ -254,7 +254,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 
 		grp = baseGrp;
 		reg.add_function("InvertSelection", &InvertSelection, grp, "",
-				"mesh # subset index #"
+				"mesh #"
 				"vertices || value=true #"
 				"edges || value=true #"
 				"faces || value=true #"
