@@ -37,10 +37,10 @@ namespace ug{
 namespace promesh{
 
 enum ModifierKeys{
-	MK_NONE =	0,
-	MK_CTRL =	1,
-	MK_SHIFT =	1<<1,
-	MK_ALT =	1<<2
+	MK_NONE		= 0,
+	MK_CTRL		= 1,
+	MK_SHIFT	= 2,
+	MK_ALT		= 4
 };
 
 enum ShortcutKeys {

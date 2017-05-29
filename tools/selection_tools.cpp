@@ -520,27 +520,10 @@ void SelectEdgesByDirection(
 				number maxDeviationAngle,
 				bool selectFlipped)
 {
-	Grid& g = m->grid();
 	Selector& sel = m->selector();
 	Mesh::position_accessor_t aaPos = m->position_accessor();
-
-	vector3 n;
-	VecNormalize(n, dir);
-
-	number maxDot = cos(deg_to_rad(minDeviationAngle));
-	number minDot = cos(deg_to_rad(maxDeviationAngle));
-
-	lg_for_each(Edge, e, g){
-		vector3 dir;
-		VecSubtract(dir, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
-		VecNormalize(dir, dir);
-		number d = VecDot(dir, n);
-		if((d >= minDot - SMALL && d <= maxDot + SMALL) ||
-			(selectFlipped && (-d >= minDot - SMALL && -d <= maxDot + SMALL)))
-		{
-			sel.select(e);
-		}
-	}lg_end_for;
+	SelectEdgesByDirection(sel, aaPos, dir, minDeviationAngle,
+	                       maxDeviationAngle, selectFlipped);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
