@@ -31,6 +31,7 @@
  */
 
 #include "remeshing_tools.h"
+#include "lib_grid/algorithms/subset_util.h"
 
 namespace ug{
 namespace promesh{
@@ -349,9 +350,11 @@ void Tetrahedralize(
 	Grid& grid = obj->grid();
 	SubsetHandler& sh = obj->subset_handler();
 	UG_LOG("tetrahedralizing using 'tetgen' by Hang Si... ");
+UG_LOG("<dbg> \n");
+UG_LOG("<dbg> running ug::Tetrahedralize\n");
 	ug::Tetrahedralize(grid, sh, quality, preserveOuter, preserveAll,
 					   obj->position_attachment(), verbosity);
-	UG_LOG("done. Created " << grid.num<Tetrahedron>() << " tetrahedrons.\n");
+	UG_LOG("done. Created " << grid.num<Tetrahedron>() << " tetrahedra.\n");
 
 	int oldNumSubsets = sh.num_subsets();
 	if(separateVolumes){
