@@ -33,6 +33,7 @@
 #include <vector>
 #include "topology_tools.h"
 #include "lib_grid/algorithms/hexahedron_util.h"
+#include "lib_grid/callbacks/selection_callbacks.h"
 
 using namespace std;
 
@@ -253,8 +254,11 @@ void AdjustEdgeOrientation(Mesh* obj)
 	Grid& grid = obj->grid();
 	Selector& sel = obj->selector();
 
-	AdjustEdgeOrientationToFaceOrientation(grid, sel.begin<Edge>(),
-												sel.end<Edge>());
+	AdjustEdgeOrientationToFaceOrientation(
+			grid,
+			sel.begin<Edge>(),
+			sel.end<Edge>(),
+			IsSelected(sel));
 }
 
 void FixFaceOrientation(Mesh* obj)

@@ -37,6 +37,39 @@ using namespace std;
 namespace ug{
 namespace promesh{
 
+// class TempSelState {
+// 	public:
+// 		TempSelState (	ISelector& sel,
+// 						bool autoselect,
+// 						bool selInheritance,
+// 						bool strictInheritance) :
+// 			m_sel (sel)
+// 		{
+// 			m_autoselect = m_sel.autoselection_enabled ();
+// 			m_selInheritance = m_sel.selection_inheritance_enabled ();
+// 			m_strictInheritance = m_sel.strict_inheritance_enabled ();
+
+// 			m_sel.enable_autoselection (autoselect);
+// 			m_sel.enable_selection_inheritance (selInheritance);
+// 			m_sel.enable_strict_inheritance (strictInheritance);
+// 		}
+
+// 		~TempSelState ()
+// 		{
+// 			m_sel.enable_autoselection (m_autoselect);
+// 			m_sel.enable_selection_inheritance (m_selInheritance);
+// 			m_sel.enable_strict_inheritance (m_strictInheritance);
+// 		}
+
+// 	private:
+// 		ISelector&	m_sel;
+// 		bool		m_autoselect;
+// 		bool		m_selInheritance;
+// 		bool		m_strictInheritance;
+// };
+
+
+
 void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 {
 	Grid& grid = obj->grid();
@@ -46,6 +79,8 @@ void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints)
 	sh.enable_strict_inheritance(strictSubsetInheritance);
 
 	ProjectionHandler& projector = obj->projection_handler();
+
+	// TempSelState (sel, false, true, true);
 
 	Refine(grid, sel, &projector, useSnapPoints);
 
@@ -94,6 +129,8 @@ void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic
 		refiner.mark(sel.volumes_begin(), sel.volumes_end(), RM_REFINE);
 	}
 
+
+	// TempSelState (sel, false, true, true);
 	refiner.refine();
 
 	sh.enable_strict_inheritance(siEnabled);
@@ -122,6 +159,8 @@ void RefineSmooth(Mesh* obj, bool strictSubsetInheritance)
 	SubdivisionProjector refProj(MakeGeometry3d(grid, aPosition),
 								 Grid::edge_traits::callback(
 								 	IsInSubset(obj->crease_handler(), REM_CREASE)));
+
+	// TempSelState (sel, false, true, true);
 	Refine(grid, sel, &refProj);
 
 	sh.enable_strict_inheritance(siEnabled);
