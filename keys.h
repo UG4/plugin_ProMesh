@@ -36,12 +36,13 @@
 namespace ug{
 namespace promesh{
 
-enum ModifierKeys{
+enum ModifierKeys {
 	MK_NONE		= 0,
 	MK_CTRL		= 1,
 	MK_SHIFT	= 2,
 	MK_ALT		= 4
 };
+
 
 enum ShortcutKeys {
 	Key_Escape	= 0x01000000,

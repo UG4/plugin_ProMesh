@@ -296,7 +296,7 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"preserve all #"
 				"separate volumes || value=true #"
 				"append subsets at end || value=true#"
-				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_TETRAHEDRALIZE)
+				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_TETRAHEDRALIZE, "", RT_NO_PROMESH)
 			.add_function("Retetrahedralize", &Retetrahedralize, grp, "",
 				"mesh #"
 				"quality || value=5; min=0; max=18; step=1 #"
