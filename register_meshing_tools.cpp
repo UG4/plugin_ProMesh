@@ -287,8 +287,6 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 		reg.add_function("ConvertToTetrahedra",
 				static_cast<void (*)(Mesh*)>(&ConvertToTetrahedra), grp, "",
 				"mesh", TOOLTIP_CONVERT_TO_TETRAHEDRA)
-			.add_function("ClearVolumeConstraints", &ClearVolumeConstraints, grp, "",
-				"mesh", TOOLTIP_CLEAR_VOLUME_CONSTRAINTS)
 			.add_function("Tetrahedralize", &Tetrahedralize, grp, "",
 				"mesh #"
 				"quality || value=5; min=0; max=18; step=1 #"
@@ -303,9 +301,11 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"preserve outer #"
 				"preserve all #"
 				"apply volume constraint #"
-				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_RETETRAHEDRALIZE)
+				"verbosity || min=0; value=0; max=3; step=1", TOOLTIP_RETETRAHEDRALIZE, "", RT_NO_PROMESH)
 			.add_function("AssignVolumeConstraints", &AssignVolumeConstraints, grp, "",
 				"mesh # volume constraint", TOOLTIP_ASSIGN_VOLUME_CONSTRAINTS)
+			.add_function("ClearVolumeConstraints", &ClearVolumeConstraints, grp, "",
+				"mesh", TOOLTIP_CLEAR_VOLUME_CONSTRAINTS)
 		    .add_function("ExtrudeFacesWithTets", &ExtrudeFacesWithTets, grp, "",
 		    	"mesh # from subset # to subset # factor", TOOLTIP_EXTRUDE_FACES_WITH_TETS,
 		    	"", RT_NO_PROMESH);

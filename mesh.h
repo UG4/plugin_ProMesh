@@ -205,7 +205,7 @@ class Mesh
 		void volume_constraints_required()
 		{
 			if(!m_aaVolumeConstraint.valid()){
-				m_grid.attach_to_volumes(m_aVolumeConstraint, true);
+				m_grid.attach_to_volumes_dv(m_aVolumeConstraint, -1, true);
 				m_aaVolumeConstraint.access(m_grid, m_aVolumeConstraint);
 			}
 		}
