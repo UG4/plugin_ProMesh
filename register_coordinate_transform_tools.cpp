@@ -55,9 +55,7 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 				"mesh", TOOLTIP_SET_PIVOT_TO_MESH_CENTER);
 
 		grp = baseGrp + string("/Coordinate Transform/Move");
-		reg.add_function("GetSelectionCenter", &GetSelectionCenter, grp, "",
-				"mesh # centerOut", TOOLTIP_GET_SELECTION_CENTER, "", RT_NO_PROMESH)
-			.add_function("Move", &Move, grp, "",
+		reg.add_function("Move", &Move, grp, "",
 				"mesh # offset", TOOLTIP_MOVE)
 			.add_function("MoveMeshTo", &MoveMeshTo, grp, "",
 				"mesh # new position", TOOLTIP_MOVE_MESH_TO) 
@@ -124,7 +122,9 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 
 
 		grp = baseGrp + string("/Coordinate Transform");
-		reg.add_function("ProjectToPlane", &ProjectToPlane, grp, "",
+		reg.add_function("GetSelectionCenter", &GetSelectionCenter, grp, "",
+				"mesh # centerOut", TOOLTIP_GET_SELECTION_CENTER, "", RT_NO_PROMESH)
+			.add_function("ProjectToPlane", &ProjectToPlane, grp, "",
 				"mesh # plane point # plane normal || value=[0,0,1]",
 				TOOLTIP_RPOJECT_TO_PLANE)
 			.add_function("ConeTransform", &ConeTransform, grp, "",
