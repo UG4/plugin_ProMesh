@@ -281,7 +281,6 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				TOOLTIP_SELECT_SUBSET_BOUNDARY)
 			.add_function("SelectUnassignedElements", &SelectUnassignedElements, grp, "",
 				"mesh #"
-				"subset index #"
 				"vertices || value=true #"
 				"edges || value=true #"
 				"faces || value=true #"
