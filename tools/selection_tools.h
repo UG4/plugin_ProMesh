@@ -82,6 +82,7 @@
 #define	TOOLTIP_SELECT_MARKED_FACES "Selects faces which are marked."
 #define	TOOLTIP_SELECT_UNORIENTABLE_VOLUMES "Selects all volumes whose orientation can not be determined"
 #define	TOOLTIP_EXTEND_SELECTION "Selects neighbors of selected elements."
+#define	TOOLTIP_EXTEND_SELECTION_IN_DIRECTION "Selects neighbors of selected elements whose center can be reached in the given direction from the center of already selected elements."
 #define	TOOLTIP_SELECT_VERTEX_BY_INDEX "Selects a vertex given its index."
 #define	TOOLTIP_SELECT_EDGE_BY_INDEX "Selects a edge given its index."
 #define	TOOLTIP_SELECT_FACE_BY_INDEX "Selects a face given its index."
@@ -146,6 +147,13 @@ void ClearSelection(Mesh* obj);
 void SelectAll(Mesh* obj);
 
 void ExtendSelection(Mesh* obj, int neighborhoodSize);
+
+void ExtendSelectionInDirection(
+		Mesh* obj,
+		int neighborhoodSize,
+		const vector3& dir,
+		number minAngle,
+		number maxAngle);
 
 template <class TElem>
 TElem* SelectElemByCoordinate(Mesh* obj, const vector3& coord)

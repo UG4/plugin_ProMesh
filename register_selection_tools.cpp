@@ -260,7 +260,15 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				"faces || value=true #"
 				"volumes || value=true", TOOLTIP_INVERT_SELECTION)
 			.add_function("ExtendSelection", &ExtendSelection, grp, "",
-				"mesh # neighborhood size || value=1; min=0", TOOLTIP_EXTEND_SELECTION);
+				"mesh # neighborhood size || value=1; min=0", TOOLTIP_EXTEND_SELECTION)
+			.add_function("ExtendSelectionInDirection",
+			    &ExtendSelectionInDirection, grp, "",
+				"mesh #"
+				"neighborhood size || value=1; min=0 #"
+				"direction #"
+				"minAngle || value=0; min=0 #"
+				"maxAngle || value=1; min=0",
+				TOOLTIP_EXTEND_SELECTION_IN_DIRECTION);
 
 
 		grp = baseGrp + "/Subset Based";

@@ -53,9 +53,25 @@ void SelectAll(Mesh* obj)
 
 void ExtendSelection(Mesh* obj, int neighborhoodSize)
 {
-	Selector& sel = obj->selector();
-	ExtendSelection(sel, (size_t)neighborhoodSize);
+	ExtendSelection(obj->selector(), (size_t)neighborhoodSize);
 }
+
+void ExtendSelectionInDirection(
+		Mesh* obj,
+		int neighborhoodSize,
+		const vector3& dir,
+		number minAngle,
+		number maxAngle)
+{
+	ExtendSelectionInDirection(
+			obj->selector(),
+			(size_t)neighborhoodSize,
+			dir,
+			minAngle,
+			maxAngle,
+			obj->position_accessor());
+}
+
 
 void SelectSubset(
 			Mesh* obj,
