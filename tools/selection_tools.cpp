@@ -30,8 +30,13 @@
  * GNU Lesser General Public License for more details.
  */
 
+#include <vector>
 #include "selection_tools.h"
+#include "common/util/index_list_util.h"
 #include "lib_grid/algorithms/orientation_util.h"
+#include "lib_grid/algorithms/selection_util.h"
+
+using namespace std;
 
 namespace ug{
 namespace promesh{
@@ -49,6 +54,28 @@ void SelectAll(Mesh* obj)
 	sel.select(grid.edges_begin(), grid.edges_end());
 	sel.select(grid.faces_begin(), grid.faces_end());
 	sel.select(grid.volumes_begin(), grid.volumes_end());
+}
+
+void SelectElementsByIndexRange (Mesh* obj,
+                            const char* vrtRanges,
+                            const char* edgeRanges,
+                            const char* faceRanges,
+                            const char* volRanges,
+                            bool clearSelection)
+{
+	Selector& sel = obj->selector();
+	if(clearSelection)
+		sel.clear();
+
+	vector<size_t> inds;
+	RangeStringToIndexList (inds, vrtRanges);
+	ug::SelectElementsByIndex<Vertex>(sel, inds);
+	RangeStringToIndexList (inds, edgeRanges);
+	ug::SelectElementsByIndex<Edge>(sel, inds);
+	RangeStringToIndexList (inds, faceRanges);
+	ug::SelectElementsByIndex<Face>(sel, inds);
+	RangeStringToIndexList (inds, volRanges);
+	ug::SelectElementsByIndex<Volume>(sel, inds);
 }
 
 void ExtendSelection(Mesh* obj, int neighborhoodSize)

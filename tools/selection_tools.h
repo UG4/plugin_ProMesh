@@ -49,7 +49,8 @@
 //selection tools
 #define	TOOLTIP_SELECT_LINKED_MANIFOLD_FACES "Selects faces linked with the selection, not crossing non-manifold edges." //?
 #define	TOOLTIP_SELECT_NON_MANIFOLD_EDGES "Selects edges with more than 2 associated faces."
-#define	TOOLTIP_CLEAR_SELECTION "Clears the selection"
+#define	TOOLTIP_CLEAR_SELECTION "Clears the selection."
+#define TOOLTIP_SELECT_ELEMENTS_BY_INDEX_RANGE "Selects elements by the given index ranges (e.g.: \"0,1,2-5,9,11-23\")."
 #define	TOOLTIP_SELECT_SMOOTH_EDGE_PATH "Selects a smooth edge path."
 #define	TOOLTIP_SELECT_BOUNDARY_VERTICES "Selects vertices that lie on the boundary of the geometry"
 #define	TOOLTIP_SELECT_INNER_VERTICES "Selects vertices that do not lie on the boundary of the geometry"
@@ -145,6 +146,13 @@ namespace promesh{
 void ClearSelection(Mesh* obj);
 
 void SelectAll(Mesh* obj);
+
+void SelectElementsByIndexRange (Mesh* obj,
+                            const char* vrtRanges,
+                            const char* edgeRanges,
+                            const char* faceRanges,
+                            const char* volRanges,
+                            bool clearSelection);
 
 void ExtendSelection(Mesh* obj, int neighborhoodSize);
 

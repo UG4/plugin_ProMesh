@@ -54,7 +54,10 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("CloseSelection", &CloseSelection, grp, "",
 				"mesh", TOOLTIP_CLOSE_SELECTION, "", RT_DEFAULT, Key_C)
 			.add_function("SelectSelectionBoundary", &SelectSelectionBoundary, grp, "",
-				"mesh", TOOLTIP_SELECT_SELECTION_BOUNDARY);
+				"mesh", TOOLTIP_SELECT_SELECTION_BOUNDARY)
+			.add_function("SelectElementsByIndexRange", &SelectElementsByIndexRange, grp, "",
+			    "mesh#vertex inds#edge inds#face inds#volume inds#clear selection",
+			    TOOLTIP_SELECT_ELEMENTS_BY_INDEX_RANGE);
 
 		grp = baseGrp + "/Vertices";
 		reg.add_function("SelectAllVertices", &SelectAllVertices, grp, "",
