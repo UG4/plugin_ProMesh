@@ -32,6 +32,10 @@
 
 #include "grid_generation_tools.h"
 #include "lib_grid/algorithms/orientation_util.h"
+#include "lib_grid/algorithms/selection_util.h"
+#include "lib_grid/algorithms/subset_util.h"
+#include "lib_grid/algorithms/tkd/tkd_util.h"
+
 
 namespace ug{
 namespace promesh{
@@ -624,6 +628,63 @@ void CreatePrism(Mesh* obj, int subsetInd, bool fill)
 //	restore selector
 	sel.enable_autoselection(autoselEnabled);
 
+}
+
+
+void CreateTKD(Mesh* obj, int subsetInd, number a, number w, number h)
+{
+	Grid& grid = obj->grid();
+	Mesh::position_attachment_t& aPos = obj->position_attachment();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	TKDInfo tkdInfo (a, w, h, 0);
+	Volume* vols[TKDInfo::NUM_INNER_ELEMENTS];
+	CreateTKD (tkdInfo, grid, aPos, vols);
+
+	sel.clear();
+	for(size_t i = 0; i < tkdInfo.num_inner_elements(); ++i)
+		sel.select (vols[i]);
+	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
+	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+
+	AssignSelectionToSubset(sel, sh, subsetInd);
+}
+
+void CreateTKDWithOuterLayer(	Mesh* obj,
+                             	int innerSubsetInd,
+                             	int outerSubsetInd,
+                             	number a,
+                             	number w,
+                             	number h,
+                             	number d)
+{
+	Grid& grid = obj->grid();
+	Mesh::position_attachment_t& aPos = obj->position_attachment();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	TKDInfo tkdInfo (a, w, h, d);
+	Volume* vols[TKDInfo::NUM_ELEMENTS];
+	CreateTKDWithOuterLayer (tkdInfo, grid, aPos, vols);
+
+	sel.clear();
+	for(size_t i = 0; i < tkdInfo.num_inner_elements(); ++i)
+		sel.select (vols[i]);
+	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
+	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	AssignSelectionToSubset(sel, sh, innerSubsetInd);
+
+	sel.clear();
+	const size_t offset = tkdInfo.num_inner_elements();
+	for(size_t i = 0; i < tkdInfo.num_outer_elements(); ++i)
+		sel.select (vols[offset + i]);
+	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
+	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
+	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	AssignSelectionToSubset(sel, sh, outerSubsetInd);
 }
 
 }}//	end of namespace

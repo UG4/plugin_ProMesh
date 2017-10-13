@@ -56,6 +56,8 @@
 #define	TOOLTIP_CREATE_PYRAMID "Creates a pyramid."
 #define	TOOLTIP_CREATE_PRISM "Creates a prism."
 #define	TOOLTIP_CREATE_DUALGRID "creates the dual grid consisting of control volumes as used in the finite volume method" 
+#define TOOLTIP_CREATE_TKD "Creates a tetrakaidecahedral cell"
+#define TOOLTIP_CREATE_TKD_WITH_OUTER_LAYER "Creates a tetrakaidecahedral cell with a surrounding layer"
 
 namespace ug{
 namespace promesh{
@@ -113,6 +115,17 @@ void CreateTetrahedron(Mesh* obj, int subsetInd, bool fill);
 void CreatePyramid(Mesh* obj, int subsetInd, bool fill);
 
 void CreatePrism(Mesh* obj, int subsetInd, bool fill);
+
+void CreateTKD(Mesh* obj, int subsetInd, number a, number w, number h);
+
+void CreateTKDWithOuterLayer(	Mesh* obj,
+                             	int innerSubsetInd,
+                             	int outerSubsetInd,
+                             	number a,
+                             	number w,
+                             	number h,
+                             	number d);
+
 /// \}
 }}// end of namespace
 
