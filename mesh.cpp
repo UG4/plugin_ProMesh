@@ -35,7 +35,8 @@
 namespace ug{
 namespace promesh{
 
-Mesh::Mesh() : m_creaseHandler(SHE_VERTEX | SHE_EDGE | SHE_FACE)
+Mesh::Mesh() :
+	m_creaseHandler(SHE_VERTEX | SHE_EDGE | SHE_FACE)
 {
 	init();
 }
@@ -126,7 +127,6 @@ create_octahedron(Vertex* v0, Vertex* v1, Vertex* v2,
 {
 	return *grid().create<Octahedron>(OctahedronDescriptor(v0, v1, v2, v3, v4, v5));
 }
-
 
 }//	end of namespace	
 }//	end of namespace

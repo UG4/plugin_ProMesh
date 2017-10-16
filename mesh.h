@@ -224,7 +224,6 @@ class Mesh
 		volume_constraint_attachment_t		m_aVolumeConstraint;
 		volume_constraint_accessor_t		m_aaVolumeConstraint;
 		SmartPtr<Geometry<3, 3> >			m_geometry;
-
 };
 
 /// \}
