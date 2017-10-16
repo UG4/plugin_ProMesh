@@ -55,6 +55,7 @@
 #define	TOOLTIP_NORMAL_MOVE "Moves selected vertices along their normal."
 #define	TOOLTIP_MOVE_VERTICES_ALONG_EDGES "Moves selected vertices along selected edges by an offset relative to those selected edges. If a selected vertex is connected to multiple selected edges, the new position will be averaged between the individual offsets."
 #define	TOOLTIP_MOVE_VERTICES_TO_EDGE_LENGTH "Moves selected vertices along selected edges so that those edges obtain the specified length. If a selected vertex is connected to multiple selected edges, the new position will be averaged between the individual new positions."
+#define	TOOLTIP_MOVE_VERTICES_TO_PROJECTED_EDGE_LENGTH "Moves selected vertices along selected edges so that the projection of those edges into the plain with the specified normal obtain the specified length. If a selected vertex is connected to multiple selected edges, the new position will be averaged between the individual new positions."
 #define	TOOLTIP_SCALE "Scales the coordinates of the selected vertices around their center."
 #define	TOOLTIP_ROTATE "Rotates the geometry by the given degrees around its center."
 #define TOOLTIP_MIRROR "Mirrors the geometry at the given point along the given axis"
@@ -94,6 +95,10 @@ void MoveAlongNormal(Mesh* obj, number offset);
 void MoveVerticesAlongEdges(Mesh* obj, number relVal);
 
 void MoveVerticesToEdgeLength(Mesh* obj, number edgeLen);
+
+void MoveVerticesToProjectedEdgeLength (Mesh* obj,
+                                        number projEdgeLen,
+                                        const vector3& projNormal);
 
 void ScaleAroundCenter(Mesh* obj, const vector3& scale);
 

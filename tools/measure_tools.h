@@ -36,6 +36,20 @@
 #include "../mesh.h"
 #include "lib_grid/algorithms/volume_calculation.h"
 
+#define TOOLTIP_MEASURE_GRID_LENGTH "Measures the length of all edges of a grid"
+#define TOOLTIP_MEASURE_GRID_AREA "Measures the area of all faces of a grid"
+#define TOOLTIP_MEASURE_GRID_VOLUME "Measures the volume of all volume elements of a grid"
+
+#define TOOLTIP_MEASURE_SUBSET_LENGTH "Measures the length of all edges of the given subset"
+#define TOOLTIP_MEASURE_SUBSET_AREA "Measures the area of all faces of the given subset"
+#define TOOLTIP_MEASURE_SUBSET_VOLUME "Measures the volume of all volume elements of the given subset"
+
+#define TOOLTIP_MEASURE_SELECTION_LENGTH "Measures the length of all edges of the current selection"
+#define TOOLTIP_MEASURE_SELECTION_AREA "Measures the area of all faces of the current selection"
+#define TOOLTIP_MEASURE_SELECTION_VOLUME "Measures the volume of all volume elements of the current selection"
+
+#define TOOLTIP_PROJECTED_DISTANCE "Measures the distance of the projection of two selected vertices into the plane with the specified normal."
+
 namespace ug{
 namespace promesh{
 
@@ -107,6 +121,9 @@ inline number MeasureSelectionVolume(Mesh* obj)
 						   obj->selector().end<Volume>(),
 						   obj->position_accessor());
 }
+
+number ProjectedDistance(Mesh* obj, const vector3& projectionNormal);
+
 /// \}
 }//	end of namespace promesh
 }//	end of namespace ug

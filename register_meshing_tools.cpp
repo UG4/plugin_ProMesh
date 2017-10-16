@@ -116,20 +116,20 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("CreateTKD", &CreateTKD, grp, "",
 			              "mesh #"
 			              "subset || value=0 #"
-			              "a || value=3#"
-			              "w || value=10#"
-			              "h || value=5",
+			              "a || value=0.3D#"
+			              "w || value=1#"
+			              "h || value=0.5D",
 			              TOOLTIP_CREATE_TKD)
 
 			.add_function("CreateTKDWithOuterLayer", &CreateTKDWithOuterLayer, grp, "",
 			              "mesh #"
 			              "inner subset || value=0#"
 			              "outer subset || value=1#"
-			              "a || value=3#"
-			              "w || value=10#"
-			              "h || value=5#"
-			              "d || value=1",
-			              TOOLTIP_CREATE_TKD);
+			              "a || value=0.3D#"
+			              "w || value=1#"
+			              "h || value=0.5D#"
+			              "d || value=0.1D",
+			              TOOLTIP_CREATE_TKD_WITH_OUTER_LAYER);
 
 
 	//	layer meshing

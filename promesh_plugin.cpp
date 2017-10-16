@@ -69,6 +69,10 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 			"mesh # filenamePrefix # lgmName # problemName", TOOLTIP_EXPORT_TO_UG3, "", RT_NO_PROMESH);
 
 //	info tools
+	grp = baseGrp + string("/Info");
+	reg.add_function("ProjectedDistance", &ProjectedDistance, grp, "distance",
+			"mesh # projection normal || value=[0,0,1]", TOOLTIP_PROJECTED_DISTANCE);
+
 	grp = baseGrp + string("/Info/Measure length, area, volume");
 	reg.add_function("MeasureGridLength", &MeasureGridLength, grp, "length",
 			"mesh", TOOLTIP_MEASURE_GRID_LENGTH)

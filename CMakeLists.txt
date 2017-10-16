@@ -46,6 +46,7 @@ set(SOURCES		mesh.cpp
 				tools/coordinate_transform_tools.cpp
 				tools/file_io_tools.cpp
 				tools/grid_generation_tools.cpp
+				tools/measure_tools.cpp
 				tools/refinement_tools.cpp
 				tools/remeshing_tools.cpp
 				tools/selection_tools.cpp

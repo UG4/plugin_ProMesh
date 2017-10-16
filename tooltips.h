@@ -60,19 +60,6 @@
 #define	TOOLTIP_EXPAND_LAYERS_3D "Expands a 2d layer to a 3d layer by introducing prisms."
 #define	TOOLTIP_FRAC_TO_LAYER "Enhances a 2d fracture to a 3d fracture."
 
-//info tools
-#define TOOLTIP_MEASURE_GRID_LENGTH "Measures the length of all edges of a grid"
-#define TOOLTIP_MEASURE_GRID_AREA "Measures the area of all faces of a grid"
-#define TOOLTIP_MEASURE_GRID_VOLUME "Measures the volume of all volume elements of a grid"
-
-#define TOOLTIP_MEASURE_SUBSET_LENGTH "Measures the length of all edges of the given subset"
-#define TOOLTIP_MEASURE_SUBSET_AREA "Measures the area of all faces of the given subset"
-#define TOOLTIP_MEASURE_SUBSET_VOLUME "Measures the volume of all volume elements of the given subset"
-
-#define TOOLTIP_MEASURE_SELECTION_LENGTH "Measures the length of all edges of the current selection"
-#define TOOLTIP_MEASURE_SELECTION_AREA "Measures the area of all faces of the current selection"
-#define TOOLTIP_MEASURE_SELECTION_VOLUME "Measures the volume of all volume elements of the current selection"
-
 //new tools
 #define TOOLTIP_GET_BOUNDING_BOX "Returns the bounding box of the specified mesh."
 

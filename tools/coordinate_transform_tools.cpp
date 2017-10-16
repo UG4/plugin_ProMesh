@@ -183,6 +183,61 @@ void MoveVerticesToEdgeLength(Mesh* obj, number edgeLen)
 }
 
 
+void MoveVerticesToProjectedEdgeLength (Mesh* obj,
+                                        number projEdgeLen,
+                                        const vector3& projNormal)
+{
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Grid::edge_traits::secure_container edges;
+
+	vector3 n;
+	VecNormalize (n, projNormal);
+
+//	calculate offsets (do not apply, so that we correctly support cases in which
+//	both corners of an edge are selected)
+	vector<vector3>	offsets;
+	offsets.reserve(sel.num<Vertex>());
+	lg_for_each(Vertex, vrt, sel){
+		vector3 offset(0, 0, 0);
+		number numSelEdges = 0;
+		grid.associated_elements(edges, vrt);
+		for_each_in_vec(Edge* e, edges){
+			if(!sel.is_selected(e))
+				continue;
+			vector3 dir;
+			if(e->vertex(0) == vrt)
+				VecSubtract(dir, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
+			else
+				VecSubtract(dir, aaPos[e->vertex(0)], aaPos[e->vertex(1)]);
+
+			const number dn = VecDot(dir, n);
+			vector3 tn;
+			VecScale(tn, n, dn);
+			vector3 pdir;
+			VecSubtract(pdir, dir, tn);
+
+			const number plen = VecLength(pdir);
+			if(plen != 0){
+				VecScaleAppend(offset, (plen - projEdgeLen) / plen, dir);
+				++numSelEdges;
+			}
+		}end_for;
+
+		if(numSelEdges > 0)
+			offset *= 1. / numSelEdges;
+		offsets.push_back(offset);
+	}lg_end_for;
+
+//	apply offsets
+	size_t index = 0;
+	lg_for_each(Vertex, vrt, sel){
+		VecAppend(aaPos[vrt], offsets[index++]);
+	}lg_end_for;
+}
+
+
 void ScaleAroundCenter(Mesh* obj, const vector3& scale)
 {
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();

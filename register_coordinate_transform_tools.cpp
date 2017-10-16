@@ -70,7 +70,13 @@ void RegisterCoordinateTransformTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("MoveVerticesToEdgeLength",
 				&MoveVerticesToEdgeLength,
 				grp, "", "mesh # edge length | default | value=1.D",
-				TOOLTIP_MOVE_VERTICES_TO_EDGE_LENGTH);
+				TOOLTIP_MOVE_VERTICES_TO_EDGE_LENGTH)
+			.add_function("MoveVerticesToProjectedEdgeLength",
+				&MoveVerticesToProjectedEdgeLength, grp, "",
+				"mesh #"
+				"projcted edge length | default | value=1.D#"
+				"projection normal | default | value=[0, 0, 1]",
+				TOOLTIP_MOVE_VERTICES_TO_PROJECTED_EDGE_LENGTH);
 			
 
 		grp = baseGrp + string("/Coordinate Transform/Scale");
