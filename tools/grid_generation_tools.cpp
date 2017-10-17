@@ -98,8 +98,10 @@ void CopySelection(Mesh* srcMesh, Mesh* destMesh){
 	srcGrid.attach_to_vertices(aNewVrt);
 	Grid::VertexAttachmentAccessor<AVertex> aaNewVrt(srcGrid, aNewVrt);
 
-	for(int si = destSH.num_subsets(); si < srcSH.num_subsets(); ++si)
-		destSH.subset_info(si) = srcSH.subset_info(si);
+	for(int si = destSH.num_subsets(); si < srcSH.num_subsets(); ++si){
+		destSH.subset_info(si).name = srcSH.subset_info(si).name;
+		destSH.subset_info(si).color = srcSH.subset_info(si).color;
+	}
 
 	SelectAssociatedGridObjects(srcSel);
 //	create new vertices in destGrid

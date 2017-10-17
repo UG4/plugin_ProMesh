@@ -111,9 +111,10 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("CreatePyramid", &CreatePyramid, grp, "",
 				"mesh # subset # fill", TOOLTIP_CREATE_PYRAMID)
 			.add_function("CreatePrism", &CreatePrism, grp, "",
-				"mesh # subset # fill", TOOLTIP_CREATE_PRISM)
+				"mesh # subset # fill", TOOLTIP_CREATE_PRISM);
 
-			.add_function("CreateTKD", &CreateTKD, grp, "",
+		grp = baseGrp + "/Grid Generation/Geometries/3D/Create TKD";
+		reg.add_function("CreateTKD", &CreateTKD, grp, "",
 			              "mesh #"
 			              "subset || value=0 #"
 			              "a || value=0.3D#"
