@@ -252,10 +252,7 @@ void SelectSelectionBoundary(Mesh* obj)
 
 void CloseSelection(Mesh* obj)
 {
-	Selector& sel = obj->selector();
-	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
-	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
-	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	CloseSelection (obj->selector());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

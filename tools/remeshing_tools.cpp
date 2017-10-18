@@ -237,6 +237,11 @@ void TriangleFill(Mesh* obj, bool qualityGeneration, number minAngle, int si)
 					 aaPos, minAngle, IsSelected(sel));
 	}
 
+	sel.clear ();
+	sel.select (faceSel.begin(), faceSel.end());
+	CloseSelection (sel);
+	CopySubsetIndicesToSides (sh, sel, true);
+
 	sel.enable_autoselection(autoselEnabled);
 }
 
@@ -250,6 +255,9 @@ void Retriangulate(Mesh* obj, number minAngle)
 
 	QualityGridGeneration(g, sel.begin<Triangle>(), sel.end<Triangle>(),
 						  aaPos, minAngle, IsNotInSubset(creases, -1));
+
+	CloseSelection (sel);
+	CopySubsetIndicesToSides (obj->subset_handler(), sel, true);
 }
 
 void AdjustEdgeLength(
@@ -274,6 +282,8 @@ void AdjustEdgeLength(
 
 	AdjustEdgeLength(grid, shCrease, minEdgeLen, maxEdgeLen,
 						 numIterations, true, adaptive);
+
+	CopySubsetIndicesToSides (obj->subset_handler(), true);
 }
 
 void AdjustEdgeLengthExtended(
@@ -303,6 +313,8 @@ void AdjustEdgeLengthExtended(
 	desc.approximation = approximation;
 	desc.triQuality = triQuality;
 	AdjustEdgeLength(grid, shCrease, desc, numIterations);
+
+	CopySubsetIndicesToSides (obj->subset_handler(), true);
 }
 
 void AdaptSurfaceToCylinder(Mesh* obj, number radius, number threshold)
@@ -333,9 +345,11 @@ void AdaptSurfaceToCylinder(Mesh* obj, number radius, number threshold)
 
 void ConvertToTetrahedra(Mesh* obj)
 {
+	Selector& sel = obj->selector();
 	ConvertToTetrahedra(obj->grid(),
-						obj->selector().begin<Volume>(),
-						obj->selector().end<Volume>());
+						sel.begin<Volume>(),
+						sel.end<Volume>());
+
 }
 
 void Tetrahedralize(
@@ -369,7 +383,9 @@ UG_LOG("<dbg> running ug::Tetrahedralize\n");
 
 //	assign a subset name
 	for(int i = oldNumSubsets; i < sh.num_subsets(); ++i)
-		sh.subset_info(i).name = "tetrahedrons";
+		sh.subset_info(i).name = "tetrahedra";
+
+	CopySubsetIndicesToSides (sh, true);
 }
 
 void AssignVolumeConstraints(Mesh* obj, number volConstraint)
@@ -406,6 +422,9 @@ void Retetrahedralize(
 					obj->position_attachment(),
 					applyVolumeConstraint,
 					verbosity);
+	
+	CopySubsetIndicesToSides (obj->subset_handler(), true);
+
 	UG_LOG("done.\n");
 }
 

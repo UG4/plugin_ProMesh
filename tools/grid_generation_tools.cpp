@@ -647,9 +647,8 @@ void CreateTKD(Mesh* obj, int subsetInd, number a, number w, number h)
 	sel.clear();
 	for(size_t i = 0; i < tkdInfo.num_inner_elements(); ++i)
 		sel.select (vols[i]);
-	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
-	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
-	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	
+	CloseSelection (sel);
 
 	AssignSelectionToSubset(sel, sh, subsetInd);
 }
@@ -674,18 +673,16 @@ void CreateTKDWithOuterLayer(	Mesh* obj,
 	sel.clear();
 	for(size_t i = 0; i < tkdInfo.num_inner_elements(); ++i)
 		sel.select (vols[i]);
-	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
-	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
-	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	
+	CloseSelection (sel);
 	AssignSelectionToSubset(sel, sh, innerSubsetInd);
 
 	sel.clear();
 	const size_t offset = tkdInfo.num_inner_elements();
 	for(size_t i = 0; i < tkdInfo.num_outer_elements(); ++i)
 		sel.select (vols[offset + i]);
-	SelectAssociatedFaces(sel, sel.begin<Volume>(), sel.end<Volume>());
-	SelectAssociatedEdges(sel, sel.begin<Face>(), sel.end<Face>());
-	SelectAssociatedVertices(sel, sel.begin<Edge>(), sel.end<Edge>());
+	
+	CloseSelection (sel);
 	AssignSelectionToSubset(sel, sh, outerSubsetInd);
 }
 
