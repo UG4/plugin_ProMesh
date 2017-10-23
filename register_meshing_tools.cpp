@@ -365,6 +365,13 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 				"create faces || value=true #"
 				"create volumes || value=true",
 				TOOLTIP_EXTRUDE_ALONG_NORMAL)
+			.add_function("ExtrudeToThickness", &ExtrudeToThickness, grp, "",
+				"mesh #"
+				"thickness || value=1D #"
+				"num steps || min=1;value=1 #"
+				"create faces || value=true #"
+				"create volumes || value=true",
+				TOOLTIP_EXTRUDE_TO_TICKNESS)
 			.add_function("ExtrudeCylinders", &ExtrudeCylinders, grp, "",
 				"mesh #"
 				"height || value=1D #"

@@ -32,6 +32,7 @@
 
 #include "remeshing_tools.h"
 #include "lib_grid/algorithms/subset_util.h"
+#include "../EigenForUG4/Eigen/Dense"
 
 namespace ug{
 namespace promesh{
@@ -652,6 +653,136 @@ void ExtrudeAlongNormal(
 
 		n *= totalLength / (number)numSteps;
 		stepOffsets.push_back(n);
+	}
+
+//	we use sel to collect the newly created volumes
+	bool strictInheritanceEnabled = sh.strict_inheritance_enabled();
+	sh.enable_strict_inheritance(false);
+//	mark all elements that were already in the selector.
+	for(int i = 0; i < numSteps; ++i)
+	{
+		Extrude(grid, &vrts, &edges, &faces, vector3(0, 0, 0),
+					extrusionOptions, obj->position_attachment());
+
+		for(size_t ivrt = 0; ivrt < vrts.size(); ++ivrt){
+			VecScaleAdd(aaPos[vrts[ivrt]], 1, from[ivrt], i+1, stepOffsets[ivrt]);
+		}
+	}
+
+	sh.enable_strict_inheritance(strictInheritanceEnabled);
+
+//	select faces, edges and vertices from the new top-layer.
+	sel.clear<Vertex>();
+	sel.clear<Edge>();
+	sel.clear<Face>();
+	sel.clear<Volume>();
+	sel.select(vrts.begin(), vrts.end());
+	sel.select(edges.begin(), edges.end());
+	sel.select(faces.begin(), faces.end());
+}
+
+
+void ExtrudeToThickness(Mesh* obj,
+                        number thickness,
+                        int numSteps,
+						bool createFaces,
+						bool createVolumes)
+{
+	typedef Eigen::Matrix<number, 3, 1>	EVector2;
+	typedef Eigen::Matrix<number, 3, 1>	EVector3;
+	typedef Eigen::Matrix<number, Eigen::Dynamic, 1>				EVectorX;
+	typedef Eigen::Matrix<number, Eigen::Dynamic, Eigen::Dynamic> 	EMatrixXY;
+
+	using namespace std;
+	if(numSteps < 1)
+		return;
+
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	SubsetHandler& sh = obj->subset_handler();
+
+	SelectAssociatedGridObjects(sel);
+
+	vector<Vertex*> vrts;
+	vrts.assign(sel.vertices_begin(), sel.vertices_end());
+	vector<Edge*> edges;
+	edges.assign(sel.edges_begin(), sel.edges_end());
+	vector<Face*> faces;
+	faces.assign(sel.faces_begin(), sel.faces_end());
+
+	uint extrusionOptions = 0;
+	if(createFaces)
+		extrusionOptions |= EO_CREATE_FACES;
+	if(createVolumes)
+		extrusionOptions |= EO_CREATE_VOLUMES;
+
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	vector<vector3>	from;
+	vector<vector3>	stepOffsets;
+	vector<Face*> selFaces;
+
+	from.reserve(vrts.size());
+	stepOffsets.reserve(vrts.size());
+
+	Grid::volume_traits::secure_container	assVols;
+	Grid::face_traits::secure_container	assFaces;
+	Grid::edge_traits::secure_container	assEdges;
+
+	EMatrixXY A;
+	EVectorX rhs, np;
+
+	for(size_t ivrt = 0; ivrt < vrts.size(); ++ivrt){
+		Vertex* vrt = vrts[ivrt];
+		const vector3& p = aaPos[vrt];
+		const EVector3 ep (p[0], p[1], p[2]);
+
+		from.push_back(p);
+
+		grid.associated_elements(assFaces, vrt);
+		selFaces.clear();
+		for(size_t iface = 0; iface < assFaces.size(); ++iface){
+			if(sel.is_selected(assFaces[iface]))
+				selFaces.push_back(assFaces[iface]);
+		}
+
+		if(selFaces.size() > 0){
+			A.resize (selFaces.size(), 3);
+			rhs.resize (selFaces.size());
+
+			for(size_t iface = 0; iface < selFaces.size(); ++iface){
+				Face* f = selFaces[iface];
+				vector3 fn;
+				CalculateNormal(fn, f, aaPos);
+
+			//	make sure that the normal does not point inside an existing volume
+				grid.associated_elements(assVols, f);
+				if(assVols.size() == 1){
+					vector3 tmp = CalculateCenter (assVols[0], aaPos);
+					tmp -= CalculateCenter (f, aaPos);
+					if(VecDot(fn, tmp) > 0)
+						fn *= -1.f;
+				}
+
+				EVector3 en (fn[0], fn[1], fn[2]);
+
+				A.row(iface) = en;
+				rhs[iface] = thickness;
+			}
+
+		//	solve with singular value decomposition. Result is solution in least-squares sense.
+			Eigen::JacobiSVD<EMatrixXY> svd (A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+		//	adjustment of this threshold is important!
+			svd.setThreshold (0.00000001);
+			np = svd.solve (rhs);
+
+			np /= (number)numSteps;
+			stepOffsets.push_back (vector3(np[0], np[1], np[2]));
+		}
+
+		else{
+			UG_THROW("ExtrudeToThickness currently only implemented for 3d where all vertices are connected to at least 1 face. Sorry.");
+		}
 	}
 
 //	we use sel to collect the newly created volumes
