@@ -641,6 +641,7 @@ void ExtrudeAlongNormal(
 				tmpN.x() = tmpN.y();
 				tmpN.y() = -t;
 				tmpN.z() = 0;
+				VecNormalize(tmpN, tmpN);
 				n += tmpN;
 				if(sel.is_selected(e))
 					nSel += tmpN;
@@ -688,7 +689,7 @@ void ExtrudeToThickness(Mesh* obj,
 						bool createFaces,
 						bool createVolumes)
 {
-	typedef Eigen::Matrix<number, 3, 1>	EVector2;
+	typedef Eigen::Matrix<number, 2, 1>	EVector2;
 	typedef Eigen::Matrix<number, 3, 1>	EVector3;
 	typedef Eigen::Matrix<number, Eigen::Dynamic, 1>				EVectorX;
 	typedef Eigen::Matrix<number, Eigen::Dynamic, Eigen::Dynamic> 	EMatrixXY;
@@ -720,6 +721,7 @@ void ExtrudeToThickness(Mesh* obj,
 
 	vector<vector3>	from;
 	vector<vector3>	stepOffsets;
+	vector<Edge*> selEdges;
 	vector<Face*> selFaces;
 
 	from.reserve(vrts.size());
@@ -731,6 +733,10 @@ void ExtrudeToThickness(Mesh* obj,
 
 	EMatrixXY A;
 	EVectorX rhs, np;
+
+	bool extrude2d = false;
+	bool extrude3d = false;
+
 
 	for(size_t ivrt = 0; ivrt < vrts.size(); ++ivrt){
 		Vertex* vrt = vrts[ivrt];
@@ -747,6 +753,8 @@ void ExtrudeToThickness(Mesh* obj,
 		}
 
 		if(selFaces.size() > 0){
+		//	do a 3d extrusion from selected faces
+			extrude3d = true;
 			A.resize (selFaces.size(), 3);
 			rhs.resize (selFaces.size());
 
@@ -780,8 +788,59 @@ void ExtrudeToThickness(Mesh* obj,
 			stepOffsets.push_back (vector3(np[0], np[1], np[2]));
 		}
 
-		else{
-			UG_THROW("ExtrudeToThickness currently only implemented for 3d where all vertices are connected to at least 1 face. Sorry.");
+		else {
+		//	if there are no associated faces for this vertex, we try to perform
+		//	a 2d extrusion of associated edges
+			grid.associated_elements(assEdges, vrt);
+			selEdges.clear();
+			for(size_t iedge = 0; iedge < assEdges.size(); ++iedge){
+				if(sel.is_selected(assEdges[iedge]))
+					selEdges.push_back(assEdges[iedge]);
+			}
+
+			if(selEdges.size() > 0){
+			//	do a 2d extrusion from selected edges
+				extrude2d = true;
+				A.resize (selEdges.size(), 2);
+				rhs.resize (selEdges.size());
+
+				for(size_t iedge = 0; iedge < selEdges.size(); ++iedge){
+					Edge* e = selEdges[iedge];
+					vector3 n;
+					VecSubtract(n, aaPos[e->vertex(1)], aaPos[e->vertex(0)]);
+					number t = n.x();
+					n.x() = n.y();
+					n.y() = -t;
+					n.z() = 0;
+					VecNormalize(n, n);
+
+				//	make sure that the normal does not point inside an existing face
+					grid.associated_elements(assFaces, e);
+					if(assFaces.size() == 1){
+						vector3 tmp = CalculateCenter (assFaces[0], aaPos);
+						tmp -= CalculateCenter (e, aaPos);
+						if(VecDot(n, tmp) > 0)
+							n *= -1.f;
+					}
+
+					EVector2 en (n[0], n[1]);
+
+					A.row(iedge) = en;
+					rhs[iedge] = thickness;
+				}
+
+			//	solve with singular value decomposition. Result is solution in least-squares sense.
+				Eigen::JacobiSVD<EMatrixXY> svd (A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+			//	adjustment of this threshold is important!
+				svd.setThreshold (0.00000001);
+				np = svd.solve (rhs);
+
+				np /= (number)numSteps;
+				stepOffsets.push_back (vector3(np[0], np[1], 0));
+			}
+			else {
+				stepOffsets.push_back (vector3(0, 0, 0));
+			}
 		}
 	}
 
@@ -808,7 +867,8 @@ void ExtrudeToThickness(Mesh* obj,
 	sel.clear<Volume>();
 	sel.select(vrts.begin(), vrts.end());
 	sel.select(edges.begin(), edges.end());
-	sel.select(faces.begin(), faces.end());
+	if(extrude3d)
+		sel.select(faces.begin(), faces.end());
 }
 
 
