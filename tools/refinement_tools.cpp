@@ -97,6 +97,71 @@ void RefineWithSnapPoints(Mesh* obj)
 	Refine(obj, false, true);
 }
 
+void RefineWithSnapPointsOrtho(Mesh* obj)
+{
+	Grid& g = obj->grid();
+	Selector& sel = obj->selector();
+	Mesh::position_accessor_t aaPos = obj->position_accessor();
+
+	vector<vector3>	projections;
+	Grid::face_traits::secure_container	assFaces;
+
+	for(EdgeIterator iedge = sel.begin<Edge>(); iedge != sel.end<Edge>(); ++iedge)
+	{
+		Edge* e = *iedge;
+		const vector3& c0 = aaPos[e->vertex(0)];
+		const vector3& c1 = aaPos[e->vertex(1)];
+		vector3 dir;
+		VecSubtract (dir, c1, c0);
+
+		vector3 projSum (0, 0, 0);
+		size_t numProjs = 0;
+
+		g.associated_elements(assFaces, e);
+		for(size_t iface = 0; iface < assFaces.size(); ++iface){
+			Face* f = assFaces[iface];
+			Vertex* selVrt = NULL;
+			for(size_t ivrt = 0; ivrt < f->num_vertices(); ++ivrt){
+				if(sel.is_selected(f->vertex(ivrt))){
+					selVrt = f->vertex(ivrt);
+					break;
+				}
+			}
+
+			if(!selVrt)
+				continue;
+
+			vector3 p;
+			ProjectPointToRay (p, aaPos[selVrt], c0, dir);
+			projSum += p;
+			++numProjs;
+		}
+
+		if(numProjs == 0){
+			projections.push_back (CalculateCenter (e, aaPos));
+		}
+		else{
+			projSum *= (1. / (number)numProjs);
+			projections.push_back (projSum);
+		}
+	}
+
+//	record new vertices in a selector
+	VertexSelector selNewVrts(g);
+	selNewVrts.enable_autoselection(true);
+
+	Refine(obj, false, true);
+
+//	new edge-vertices have been created in the order of selected edges
+	UG_COND_THROW(selNewVrts.num<Vertex>() < projections.size(),
+	              "ERROR in RefineWithSnapPointsOrtho: Not enough new vertices created!");
+
+	VertexIterator ivrt = selNewVrts.begin<Vertex>();
+	for(size_t i = 0; i < projections.size(); ++i, ++ivrt){
+		aaPos[*ivrt] = projections[i];
+	}
+}
+
 
 void HangingNodeRefine(Mesh* obj, bool strictSubsetInheritance, bool anisotropic)
 {

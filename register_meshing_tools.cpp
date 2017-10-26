@@ -187,6 +187,9 @@ void RegisterMeshingTools(ProMeshRegistry& reg, string baseGrp)
 			
 			.add_function("RefineWithSnapPoints", &RefineWithSnapPoints, grp, "",
 				"mesh", TOOLTIP_REFINE_WITH_SNAP_POINTS)
+
+			.add_function("RefineWithSnapPointsOrtho", &RefineWithSnapPointsOrtho, grp, "",
+				"mesh", TOOLTIP_REFINE_WITH_SNAP_POINTS_ORTHO)
 			
 			.add_function("RefineSmooth",
 				static_cast<void (*)(Mesh*)>(&RefineSmooth),

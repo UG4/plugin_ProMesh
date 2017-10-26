@@ -43,6 +43,7 @@
 
 #define	TOOLTIP_REFINE "Refines selected elements and builds a regular closure."
 #define TOOLTIP_REFINE_WITH_SNAP_POINTS "Refines selected elements so that new edges are built between midpoints of selected edges and selected vertices, if possible."
+#define TOOLTIP_REFINE_WITH_SNAP_POINTS_ORTHO "Refines selected elements so that new edges are built between midpoints of selected edges and selected vertices, if possible. New vertices are placed so that their connecting edge to the snap point is orthogonal to their parent edge."
 #define	TOOLTIP_HANGING_NODE_REFINE "Refines selected elements using hanging nodes"
 #define	TOOLTIP_REFINE_SMOOTH "Refines selected elements using piecewise smooth refinement."
 #define	TOOLTIP_REFINE_SMOOTH_BOUNDARY_2D "Refines selected elements using smooth subdivision rules on the boundary edges."
@@ -59,6 +60,7 @@ namespace promesh{
 
 void Refine(Mesh* obj);
 void RefineWithSnapPoints(Mesh* obj);
+void RefineWithSnapPointsOrtho(Mesh* obj);
 void Refine(Mesh* obj, bool strictSubsetInheritance, bool useSnapPoints);
 
 void HangingNodeRefine(Mesh* obj, bool anisotropic);
