@@ -112,7 +112,10 @@ void RegisterSubsetTools(ProMeshRegistry& reg, std::string baseGrp)
 			"mesh", TOOLTIP_ERASE_EMPTY_SUBSETS)
 		.add_function("AssignSubsetColors", &AssignSubsetColors, grp, "", "mesh", TOOLTIP_ASSIGN_SUBSET_COLORS)
 		.add_function("AssignSubsetsByElementType", &AssignSubsetsByElementType, grp, "",
-			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE);
+			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE)
+		.add_function("AssignSubsetsByAspectRatio", &AssignSubsetsByAspectRatio, grp, "",
+		    "mesh # histogram sections || min=1; value=10 # erase old subsets || value=true",
+		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO);
 }
 
 }}//	end of namespace

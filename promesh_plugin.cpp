@@ -39,6 +39,7 @@
 #include "tools/file_io_tools.h"
 #include "tools/new_tools.h"
 #include "tools/measure_tools.h"
+#include "tools/quality_tools.h"
 #include "bridge/util.h"
 
 using namespace std;
@@ -72,6 +73,12 @@ static void RegisterMisc(ProMeshRegistry& reg, string baseGrp)
 	grp = baseGrp + string("/Info");
 	reg.add_function("ProjectedDistance", &ProjectedDistance, grp, "distance",
 			"mesh # projection normal || value=[0,0,1]", TOOLTIP_PROJECTED_DISTANCE);
+
+	grp = baseGrp + string("/Info/Qualities");
+	reg.add_function("PrintFaceAspectRatios", &PrintFaceAspectRatios, grp, "",
+			"mesh", TOOLTIP_PRINT_FACE_ASPECT_RATIOS)
+		.add_function("PrintFaceAspectRatioHistogram", &PrintFaceAspectRatioHistogram, grp, "",
+			"mesh # histogram sections || min=1; value=10", TOOLTIP_PRINT_FACE_ASPECT_RATIO_HISTOGRAM);
 
 	grp = baseGrp + string("/Info/Measure length, area, volume");
 	reg.add_function("MeasureGridLength", &MeasureGridLength, grp, "length",

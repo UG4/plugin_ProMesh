@@ -30,7 +30,9 @@
  * GNU Lesser General Public License for more details.
  */
 
+#include "common/util/table.h"
 #include "subset_tools.h"
+#include "lib_grid/algorithms/quality_util.h"
 
 namespace ug{
 namespace promesh{
@@ -428,5 +430,71 @@ void CopySubsetIndicesToSides(
 		CopySubsetIndicesToSides(sh, toUnassignedOnly);
 	}
 }
+
+
+void AssignSubsetsByAspectRatio (
+			Mesh* msh,
+			int numHistoSecs,
+			bool eraseOldSubsets)
+{
+	if(numHistoSecs < 1){
+		UG_LOG("Can't create histogram with " << numHistoSecs << " sections.\n");
+	}
+
+	Grid& g = msh->grid();
+	Selector& sel = msh->selector();
+	SubsetHandler& sh = msh->subset_handler();
+
+	AInt aHistoSecs;
+	g.attach_to_faces(aHistoSecs);
+	Grid::FaceAttachmentAccessor<AInt> aaHistoSec (g, aHistoSecs);
+
+	std::vector<int> histo;
+
+	FaceIterator facesBegin = sel.faces_begin();
+	FaceIterator facesEnd = sel.faces_end();
+	size_t numFaces = sel.num<Face>();
+	if(numFaces == 0){
+		facesBegin = g.faces_begin();
+		facesEnd = g.faces_end();
+		numFaces = g.num<Face>();
+	}
+
+	GetFaceAspectRatioHistogram (histo, facesBegin, facesEnd,
+                             	 numHistoSecs, msh->position_accessor(),
+                             	 &aaHistoSec);
+
+	int firstSubset = sh.num_subsets();
+	if(eraseOldSubsets){
+		sh.clear();
+		firstSubset = 0;
+	}
+
+	const number stepSize = 1. / (number) numHistoSecs;
+	StringStreamTable t;
+
+	for(int i = 0; i < numHistoSecs; ++i){
+		sh.subset_info(firstSubset + i).name =
+				mkstr((number)i * stepSize << " - " << (number)(i+1) * stepSize);
+
+		t(0, i) << (number)i * stepSize << " - " << (number)(i+1) * stepSize;
+		t(1, i) << histo[i];
+	}
+
+	for(FaceIterator iface = facesBegin; iface != facesEnd; ++iface)
+		sh.assign_subset(*iface, aaHistoSec[*iface]);
+
+	g.detach_from_faces(aHistoSecs);
+
+	UG_LOG("Face Aspect Ratio Histogram (" << numFaces << " faces):\n\n");
+	UG_LOG(t.to_string() << std::endl);
+}
+
+// void AssignSubsetFromRaster(
+// 			Mesh* obj,
+// 			const char* rasterFileName)
+// {
+	
+// }
 
 }}//	end of namespace
