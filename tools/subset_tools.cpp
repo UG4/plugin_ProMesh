@@ -33,6 +33,7 @@
 #include "common/util/table.h"
 #include "subset_tools.h"
 #include "lib_grid/algorithms/quality_util.h"
+#include "lib_grid/algorithms/subset_color_util.h"
 
 namespace ug{
 namespace promesh{
@@ -483,6 +484,8 @@ void AssignSubsetsByAspectRatio (
 
 	for(FaceIterator iface = facesBegin; iface != facesEnd; ++iface)
 		sh.assign_subset(*iface, aaHistoSec[*iface]);
+
+	AssignSubsetColorsBlueToGreen (sh, firstSubset, numHistoSecs);
 
 	g.detach_from_faces(aHistoSecs);
 
