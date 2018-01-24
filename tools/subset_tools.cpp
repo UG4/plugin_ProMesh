@@ -31,6 +31,7 @@
  */
 
 #include "common/util/table.h"
+#include "common/util/raster.h"
 #include "subset_tools.h"
 #include "lib_grid/algorithms/quality_util.h"
 #include "lib_grid/algorithms/subset_color_util.h"
@@ -432,11 +433,15 @@ void CopySubsetIndicesToSides(
 	}
 }
 
-
+// NEW GROUP: Quality Util
 void AssignSubsetsByAspectRatio (
 			Mesh* msh,
 			int numHistoSecs,
 			bool eraseOldSubsets)
+//	Parameters:
+//		+ Assign Subset (bool)
+//		+ Face / Volume (enum)
+//		+ Quality Measure (enum)
 {
 	if(numHistoSecs < 1){
 		UG_LOG("Can't create histogram with " << numHistoSecs << " sections.\n");
@@ -493,11 +498,74 @@ void AssignSubsetsByAspectRatio (
 	UG_LOG(t.to_string() << std::endl);
 }
 
-// void AssignSubsetFromRaster(
-// 			Mesh* obj,
-// 			const char* rasterFileName)
-// {
-	
-// }
+
+template <int dim, class elem_t>
+void AssignSubsetsFromRaster_IMPL (Mesh* obj, const char* rasterFileName)
+{
+	typedef Raster<number, dim> raster_t;
+	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+
+	Mesh::position_accessor_t& aaPos = obj->position_accessor();
+	Grid& g = obj->grid();
+	SubsetHandler& sh = obj->subset_handler();
+
+	raster_t raster;
+	raster.load_from_asc(rasterFileName);
+
+	typename raster_t::Coordinate coord(0);
+
+
+	for(iter_t ielem = g.begin<elem_t>(); ielem != g.end<elem_t>(); ++ielem)
+	{
+		vector3 c = CalculateCenter(*ielem, aaPos);
+		for(int i = 0; i < dim; ++i)
+			coord[i] = c[i];
+		int si = (int)raster.interpolate(coord, 0);
+		sh.assign_subset(*ielem, si);
+	}
+}
+
+template <int dim>
+void AssignSubsetsFromRaster_IMPL(
+			Mesh* obj,
+			const char* rasterFileName,
+			bool vertices,
+			bool edges,
+			bool faces,
+			bool volumes)
+{
+	if(vertices)
+		AssignSubsetsFromRaster_IMPL<dim, Vertex> (obj, rasterFileName);
+	if(edges)
+		AssignSubsetsFromRaster_IMPL<dim, Edge> (obj, rasterFileName);
+	if(faces)
+		AssignSubsetsFromRaster_IMPL<dim, Face> (obj, rasterFileName);
+	if(volumes)
+		AssignSubsetsFromRaster_IMPL<dim, Volume> (obj, rasterFileName);
+}
+
+void AssignSubsetsFromRaster(
+			Mesh* obj,
+			const char* rasterFileName,
+			int rasterDimension,
+			bool vertices,
+			bool edges,
+			bool faces,
+			bool volumes)
+{
+	switch(rasterDimension){
+		case 1:	AssignSubsetsFromRaster_IMPL<1> (obj, rasterFileName, vertices,
+		                                         edges, faces, volumes);
+			break;
+		case 2:	AssignSubsetsFromRaster_IMPL<2> (obj, rasterFileName, vertices,
+		                                         edges, faces, volumes);
+			break;
+		case 3:	AssignSubsetsFromRaster_IMPL<3> (obj, rasterFileName, vertices,
+		                                         edges, faces, volumes);
+			break;
+		default: UG_THROW("Unsupported dimension '" << rasterDimension << "'"
+		                  << "in AssignSubsetFromRaster."); break;
+	}
+}
 
 }}//	end of namespace

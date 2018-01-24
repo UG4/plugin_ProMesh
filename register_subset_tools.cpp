@@ -115,7 +115,16 @@ void RegisterSubsetTools(ProMeshRegistry& reg, std::string baseGrp)
 			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE)
 		.add_function("AssignSubsetsByAspectRatio", &AssignSubsetsByAspectRatio, grp, "",
 		    "mesh # histogram sections || min=1; value=10 # erase old subsets || value=true",
-		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO);
+		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO)
+		.add_function("AssignSubsetsFromRaster", &AssignSubsetsFromRaster, grp, "",
+		    "mesh #"
+		    "raster filename #"
+		    "raster dimension || min=1;value=3;max=3 #"
+		    "vertices || value=true #"
+		    "edges || value=true #"
+		    "faces || value=true #"
+		    "volumes || value=true",
+		    TOOLTIP_ASSIGN_SUBSETS_FROM_RASTER);
 }
 
 }}//	end of namespace
