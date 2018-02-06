@@ -118,7 +118,7 @@ void RegisterSubsetTools(ProMeshRegistry& reg, std::string baseGrp)
 		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO)
 		.add_function("AssignSubsetsFromRaster", &AssignSubsetsFromRaster, grp, "",
 		    "mesh #"
-		    "raster filename #"
+		    "raster file | load-dialog | endings=[\"asc\"] #"
 		    "raster dimension || min=1;value=3;max=3 #"
 		    "vertices || value=true #"
 		    "edges || value=true #"
