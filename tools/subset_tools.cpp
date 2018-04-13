@@ -466,7 +466,7 @@ void AssignSubsetsByAspectRatio (
 		numFaces = g.num<Face>();
 	}
 
-	GetFaceAspectRatioHistogram (histo, facesBegin, facesEnd,
+	GetAspectRatioHistogram (histo, facesBegin, facesEnd,
                              	 numHistoSecs, msh->position_accessor(),
                              	 &aaHistoSec);
 
