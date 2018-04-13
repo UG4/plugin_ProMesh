@@ -43,13 +43,13 @@ void PrintFaceAspectRatios (Mesh* msh)
 	AspectRatioInfo ari;
 	if(sel.num<Face>() > 0){
 		UG_LOG("Face Aspect Ratios (" << sel.num<Face>() << " faces):\n\n");
-		ari = GetFaceAspectRatioInfo (sel.faces_begin(), sel.faces_end(),
+		ari = GetAspectRatioInfo (sel.faces_begin(), sel.faces_end(),
 									  msh->position_accessor());
 	}
 	else{
 		Grid& g = msh->grid();
 		UG_LOG("Face Aspect Ratios (" << g.num<Face>() << " faces):\n\n");
-		ari = GetFaceAspectRatioInfo (g.faces_begin(), g.faces_end(),
+		ari = GetAspectRatioInfo (g.faces_begin(), g.faces_end(),
 									  msh->position_accessor());
 	}
 
@@ -66,13 +66,13 @@ void PrintFaceAspectRatioHistogram (Mesh* msh, int numHistoSecs)
 	std::vector<int> histo;
 	if(sel.num<Face>() > 0){
 		UG_LOG("Face Aspect Ratio Histogram (" << sel.num<Face>() << " faces):\n\n");
-		GetFaceAspectRatioHistogram (histo, sel.faces_begin(), sel.faces_end(),
+		GetAspectRatioHistogram (histo, sel.faces_begin(), sel.faces_end(),
 	                             	 numHistoSecs, msh->position_accessor());
 	}
 	else{
 		Grid& g = msh->grid();
 		UG_LOG("Face Aspect Ratio Histogram (" << g.num<Face>() << " faces):\n\n");
-		GetFaceAspectRatioHistogram (histo, g.faces_begin(), g.faces_end(),
+		GetAspectRatioHistogram (histo, g.faces_begin(), g.faces_end(),
 	                             	 numHistoSecs, msh->position_accessor());
 	}
 
