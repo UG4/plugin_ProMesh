@@ -434,6 +434,7 @@ void CopySubsetIndicesToSides(
 }
 
 // NEW GROUP: Quality Util
+template <class elem_t>
 void AssignSubsetsByAspectRatio (
 			Mesh* msh,
 			int numHistoSecs,
@@ -451,30 +452,32 @@ void AssignSubsetsByAspectRatio (
 	Selector& sel = msh->selector();
 	SubsetHandler& sh = msh->subset_handler();
 
-	AInt aHistoSecs;
-	g.attach_to_faces(aHistoSecs);
-	Grid::FaceAttachmentAccessor<AInt> aaHistoSec (g, aHistoSecs);
-
-	std::vector<int> histo;
-
-	FaceIterator facesBegin = sel.faces_begin();
-	FaceIterator facesEnd = sel.faces_end();
-	size_t numFaces = sel.num<Face>();
-	if(numFaces == 0){
-		facesBegin = g.faces_begin();
-		facesEnd = g.faces_end();
-		numFaces = g.num<Face>();
-	}
-
-	GetFaceAspectRatioHistogram (histo, facesBegin, facesEnd,
-                             	 numHistoSecs, msh->position_accessor(),
-                             	 &aaHistoSec);
-
 	int firstSubset = sh.num_subsets();
 	if(eraseOldSubsets){
 		sh.clear();
 		firstSubset = 0;
 	}
+
+
+	AInt aHistoSecs;
+	g.attach_to<elem_t>(aHistoSecs);
+	Grid::AttachmentAccessor<elem_t, AInt> aaHistoSec (g, aHistoSecs);
+
+	std::vector<int> histo;
+
+	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+	iter_t elemsBegin = sel.begin<elem_t>();
+	iter_t elemsEnd = sel.end<elem_t>();
+	size_t numElems = sel.num<elem_t>();
+	if(numElems == 0){
+		elemsBegin = g.begin<elem_t>();
+		elemsEnd = g.end<elem_t>();
+		numElems = g.num<elem_t>();
+	}
+
+	GetAspectRatioHistogram (histo, elemsBegin, elemsEnd,
+                             numHistoSecs, msh->position_accessor(),
+                             &aaHistoSec);
 
 	const number stepSize = 1. / (number) numHistoSecs;
 	StringStreamTable t;
@@ -487,16 +490,19 @@ void AssignSubsetsByAspectRatio (
 		t(1, i) << histo[i];
 	}
 
-	for(FaceIterator iface = facesBegin; iface != facesEnd; ++iface)
-		sh.assign_subset(*iface, aaHistoSec[*iface]);
+	for(iter_t ielem = elemsBegin; ielem != elemsEnd; ++ielem)
+		sh.assign_subset(*ielem, aaHistoSec[*ielem]);
 
 	AssignSubsetColorsBlueToGreen (sh, firstSubset, numHistoSecs);
 
-	g.detach_from_faces(aHistoSecs);
+	g.detach_from<elem_t>(aHistoSecs);
 
-	UG_LOG("Face Aspect Ratio Histogram (" << numFaces << " faces):\n\n");
+	UG_LOG("Aspect Ratio Histogram (" << numElems << " elements):\n\n");
 	UG_LOG(t.to_string() << std::endl);
 }
+
+template void AssignSubsetsByAspectRatio <Face> (Mesh*, int, bool);
+template void AssignSubsetsByAspectRatio <Volume> (Mesh*, int, bool);
 
 
 template <int dim, class elem_t>

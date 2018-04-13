@@ -37,26 +37,34 @@
 namespace ug {
 namespace promesh {
 
-void PrintFaceAspectRatios (Mesh* msh)
+template <class elem_t>
+void PrintAspectRatios (Mesh* msh)
 {
 	Selector& sel = msh->selector();
 	AspectRatioInfo ari;
-	if(sel.num<Face>() > 0){
-		UG_LOG("Face Aspect Ratios (" << sel.num<Face>() << " faces):\n\n");
-		ari = GetFaceAspectRatioInfo (sel.faces_begin(), sel.faces_end(),
+	if(sel.num<elem_t>() > 0){
+		UG_LOG("Aspect Ratios (" << sel.num<elem_t>() << " "
+		       << GRID_BASE_OBJECT_PLURAL_NAMES[elem_t::BASE_OBJECT_ID] << "):\n\n");
+		ari = GetAspectRatioInfo (sel.begin<elem_t>(), sel.end<elem_t>(),
 									  msh->position_accessor());
 	}
 	else{
 		Grid& g = msh->grid();
-		UG_LOG("Face Aspect Ratios (" << g.num<Face>() << " faces):\n\n");
-		ari = GetFaceAspectRatioInfo (g.faces_begin(), g.faces_end(),
+		UG_LOG("Aspect Ratios (" << g.num<elem_t>() << " "
+		       << GRID_BASE_OBJECT_PLURAL_NAMES[elem_t::BASE_OBJECT_ID] << "):\n\n");
+		ari = GetAspectRatioInfo (g.begin<elem_t>(), g.end<elem_t>(),
 									  msh->position_accessor());
 	}
 
 	UG_LOG(ari.to_string() << std::endl);
 }
 
-void PrintFaceAspectRatioHistogram (Mesh* msh, int numHistoSecs)
+template void PrintAspectRatios <Face> (Mesh*);
+template void PrintAspectRatios <Volume> (Mesh*);
+
+
+template <class elem_t>
+void PrintAspectRatioHistogram (Mesh* msh, int numHistoSecs)
 {
 	if(numHistoSecs < 1){
 		UG_LOG("Can't create histogram with " << numHistoSecs << " sections.\n");
@@ -64,15 +72,17 @@ void PrintFaceAspectRatioHistogram (Mesh* msh, int numHistoSecs)
 
 	Selector& sel = msh->selector();
 	std::vector<int> histo;
-	if(sel.num<Face>() > 0){
-		UG_LOG("Face Aspect Ratio Histogram (" << sel.num<Face>() << " faces):\n\n");
-		GetFaceAspectRatioHistogram (histo, sel.faces_begin(), sel.faces_end(),
+	if(sel.num<elem_t>() > 0){
+		UG_LOG("Aspect Ratio Histogram (" << sel.num<elem_t>() << " "
+		       << GRID_BASE_OBJECT_PLURAL_NAMES[elem_t::BASE_OBJECT_ID] << "):\n\n");
+		GetAspectRatioHistogram (histo, sel.begin<elem_t>(), sel.end<elem_t>(),
 	                             	 numHistoSecs, msh->position_accessor());
 	}
 	else{
 		Grid& g = msh->grid();
-		UG_LOG("Face Aspect Ratio Histogram (" << g.num<Face>() << " faces):\n\n");
-		GetFaceAspectRatioHistogram (histo, g.faces_begin(), g.faces_end(),
+		UG_LOG("Aspect Ratio Histogram (" << g.num<elem_t>() << " "
+		       << GRID_BASE_OBJECT_PLURAL_NAMES[elem_t::BASE_OBJECT_ID] << "):\n\n");
+		GetAspectRatioHistogram (histo, g.begin<elem_t>(), g.end<elem_t>(),
 	                             	 numHistoSecs, msh->position_accessor());
 	}
 
@@ -87,5 +97,7 @@ void PrintFaceAspectRatioHistogram (Mesh* msh, int numHistoSecs)
 	UG_LOG(t.to_string() << std::endl);
 }
 
+template void PrintAspectRatioHistogram <Face> (Mesh* msh, int numHistoSecs);
+template void PrintAspectRatioHistogram <Volume> (Mesh* msh, int numHistoSecs);
 }//	end of namespace
 }//	end of namespace

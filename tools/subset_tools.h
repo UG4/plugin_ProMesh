@@ -62,7 +62,7 @@
 #define	TOOLTIP_SEPARATE_DEGENERATED_BOUNDARY_FACE_SUBSETS "Separates degenerated boundary face subsets at sharp creases."
 #define	TOOLTIP_COPY_SUBSET_INDICES_TO_SIDES "Copies subset indices of selected elements to sides of those elements."
 #define	TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE "Assigns elemets to subsets based on their concrete type."
-#define TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO "Assigns subsets according to a aspect ratio histogram"
+#define TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO "Assigns subsets according to an aspect ratio histogram"
 #define TOOLTIP_ASSIGN_SUBSETS_FROM_RASTER "Assigns the subset index for each element from the raster-cell in which the center of the element lies."
 
 namespace ug{
@@ -139,6 +139,7 @@ void CopySubsetIndicesToSides(
 			bool selectionOnly,
 			bool toUnassignedOnly);
 
+template <class elem_t>
 void AssignSubsetsByAspectRatio (
 			Mesh* msh,
 			int numHistoSecs,

@@ -199,10 +199,26 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 
 			.add_function("SelectInterfaceFaces", &SelectInterfaceElements<Face>, grp, "",
 				"mesh # regard selected neighbors only", TOOLTIP_SELECT_INTERFACE_ELEMENTS)
-			.add_function("SelectFacesByNormal", &SelectFacesByNormal, grp, "",
+			
+			.add_function("SelectFacesByNormal",
+			    static_cast<void (*)(Mesh*, const vector3&, number)>(&SelectFacesByNormal),
+			    grp, "",
 				"mesh #"
 				"normal #"
-				"max deviation angle || value=10", TOOLTIP_SELECT_FACES_BY_NORMAL)
+				"max deviation angle || value=10",
+				TOOLTIP_SELECT_FACES_BY_NORMAL,
+				"", RT_NO_PROMESH)
+
+			.add_function("SelectFacesByNormal",
+			    static_cast<void (*)(Mesh*, const vector3&, number, number, bool)>(&SelectFacesByNormal),
+			    grp, "",
+				"mesh #"
+				"normal #"
+				"min deviation angle || value=0 #"
+				"max deviation angle || value=10 #"
+				"ignore inner faces	|| value=true",
+				TOOLTIP_SELECT_FACES_BY_NORMAL)
+
 			.add_function("SelectAnisotropicFaces", &SelectAnisotropicElements<Face>, grp, "",
 				"mesh # min edge ratio || value=0.5D", TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS)
 			.add_function("SelectDegenerateFaces", &SelectDegenerateFaces, grp, "",

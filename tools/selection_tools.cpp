@@ -819,6 +819,37 @@ void SelectFacesByNormal(
 	}
 }
 
+
+void SelectFacesByNormal(
+			Mesh* obj,
+			const vector3& refNormal,
+			number minDeviationAngle,
+			number maxDeviationAngle,
+			bool noInnerFaces)
+{
+	number minDot = cos(deg_to_rad(maxDeviationAngle));
+	number maxDot = cos(deg_to_rad(minDeviationAngle));
+
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+	Grid::AttachmentAccessor<Vertex, APosition> aaPos(grid, aPosition);
+
+	vector3 n;
+	VecNormalize(n, refNormal);
+
+	for(FaceIterator iter = grid.faces_begin(); iter != grid.faces_end(); ++iter){
+		vector3 fn;
+		CalculateNormal(fn, *iter, aaPos);
+		const number d = VecDot(fn, n);
+		if((d > minDot - SMALL && d < maxDot + SMALL)
+		   && (!noInnerFaces || (NumAssociatedVolumes(grid, *iter) < 2)))
+		{
+			sel.select(*iter);
+		}
+	}
+}
+
+
 void FaceSelectionFill(Mesh* obj)
 {
 	Selector& sel = obj->selector();

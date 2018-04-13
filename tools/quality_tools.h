@@ -35,15 +35,19 @@
 
 #include "../mesh.h"
 
-#define TOOLTIP_PRINT_FACE_ASPECT_RATIOS "Prints information on aspect ratios of faces"
-#define TOOLTIP_PRINT_FACE_ASPECT_RATIO_HISTOGRAM "Prints a histogram of face aspect ratios"
+#define TOOLTIP_PRINT_FACE_ASPECT_RATIOS "Prints information on aspect ratios of selected faces"
+#define TOOLTIP_PRINT_VOLUME_ASPECT_RATIOS "Prints information on aspect ratios of selected volumes"
+#define TOOLTIP_PRINT_FACE_ASPECT_RATIO_HISTOGRAM "Prints a histogram of aspect ratios of selected faces"
+#define TOOLTIP_PRINT_VOLUME_ASPECT_RATIO_HISTOGRAM "Prints a histogram of aspect ratios of selected volumes"
 
 namespace ug {
 namespace promesh {
 
-void PrintFaceAspectRatios (Mesh* msh);
+template <class elem_t>
+void PrintAspectRatios (Mesh* msh);
 
-void PrintFaceAspectRatioHistogram (Mesh* msh, int numHistoSecs);
+template <class elem_t>
+void PrintAspectRatioHistogram (Mesh* msh, int numHistoSecs);
 
 }
 }

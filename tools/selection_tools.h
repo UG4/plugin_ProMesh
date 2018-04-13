@@ -362,6 +362,13 @@ void SelectFacesByNormal(
 			const vector3& refNormal,
 			number maxDeviationAngle);
 
+void SelectFacesByNormal(
+			Mesh* obj,
+			const vector3& refNormal,
+			number minDeviationAngle,
+			number maxDeviationAngle,
+			bool noInnerFaces);
+
 void FaceSelectionFill(Mesh* obj);
 
 size_t SelectBentQuadrilaterals(Mesh* obj, number dotThreshold);

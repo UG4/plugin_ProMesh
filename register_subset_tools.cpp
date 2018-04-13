@@ -113,7 +113,10 @@ void RegisterSubsetTools(ProMeshRegistry& reg, std::string baseGrp)
 		.add_function("AssignSubsetColors", &AssignSubsetColors, grp, "", "mesh", TOOLTIP_ASSIGN_SUBSET_COLORS)
 		.add_function("AssignSubsetsByElementType", &AssignSubsetsByElementType, grp, "",
 			"mesh", TOOLTIP_ASSIGN_SUBSETS_BY_ELEMENT_TYPE)
-		.add_function("AssignSubsetsByAspectRatio", &AssignSubsetsByAspectRatio, grp, "",
+		.add_function("AssignFaceSubsetsByAspectRatio", &AssignSubsetsByAspectRatio<Face>, grp, "",
+		    "mesh # histogram sections || min=1; value=10 # erase old subsets || value=true",
+		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO)
+		.add_function("AssignVolumeSubsetsByAspectRatio", &AssignSubsetsByAspectRatio<Volume>, grp, "",
 		    "mesh # histogram sections || min=1; value=10 # erase old subsets || value=true",
 		    TOOLTIP_ASSIGN_SUBSETS_BY_ASPECT_RATIO)
 		.add_function("AssignSubsetsFromRaster", &AssignSubsetsFromRaster, grp, "",
