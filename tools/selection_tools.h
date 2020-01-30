@@ -89,6 +89,7 @@
 #define	TOOLTIP_SELECT_FACE_BY_INDEX "Selects a face given its index."
 #define	TOOLTIP_SELECT_FACES_BY_NORMAL "Selects faces given a normal and a maximum deviation angle."
 #define	TOOLTIP_SELECT_VOLUME_BY_INDEX "Selects a volume given its index."
+#define	TOOLTIP_SELECT_VOLUMES_BY_TYPE "Selects all volumes of a given type."
 #define	TOOLTIP_SELECT_VERTEX_BY_COORDINATE "Selects a vertex given a coordinate."
 #define	TOOLTIP_SELECT_EDGE_BY_COORDINATE  "Selects the edge whose center is closest to the specified coordinate."
 #define	TOOLTIP_SELECT_FACE_BY_COORDINATE "Selects the face whose center is closest to the specified coordinate."
@@ -382,6 +383,14 @@ int SelectUnorientableVolumes(Mesh* obj);
 int SelectSlivers(Mesh* obj, number thresholdRatio);
 
 bool SelectVolumeByIndex(Mesh* obj, int index);
+
+void SelectVolumesByType(
+			Mesh* obj,
+			bool selHexahedra,
+			bool selOctahedra,
+			bool selPrisms,
+			bool selPyramids,
+			bool selTetrahedra);
 
 void VolumeSelectionFill(Mesh* obj);
 

@@ -961,6 +961,29 @@ bool SelectVolumeByIndex(Mesh* obj, int index)
 	return false;
 }
 
+void SelectVolumesByType(
+			Mesh* obj,
+			bool selHexahedra,
+			bool selOctahedra,
+			bool selPrisms,
+			bool selPyramids,
+			bool selTetrahedra)
+{
+	Grid& grid = obj->grid();
+	Selector& sel = obj->selector();
+
+	if(selHexahedra)
+		sel.select(grid.begin<Hexahedron>(), grid.end<Hexahedron>());
+	if(selOctahedra)
+		sel.select(grid.begin<Octahedron>(), grid.end<Octahedron>());
+	if(selPrisms)
+		sel.select(grid.begin<Prism>(), grid.end<Prism>());
+	if(selPyramids)
+		sel.select(grid.begin<Pyramid>(), grid.end<Pyramid>());
+	if(selTetrahedra)
+		sel.select(grid.begin<Tetrahedron>(), grid.end<Tetrahedron>());
+}
+
 void VolumeSelectionFill(Mesh* obj)
 {
 	Selector& sel = obj->selector();
