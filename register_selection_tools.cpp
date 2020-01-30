@@ -258,7 +258,15 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 			.add_function("SelectUnorientableVolumes", &SelectUnorientableVolumes, grp, "",
 				"mesh", TOOLTIP_SELECT_UNORIENTABLE_VOLUMES)
 			.add_function("SelectVolumeByIndex", &SelectVolumeByIndex, grp, "",
-				"mesh # index", TOOLTIP_SELECT_VOLUME_BY_INDEX);
+				"mesh # index", TOOLTIP_SELECT_VOLUME_BY_INDEX)
+			.add_function("SelectVolumesByType", &SelectVolumesByType, grp, "",
+				"mesh #"
+				"Hexahedra || value=true #"
+				"Octahedra || value=true #"
+				"Prisms || value=true #"
+				"Pyramids || value=true #"
+				"Tetrahedra || value=true #",
+				TOOLTIP_SELECT_VOLUMES_BY_TYPE);
 
 		grp = baseGrp + "/Volumes/Coordinate Based";
 		reg.add_function("SelectVolumeByCoordinate", &SelectElemByCoordinate<Volume>, grp, "",
