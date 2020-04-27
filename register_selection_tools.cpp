@@ -152,6 +152,14 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				"max deviation angle || value = 1D; min = 0D; max = 180D #"
 				"select flipped edges || value = true",
 				TOOLTIP_SELECT_EDGES_BY_DIRECTION)
+			.add_function("SelectSubsetEdgesByDirection", &SelectSubsetEdgesByDirection, grp, "",
+				"mesh #"
+				"subset index#"
+				"direction#"
+				"min deviation angle || value = 0D; min = 0D; max = 180D #"
+				"max deviation angle || value = 1D; min = 0D; max = 180D #"
+				"select flipped edges || value = true",
+				TOOLTIP_SELECT_SUBSET_EDGES_BY_DIRECTION)
 			.add_function("SelectShortPolychains", &SelectShortPolychains, grp, "",
 				  "mesh # maxChainLength || min=0D; value=1D # closedChainsOnly",
 				  TOOLTIP_SELECT_SHORT_POLYCHAINS)

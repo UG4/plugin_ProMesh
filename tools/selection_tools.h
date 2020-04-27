@@ -120,6 +120,7 @@
 #define TOOLTIP_SELECT_ANISOTROPIC_ELEMENTS "Selects elements and associated long edges wich have a shortest-to-longest edge ratio smaller than the specified one."
 #define TOOLTIP_SELECT_ELEMENTS_BY_SPLIT_PLANE "Selects elements whose center lies in front of the specified plane."
 #define TOOLTIP_SELECT_EDGES_BY_DIRECTION "Selects all edges which do not deviate further from the specified direction than the given angle. A minimal required deviation angle can also be specified."
+#define TOOLTIP_SELECT_SUBSET_EDGES_BY_DIRECTION "Selects all subset edges which do not deviate further from the specified direction than the given angle. A minimal required deviation angle can also be specified."
 #define TOOLTIP_SELECT_ELEMENTS_IN_COORDINATE_RANGE "Selects all elements whose center lies in the specified range."
 #define TOOLTIP_DESELECT_ELEMENTS_IN_COORDINATE_RANGE "Deselects all elements whose center lies in the specified range."
 #define TOOLTIP_SELECT_VERTEX_IN_BOX "Selects all vertices in the given box"
@@ -318,6 +319,14 @@ void SelectShortPolychains(Mesh* m, number maxChainLength, bool closedChainsOnly
 
 void SelectEdgesByDirection(
 				Mesh* m,
+				const vector3& dir,
+				number minDeviationAngle,
+				number maxDeviationAngle,
+				bool selectFlipped);
+
+void SelectSubsetEdgesByDirection(
+				Mesh* m,
+				int subsetIndex,
 				const vector3& dir,
 				number minDeviationAngle,
 				number maxDeviationAngle,
