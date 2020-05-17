@@ -566,6 +566,21 @@ void SelectEdgesByDirection(
 	                       maxDeviationAngle, selectFlipped);
 }
 
+void SelectSubsetEdgesByDirection(
+				Mesh* m,
+				int subsetIndex,
+				const vector3& dir,
+				number minDeviationAngle,
+				number maxDeviationAngle,
+				bool selectFlipped)
+{
+	Selector& sel = m->selector();
+	SubsetHandler& sh = m->subset_handler();
+	Mesh::position_accessor_t aaPos = m->position_accessor();
+	SelectSubsetEdgesByDirection(sel, sh, subsetIndex, aaPos, dir, minDeviationAngle,
+	                       maxDeviationAngle, selectFlipped);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
 void SelectBoundaryFaces(Mesh* obj)
