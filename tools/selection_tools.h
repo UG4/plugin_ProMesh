@@ -109,6 +109,7 @@
 #define	TOOLTIP_SELECT_SELECTION_BOUNDARY "Selects the boundary of the current selection."
 #define	TOOLTIP_SELECT_BENT_QUADRILATERALS "Selects quadrilaterals which do not lie in a plane."
 #define	TOOLTIP_CLOSE_SELECTION "Selects all associated elements of lower dimensions."
+#define	TOOLTIP_RESTRICT_SELECTION_TO_SUBSET "Deselects all elements from the selection that are not in the specified subset."
 #define TOOLTIP_SELECT_SLIVERS "Selects flat tetrahedrons. Threshold-ratio specifies the minimal ratio between the distance of two opposing edges to the length of the longest edge."
 #define TOOLTIP_SELECT_SELECTION_KINK_VERTICES "Selects kink vertices in selected paths"
 #define TOOLTIP_SELECT_SUBSET_KINK_VERTICES "Selects kink vertices in subset-paths"
@@ -225,6 +226,7 @@ void SelectSelectionBoundary(Mesh* obj);
 
 void CloseSelection(Mesh* obj);
 
+void RestrictSelectionToSubset(Mesh* obj, int si);
 
 template <class TElem>
 void SelectInterfaceElements(Mesh* obj, bool regardSelectedNbrsOnly)

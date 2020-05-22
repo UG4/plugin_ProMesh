@@ -255,6 +255,65 @@ void CloseSelection(Mesh* obj)
 	CloseSelection (obj->selector());
 }
 
+void RestrictSelectionToSubset(Mesh* obj, int si)
+{
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
+
+//	Store selected elements that are contained in the specified subset
+	std::vector<Vertex*> vVertices;
+	for(VertexIterator vIter = sel.begin<Vertex>(); vIter != sel.end<Vertex>(); ++vIter){
+		Vertex* vrt = *vIter;
+		if(sh.get_subset_index(vrt) == si){
+			vVertices.push_back(vrt);
+		}
+	}
+
+	std::vector<Edge*> vEdges;
+	for(EdgeIterator eIter = sel.begin<Edge>(); eIter != sel.end<Edge>(); ++eIter){
+		Edge* e = *eIter;
+		if(sh.get_subset_index(e) == si){
+			vEdges.push_back(e);
+		}
+	}
+
+	std::vector<Face*> vFaces;
+	for(FaceIterator fIter = sel.begin<Face>(); fIter != sel.end<Face>(); ++fIter){
+		Face* f = *fIter;
+		if(sh.get_subset_index(f) == si){
+			vFaces.push_back(f);
+		}
+	}
+
+	std::vector<Volume*> vVolumes;
+	for(VolumeIterator volIter = sel.begin<Volume>(); volIter != sel.end<Volume>(); ++volIter){
+		Volume* v = *volIter;
+		if(sh.get_subset_index(v) == si){
+			vVolumes.push_back(v);
+		}
+	}
+
+//	Clear selector
+	sel.clear();
+
+//	Reselect elements that were originally selected and are contained in the specified subset
+	for(size_t i = 0; i < vVertices.size(); ++i){
+		sel.select(vVertices[i]);
+	}
+
+	for(size_t i = 0; i < vEdges.size(); ++i){
+		sel.select(vEdges[i]);
+	}
+
+	for(size_t i = 0; i < vFaces.size(); ++i){
+		sel.select(vFaces[i]);
+	}
+
+	for(size_t i = 0; i < vVolumes.size(); ++i){
+		sel.select(vVolumes[i]);
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	VERTICES
 void SelectBoundaryVertices(Mesh* obj)
