@@ -192,6 +192,21 @@ static void SelectUnassignedElementsHelper(
 	}
 }
 
+template <class TGeomObj>
+static void DeselectUnassignedElementsHelper(
+                    Grid& grid,
+                    SubsetHandler& sh,
+                    Selector& sel)
+{
+    typedef typename geometry_traits<TGeomObj>::iterator    iterator;
+    for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
+    {
+        if(sh.get_subset_index(*iter) == -1){
+            sel.deselect(*iter);
+        }
+    }
+}
+
 void SelectUnassignedElements(
 			Mesh* obj,
 			bool selVrts,
@@ -259,6 +274,12 @@ void RestrictSelectionToSubset(Mesh* obj, int si)
 {
     SubsetHandler& sh = obj->subset_handler();
     Selector& sel = obj->selector();
+    Grid& grid = obj->grid();
+    
+    DeselectUnassignedElementsHelper<Vertex>(grid, sh, sel);
+    DeselectUnassignedElementsHelper<Edge>(grid, sh, sel);
+    DeselectUnassignedElementsHelper<Face>(grid, sh, sel);
+    DeselectUnassignedElementsHelper<Volume>(grid, sh, sel);
 
     for(int i = 0; i < sh.num_subsets(); ++i){
         if(i != si){
