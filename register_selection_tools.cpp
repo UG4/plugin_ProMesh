@@ -330,7 +330,7 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 				"volumes || value=true", TOOLTIP_SELECT_UNASSIGNED_ELEMENTS)
 			.add_function("RestrictSelectionToSubset", &RestrictSelectionToSubset, grp, "",
 				"mesh #"
-				"subset index#", TOOLTIP_RESTRICT_SELECTION_TO_SUBSET);
+				"subset index", TOOLTIP_RESTRICT_SELECTION_TO_SUBSET);
 
 		
 		grp = baseGrp + "/Coordinate Range";
