@@ -192,20 +192,6 @@ static void SelectUnassignedElementsHelper(
 	}
 }
 
-template <class TGeomObj>
-static void DeselectUnassignedElementsHelper(
-					Grid& grid,
-					SubsetHandler& sh,
-					Selector& sel)
-{
-	typedef typename geometry_traits<TGeomObj>::iterator	iterator;
-	for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
-	{
-		if(sh.get_subset_index(*iter) == -1){
-			sel.deselect(*iter);
-		}
-	}
-}
 
 void SelectUnassignedElements(
 			Mesh* obj,
