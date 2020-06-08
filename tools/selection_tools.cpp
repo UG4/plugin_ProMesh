@@ -194,17 +194,17 @@ static void SelectUnassignedElementsHelper(
 
 template <class TGeomObj>
 static void DeselectUnassignedElementsHelper(
-                    Grid& grid,
-                    SubsetHandler& sh,
-                    Selector& sel)
+					Grid& grid,
+					SubsetHandler& sh,
+					Selector& sel)
 {
-    typedef typename geometry_traits<TGeomObj>::iterator    iterator;
-    for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
-    {
-        if(sh.get_subset_index(*iter) == -1){
-            sel.deselect(*iter);
-        }
-    }
+	typedef typename geometry_traits<TGeomObj>::iterator	iterator;
+	for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
+	{
+		if(sh.get_subset_index(*iter) == -1){
+			sel.deselect(*iter);
+		}
+	}
 }
 
 void SelectUnassignedElements(
@@ -270,25 +270,28 @@ void CloseSelection(Mesh* obj)
 	CloseSelection (obj->selector());
 }
 
+template <class TElem>
+void RestrictSelectionToSubset (Selector& sel, const SubsetHandler& sh, int si)
+{
+	typedef typename geometry_traits<TElem>::iterator	iterator;
+
+	for (iterator iter = sel.begin<TElem>(); iter != sel.end<TElem>();){
+		TElem* elem = *iter;
+		++iter;
+		if (sh.get_subset_index(elem) != si)
+			sel.deselect(elem);
+	}
+}
+
 void RestrictSelectionToSubset(Mesh* obj, int si)
 {
-    SubsetHandler& sh = obj->subset_handler();
-    Selector& sel = obj->selector();
-    Grid& grid = obj->grid();
-    
-    DeselectUnassignedElementsHelper<Vertex>(grid, sh, sel);
-    DeselectUnassignedElementsHelper<Edge>(grid, sh, sel);
-    DeselectUnassignedElementsHelper<Face>(grid, sh, sel);
-    DeselectUnassignedElementsHelper<Volume>(grid, sh, sel);
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
 
-    for(int i = 0; i < sh.num_subsets(); ++i){
-        if(i != si){
-            sel.deselect(sh.begin<Vertex>(i), sh.end<Vertex>(i));
-            sel.deselect(sh.begin<Edge>(i), sh.end<Edge>(i));
-            sel.deselect(sh.begin<Face>(i), sh.end<Face>(i));
-            sel.deselect(sh.begin<Volume>(i), sh.end<Volume>(i));
-        }
-    }
+	RestrictSelectionToSubset<Vertex>(sel, sh, si);
+	RestrictSelectionToSubset<Edge>(sel, sh, si);
+	RestrictSelectionToSubset<Face>(sel, sh, si);
+	RestrictSelectionToSubset<Volume>(sel, sh, si);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
