@@ -192,6 +192,21 @@ static void SelectUnassignedElementsHelper(
 	}
 }
 
+template <class TGeomObj>
+static void DeselectUnassignedElementsHelper(
+					Grid& grid,
+					SubsetHandler& sh,
+					Selector& sel)
+{
+	typedef typename geometry_traits<TGeomObj>::iterator	iterator;
+	for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
+	{
+		if(sh.get_subset_index(*iter) == -1){
+			sel.deselect(*iter);
+		}
+	}
+}
+
 void SelectUnassignedElements(
 			Mesh* obj,
 			bool selVrts,
@@ -253,6 +268,30 @@ void SelectSelectionBoundary(Mesh* obj)
 void CloseSelection(Mesh* obj)
 {
 	CloseSelection (obj->selector());
+}
+
+template <class TElem>
+void RestrictSelectionToSubset (Selector& sel, const SubsetHandler& sh, int si)
+{
+	typedef typename geometry_traits<TElem>::iterator	iterator;
+
+	for (iterator iter = sel.begin<TElem>(); iter != sel.end<TElem>();){
+		TElem* elem = *iter;
+		++iter;
+		if (sh.get_subset_index(elem) != si)
+			sel.deselect(elem);
+	}
+}
+
+void RestrictSelectionToSubset(Mesh* obj, int si)
+{
+	SubsetHandler& sh = obj->subset_handler();
+	Selector& sel = obj->selector();
+
+	RestrictSelectionToSubset<Vertex>(sel, sh, si);
+	RestrictSelectionToSubset<Edge>(sel, sh, si);
+	RestrictSelectionToSubset<Face>(sel, sh, si);
+	RestrictSelectionToSubset<Volume>(sel, sh, si);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
