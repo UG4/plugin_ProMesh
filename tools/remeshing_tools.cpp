@@ -734,7 +734,6 @@ void ExtrudeToThickness(Mesh* obj,
 	EMatrixXY A;
 	EVectorX rhs, np;
 
-	bool extrude2d = false;
 	bool extrude3d = false;
 
 
@@ -800,7 +799,6 @@ void ExtrudeToThickness(Mesh* obj,
 
 			if(selEdges.size() > 0){
 			//	do a 2d extrusion from selected edges
-				extrude2d = true;
 				A.resize (selEdges.size(), 2);
 				rhs.resize (selEdges.size());
 
