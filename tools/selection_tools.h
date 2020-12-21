@@ -92,6 +92,7 @@
 #define	TOOLTIP_SELECT_VOLUMES_BY_TYPE "Selects all volumes of a given type."
 #define	TOOLTIP_SELECT_VERTEX_BY_COORDINATE "Selects a vertex given a coordinate."
 #define	TOOLTIP_SELECT_EDGE_BY_COORDINATE  "Selects the edge whose center is closest to the specified coordinate."
+#define	TOOLTIP_SELECT_EDGE_BY_PROJECTED_COORDINATE  "Selects the edge for which the specified coordinate is closest to its perpendicular projection onto this edge."
 #define	TOOLTIP_SELECT_FACE_BY_COORDINATE "Selects the face whose center is closest to the specified coordinate."
 #define	TOOLTIP_SELECT_VOLUME_BY_COORDINATE "Selects the volume whose center is closest to the specified coordinate."
 #define	TOOLTIP_SELECT_VERTEX_BY_CYL_COORDINATE "Selects a vertex given a cylindrical coordinate."
@@ -333,6 +334,10 @@ void SelectSubsetEdgesByDirection(
 				number minDeviationAngle,
 				number maxDeviationAngle,
 				bool selectFlipped);
+
+Edge* SelectEdgeByProjectedCoordinate(
+				Mesh* m,
+				const vector3& coord);
 
 void SelectBoundaryFaces(Mesh* obj);
 

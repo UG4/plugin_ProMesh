@@ -606,6 +606,36 @@ void SelectSubsetEdgesByDirection(
 	                       maxDeviationAngle, selectFlipped);
 }
 
+Edge* SelectEdgeByProjectedCoordinate(
+			Mesh* m,
+			const vector3& coord)
+{
+	Grid& grid = m->grid();
+	Mesh::position_accessor_t& aaPos = m->position_accessor();
+
+	EdgeIterator iter = grid.begin<Edge>();
+	Edge* bestEdge = *iter;
+	number bestDist = DistancePointToLine(coord, aaPos[bestEdge->vertex(0)], aaPos[bestEdge->vertex(1)]);
+	iter++;
+
+	while(iter != grid.end<Edge>())
+	{
+		number dist = DistancePointToLine(coord, aaPos[(*iter)->vertex(0)], aaPos[(*iter)->vertex(1)]);
+		if(dist < bestDist)
+		{
+			bestDist = dist;
+			bestEdge = *iter;
+		}
+
+		++iter;
+	}
+
+	if(bestEdge)
+		m->selector().select(bestEdge);
+
+	return bestEdge;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
 void SelectBoundaryFaces(Mesh* obj)
