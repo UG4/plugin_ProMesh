@@ -606,31 +606,23 @@ void SelectSubsetEdgesByDirection(
 	                       maxDeviationAngle, selectFlipped);
 }
 
-Edge* SelectEdgeByMinPerpendicularDistance(
+Edge* SelectClosestEdge(
 			Mesh* m,
 			const vector3& coord)
 {
 	Grid& grid = m->grid();
 	Mesh::position_accessor_t& aaPos = m->position_accessor();
 
-	if(grid.begin<Edge>() == grid.end<Edge>())
-		return NULL;
+	Edge* bestEdge = NULL;
+	number bestDist;
 
-	EdgeIterator iter = grid.begin<Edge>();
-	Edge* bestEdge = *iter;
-	number bestDist = DistancePointToLine(coord, aaPos[bestEdge->vertex(0)], aaPos[bestEdge->vertex(1)]);
-	iter++;
+	for(EdgeIterator eIter = grid.begin<Edge>(); eIter != grid.end<Edge>(); ++eIter){
+		number dist = DistancePointToLine(coord, aaPos[(*eIter)->vertex(0)], aaPos[(*eIter)->vertex(1)]);
 
-	while(iter != grid.end<Edge>())
-	{
-		number dist = DistancePointToLine(coord, aaPos[(*iter)->vertex(0)], aaPos[(*iter)->vertex(1)]);
-		if(dist < bestDist)
-		{
+		if(bestEdge == NULL || dist < bestDist){
 			bestDist = dist;
-			bestEdge = *iter;
+			bestEdge = *eIter;
 		}
-
-		++iter;
 	}
 
 	if(bestEdge)
