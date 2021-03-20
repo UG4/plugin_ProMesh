@@ -606,6 +606,31 @@ void SelectSubsetEdgesByDirection(
 	                       maxDeviationAngle, selectFlipped);
 }
 
+Edge* SelectClosestEdge(
+			Mesh* m,
+			const vector3& coord)
+{
+	Grid& grid = m->grid();
+	Mesh::position_accessor_t& aaPos = m->position_accessor();
+
+	Edge* bestEdge = NULL;
+	number bestDist;
+
+	for(EdgeIterator eIter = grid.begin<Edge>(); eIter != grid.end<Edge>(); ++eIter){
+		number dist = DistancePointToLine(coord, aaPos[(*eIter)->vertex(0)], aaPos[(*eIter)->vertex(1)]);
+
+		if(bestEdge == NULL || dist < bestDist){
+			bestDist = dist;
+			bestEdge = *eIter;
+		}
+	}
+
+	if(bestEdge)
+		m->selector().select(bestEdge);
+
+	return bestEdge;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	FACES
 void SelectBoundaryFaces(Mesh* obj)

@@ -169,6 +169,8 @@ void RegisterSelectionTools(ProMeshRegistry& reg, string baseGrp)
 		grp = baseGrp + "/Edges/Coordinate Based";
 			reg.add_function("SelectEdgeByCoordinate", &SelectElemByCoordinate<Edge>, grp, "",
 				"mesh # coordinate", TOOLTIP_SELECT_EDGE_BY_COORDINATE)
+			.add_function("SelectClosestEdge", &SelectClosestEdge, grp, "",
+				"mesh # coordinate", TOOLTIP_SELECT_CLOSEST_EDGE)
 			.add_function("SelectEdgeByCylindricalCoordinate", &SelectElemByCylindricalCoordinate<Edge>, grp, "",
 				"mesh # rho # phi # z", TOOLTIP_SELECT_EDGE_BY_CYL_COORDINATE)
 			.add_function("SelectEdgesInBox", &SelectElementsInBox<Edge>, grp, "",
