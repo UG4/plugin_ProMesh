@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2014-2015:  G-CSC, Goethe University Frankfurt
- * Author: Sebastian Reiter, Anahita Werner
+ * Author: Sebastian Reiter, Anahita Werner, Markus Knodel some adds
  * 
  * This file is part of UG4.
  * 
@@ -57,7 +57,9 @@
 
 //fracture tools
 #define	TOOLTIP_EXPAND_LAYERS_2D "Expands a 1d layer to a 2d layer by introducing quadrilaterals."
+#define	TOOLTIP_EXPAND_LAYERS_2D_ARTE "Expands a 1d layer to a 2d layer by introducing quadrilaterals, using the Arte algorithm."
 #define	TOOLTIP_EXPAND_LAYERS_3D "Expands a 2d layer to a 3d layer by introducing prisms."
+#define	TOOLTIP_EXPAND_LAYERS_3D_ARTE "Expands a 2d layer to a 3d layer by introducing prisms, using the Arte algorithm."
 #define	TOOLTIP_FRAC_TO_LAYER "Enhances a 2d fracture to a 3d fracture."
 
 //new tools
