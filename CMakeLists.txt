@@ -58,7 +58,7 @@ set(SOURCES		mesh.cpp
 ################################################################################
 # The code below doesn't have to be changed (usually)
 ################################################################################
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6...3.20)
 
 project(UG_PLUGIN_${pluginName})
 
