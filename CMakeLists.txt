@@ -84,6 +84,6 @@ else(buildEmbeddedPlugins)
 	# create a shared library from the sources and link it against ug4.
 
 	add_library(${pluginName} SHARED ${SOURCES})
-	target_compile_options(${pluginName} PUBLIC -Wno-template-body)
+	target_compile_options(${pluginName} PUBLIC -fpermissive)
 	target_link_libraries (${pluginName} ug4)
 endif(buildEmbeddedPlugins)
