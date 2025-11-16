@@ -689,10 +689,10 @@ void ExtrudeToThickness(Mesh* obj,
 						bool createFaces,
 						bool createVolumes)
 {
-	typedef Eigen::Matrix<number, 2, 1>	EVector2;
-	typedef Eigen::Matrix<number, 3, 1>	EVector3;
-	typedef Eigen::Matrix<number, Eigen::Dynamic, 1>				EVectorX;
-	typedef Eigen::Matrix<number, Eigen::Dynamic, Eigen::Dynamic> 	EMatrixXY;
+	using EVector2 = Eigen::Matrix<number, 2, 1>;
+	using EVector3 = Eigen::Matrix<number, 3, 1>;
+	using EVectorX = Eigen::Matrix<number, Eigen::Dynamic, 1>;
+	using EMatrixXY = Eigen::Matrix<number, Eigen::Dynamic, Eigen::Dynamic>;
 
 	using namespace std;
 	if(numSteps < 1)
@@ -994,7 +994,7 @@ void CSGFaceOperation(
 //	triangles of each subset to a fresh grid and create an octree
 //	on that grid.
 
-	typedef lg_ntree<3, 3, Face> octree_t;
+	using octree_t = lg_ntree<3, 3, Face>;
 	octree_t octree[2];
 	Grid octreeGrid[2];
 	Mesh::position_accessor_t aaPosOT[2];

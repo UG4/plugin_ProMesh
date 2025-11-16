@@ -48,7 +48,7 @@ namespace promesh{
 template <class TElem>
 class ElementIterator{
 	public:
-		typedef typename Grid::traits<TElem>::iterator	iterator_t;
+		using iterator_t = typename Grid::traits<TElem>::iterator;
 
 		ElementIterator(iterator_t i) : m_iter(i)	{}
 
@@ -72,24 +72,24 @@ class ElementIterator{
 class Mesh
 {
 	public:
-		typedef APosition 	position_attachment_t;
-		typedef Grid::VertexAttachmentAccessor<position_attachment_t>	position_accessor_t;
+		using position_attachment_t = APosition;
+		using position_accessor_t = Grid::VertexAttachmentAccessor<position_attachment_t>;
 
-		typedef ANormal normal_attachment_t;
-		typedef Grid::FaceAttachmentAccessor<normal_attachment_t>	normal_accessor_t;
+		using normal_attachment_t = ANormal;
+		using normal_accessor_t = Grid::FaceAttachmentAccessor<normal_attachment_t>;
 
-		typedef ANumber volume_constraint_attachment_t;
-		typedef Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>	volume_constraint_accessor_t;
+		using volume_constraint_attachment_t = ANumber;
+		using volume_constraint_accessor_t = Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>;
 
-		typedef ElementIterator<Vertex>	vertex_iter_t;
-		typedef ElementIterator<Edge>	edge_iter_t;
-		typedef ElementIterator<Face>	face_iter_t;
-		typedef ElementIterator<Volume>	volume_iter_t;
+		using vertex_iter_t = ElementIterator<Vertex>;
+		using edge_iter_t = ElementIterator<Edge>;
+		using face_iter_t = ElementIterator<Face>;
+		using volume_iter_t = ElementIterator<Volume>;
 
-		typedef SmartPtr<vertex_iter_t>	sp_vertex_iter_t;
-		typedef SmartPtr<edge_iter_t>	sp_edge_iter_t;
-		typedef SmartPtr<face_iter_t>	sp_face_iter_t;
-		typedef SmartPtr<volume_iter_t>	sp_volume_iter_t;
+		using sp_vertex_iter_t = SmartPtr<vertex_iter_t>;
+		using sp_edge_iter_t = SmartPtr<edge_iter_t>;
+		using sp_face_iter_t = SmartPtr<face_iter_t>;
+		using sp_volume_iter_t = SmartPtr<volume_iter_t>;
 
 		Mesh();
 		Mesh(const Mesh& m);

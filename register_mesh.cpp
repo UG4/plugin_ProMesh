@@ -49,7 +49,7 @@ namespace promesh{
 template <class TElem>
 static void RegisterElementIterators(ProMeshRegistry& reg, string name, string grp)
 {
-	typedef ElementIterator<TElem> iter_t;
+	using iter_t = ElementIterator<TElem>;
 	reg.add_class_<iter_t>(name, grp, TOOLTIP_ITERATOR)
 		.add_method("clone", &iter_t::clone)
 		.add_method("assign", &iter_t::assign)

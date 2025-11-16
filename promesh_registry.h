@@ -121,9 +121,9 @@ class UG_API ProMeshFunction{
  * ProMesh to automatically generate tools for all registered functions.*/
 class UG_API ProMeshRegistry{
 	public:
-		typedef std::multiset<detail::ProMeshFunction>		ProMeshFunctionSet;
-		typedef ProMeshFunctionSet::iterator				func_iter_t;
-		typedef ProMeshFunctionSet::const_iterator			const_func_iter_t;
+		using ProMeshFunctionSet = std::multiset<detail::ProMeshFunction>;
+		using func_iter_t = ProMeshFunctionSet::iterator;
+		using const_func_iter_t = ProMeshFunctionSet::const_iterator;
 
 		ProMeshRegistry(bridge::Registry* reg) : m_reg(reg), m_counter(0) {}
 

@@ -228,7 +228,7 @@ void SeparateFaceSubsetByNormal(Mesh* obj, int si)
 {
 	if(si < obj->subset_handler().num_subsets())
 		SeparateFaceSubsetsByNormal(obj->grid(), obj->subset_handler(),
-									obj->position_attachment(), NULL, si);
+									obj->position_attachment(), nullptr, si);
 }
 
 void AssignSubsetsByQuality(Mesh* obj, int numSections)
@@ -465,7 +465,7 @@ void AssignSubsetsByAspectRatio (
 
 	std::vector<int> histo;
 
-	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+	using iter_t = typename Grid::traits<elem_t>::iterator;
 	iter_t elemsBegin = sel.begin<elem_t>();
 	iter_t elemsEnd = sel.end<elem_t>();
 	size_t numElems = sel.num<elem_t>();
@@ -508,8 +508,8 @@ template void AssignSubsetsByAspectRatio <Volume> (Mesh*, int, bool);
 template <int dim, class elem_t>
 void AssignSubsetsFromRaster_IMPL (Mesh* obj, const char* rasterFileName)
 {
-	typedef Raster<number, dim> raster_t;
-	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+	using raster_t = Raster<number, dim>;
+	using iter_t = typename Grid::traits<elem_t>::iterator;
 
 	Mesh::position_accessor_t& aaPos = obj->position_accessor();
 	Grid& g = obj->grid();

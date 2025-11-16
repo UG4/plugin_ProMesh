@@ -64,7 +64,7 @@ void CopySelectedElements(Mesh* srcMesh, Mesh* destMesh, AVertex aNewVrt)
 	Grid::VertexAttachmentAccessor<AVertex> aaNewVrt(srcGrid, aNewVrt);
 
 	CustomVertexGroup vrts;
-	typedef typename Grid::traits<TElem>::iterator iter_t;
+	using iter_t = typename Grid::traits<TElem>::iterator;
 
 	for(iter_t eiter = srcSel.begin<TElem>();
 		eiter != srcSel.end<TElem>(); ++eiter)
@@ -157,7 +157,7 @@ Edge* CreateEdge(Mesh* obj, int subsetInd)
 	vrts.reserve(numVrts);
 	vrts.assign(sel.begin<ug::Vertex>(), sel.end<ug::Vertex>());
 
-	ug::RegularEdge* e = NULL;
+	ug::RegularEdge* e = nullptr;
 	switch(numVrts){
 		case 2:{//	create edge
 				if(!grid.get_edge(vrts[0], vrts[1]))
@@ -191,7 +191,7 @@ Face* CreateFace(Mesh* obj, int subsetInd)
 
 	if(numVrts < 3 || numVrts > 4){
 		UG_LOG("Bad number of vertices! Can't create a face element from " << numVrts << " vertices.");
-		return NULL;
+		return nullptr;
 	}
 
 	vector<Vertex*> vrts;
@@ -204,10 +204,10 @@ Face* CreateFace(Mesh* obj, int subsetInd)
 
 	if(grid.get_face(fd)){
 		UG_LOG("A face connecting the given vertices already exists. Won't create a new one!");
-		return NULL;
+		return nullptr;
 	}
 
-	Face* f = NULL;
+	Face* f = nullptr;
 	switch(numVrts){
 		case 3:{//	create triangle
 			f = *grid.create<Triangle>(TriangleDescriptor(vrts[0], vrts[1], vrts[2]));
@@ -241,7 +241,7 @@ Volume* CreateVolume(Mesh* obj, int subsetInd)
 
 	if(numVrts < 4 || numVrts > 8){
 		UG_LOG("Bad number of vertices! Can't create a volume element from " << numVrts << " vertices.");
-		return NULL;
+		return nullptr;
 	}
 
 	vector<Vertex*> vrts;
@@ -254,10 +254,10 @@ Volume* CreateVolume(Mesh* obj, int subsetInd)
 
 	if(grid.get_volume(vd)){
 		UG_LOG("A volume connecting the given vertices already exists. Won't create a new one!");
-		return NULL;
+		return nullptr;
 	}
 
-	Volume* v = NULL;
+	Volume* v = nullptr;
 	switch(numVrts){
 		case 4:{//	create tetrahedron
 			v = *grid.create<Tetrahedron>(TetrahedronDescriptor(vrts[0], vrts[1],
@@ -385,7 +385,7 @@ void CreateCircle(	Mesh* obj,
 
 //	create the vertices
 //	create one upfront, the others in a loop
-	Vertex* centerVrt = NULL;
+	Vertex* centerVrt = nullptr;
 	if(fill){
 		centerVrt = *grid.create<RegularVertex>();
 		aaPos[centerVrt] = center;
@@ -467,7 +467,7 @@ void CreateBox(	Mesh* obj,
 
 //	if a volume shall be created, do so now
 	if(fill)
-		grid.create_by_cloning(&hexa, hexa, NULL);
+		grid.create_by_cloning(&hexa, hexa, nullptr);
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
@@ -530,7 +530,7 @@ void CreateTetrahedron(Mesh* obj, int subsetInd, bool fill)
 
 //	if a volume shall be created, do so now
 	if(fill)
-		grid.create_by_cloning(&tet, tet, NULL);
+		grid.create_by_cloning(&tet, tet, nullptr);
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
@@ -574,7 +574,7 @@ void CreatePyramid(Mesh* obj, int subsetInd, bool fill)
 
 //	if a volume shall be created, do so now
 	if(fill)
-		grid.create_by_cloning(&pyra, pyra, NULL);
+		grid.create_by_cloning(&pyra, pyra, nullptr);
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);
@@ -619,7 +619,7 @@ void CreatePrism(Mesh* obj, int subsetInd, bool fill)
 
 //	if a volume shall be created, do so now
 	if(fill)
-		grid.create_by_cloning(&prism, prism, NULL);
+		grid.create_by_cloning(&prism, prism, nullptr);
 
 //	assign subset
 	sh.assign_subset(sel.begin<Vertex>(), sel.end<Vertex>(), subsetInd);

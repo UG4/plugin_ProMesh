@@ -120,7 +120,7 @@ void RefineWithSnapPointsOrtho(Mesh* obj)
 		g.associated_elements(assFaces, e);
 		for(size_t iface = 0; iface < assFaces.size(); ++iface){
 			Face* f = assFaces[iface];
-			Vertex* selVrt = NULL;
+			Vertex* selVrt = nullptr;
 			for(size_t ivrt = 0; ivrt < f->num_vertices(); ++ivrt){
 				if(sel.is_selected(f->vertex(ivrt))){
 					selVrt = f->vertex(ivrt);
@@ -359,8 +359,8 @@ private:
 template <class TElem>
 void RegularizingRefinement_IMPL(Mesh* obj, const number aspectRatio)
 {
-	typedef TElem	elem_t;
-	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+	using elem_t = TElem;
+	using iter_t = typename Grid::traits<elem_t>::iterator;
 
 	Grid& g = obj->grid();
 	Mesh::position_accessor_t aaPos = obj->position_accessor();

@@ -46,14 +46,14 @@ namespace promesh{
 class MeshObject
 {
 	public:
-		typedef APosition position_attachment_t;
-		typedef Grid::VertexAttachmentAccessor<position_attachment_t>	position_accessor_t;
+		using position_attachment_t = APosition ;
+		using position_accessor_t = Grid::VertexAttachmentAccessor<position_attachment_t>;
 
-		typedef ANormal normal_attachment_t;
-		typedef Grid::FaceAttachmentAccessor<normal_attachment_t>	normal_accessor_t;
+		using normal_attachment_t = ANormal;
+		using normal_accessor_t = Grid::FaceAttachmentAccessor<normal_attachment_t>;
 
-		typedef ANumber volume_constraint_attachment_t;
-		typedef Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>	volume_constraint_accessor_t;
+		using volume_constraint_attachment_t = ANumber ;
+		using volume_constraint_accessor_t = Grid::VolumeAttachmentAccessor<volume_constraint_attachment_t>;
 
 		MeshObject() : m_creaseHandler(SHE_VERTEX | SHE_EDGE)
 		{

@@ -183,7 +183,7 @@ static void SelectUnassignedElementsHelper(
 					SubsetHandler& sh,
 					Selector& sel)
 {
-	typedef typename geometry_traits<TGeomObj>::iterator	iterator;
+	using iterator = typename geometry_traits<TGeomObj>::iterator;
 	for(iterator iter = grid.begin<TGeomObj>(); iter != grid.end<TGeomObj>(); ++iter)
 	{
 		if(sh.get_subset_index(*iter) == -1){
@@ -259,7 +259,7 @@ void CloseSelection(Mesh* obj)
 template <class TElem>
 void RestrictSelectionToSubset (Selector& sel, const SubsetHandler& sh, int si)
 {
-	typedef typename geometry_traits<TElem>::iterator	iterator;
+	using iterator = typename geometry_traits<TElem>::iterator;
 
 	for (iterator iter = sel.begin<TElem>(); iter != sel.end<TElem>();){
 		TElem* elem = *iter;
@@ -613,13 +613,13 @@ Edge* SelectClosestEdge(
 	Grid& grid = m->grid();
 	Mesh::position_accessor_t& aaPos = m->position_accessor();
 
-	Edge* bestEdge = NULL;
+	Edge* bestEdge = nullptr;
 	number bestDist;
 
 	for(EdgeIterator eIter = grid.begin<Edge>(); eIter != grid.end<Edge>(); ++eIter){
 		number dist = DistancePointToLine(coord, aaPos[(*eIter)->vertex(0)], aaPos[(*eIter)->vertex(1)]);
 
-		if(bestEdge == NULL || dist < bestDist){
+		if(bestEdge == nullptr || dist < bestDist){
 			bestDist = dist;
 			bestEdge = *eIter;
 		}
@@ -1125,7 +1125,7 @@ SelectElementsBySplitPlane_IMPL(
 		const vector_t& normal,
 		AAPos aaPos)
 {
-	typedef typename Grid::traits<elem_t>::iterator	iter_t;
+	using iter_t = typename Grid::traits<elem_t>::iterator;
 
 	for(iter_t iter = g.begin<elem_t>(); iter != g.end<elem_t>(); ++ iter) {
 		elem_t* elem = *iter;

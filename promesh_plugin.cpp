@@ -48,7 +48,7 @@ using namespace ug::bridge;
 namespace ug{
 namespace promesh{
 
-static ProMeshRegistry* g_promeshRegistry = NULL;
+static ProMeshRegistry* g_promeshRegistry = nullptr;
 
 ProMeshRegistry&
 GetProMeshRegistry()
@@ -131,7 +131,7 @@ InitUGPlugin_ProMesh(Registry* reg, string grp)
 	grp.append("promesh");
 
 	try{
-		if(g_promeshRegistry == NULL)
+		if(g_promeshRegistry == nullptr)
 			g_promeshRegistry = new ProMeshRegistry(reg);
 
 		ProMeshRegistry& pmreg = GetProMeshRegistry();

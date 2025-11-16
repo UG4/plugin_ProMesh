@@ -110,11 +110,11 @@ void MoveVerticesAlongEdges(Mesh* obj, number relVal)
 //	both corners of an edge are selected)
 	vector<vector3>	offsets;
 	offsets.reserve(sel.num<Vertex>());
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		vector3 offset(0, 0, 0);
 		number numSelEdges = 0;
 		grid.associated_elements(edges, vrt);
-		for_each_in_vec(Edge* e, edges){
+		for(size_t _vfeI = 0; _vfeI < edges.size(); ++_vfeI){ Edge* e = edges[_vfeI];{
 			if(!sel.is_selected(e))
 				continue;
 			vector3 dir;
@@ -125,18 +125,18 @@ void MoveVerticesAlongEdges(Mesh* obj, number relVal)
 
 			VecScaleAppend(offset, relVal, dir);
 			++numSelEdges;
-		}end_for;
+		}};
 
 		if(numSelEdges > 0)
 			offset *= 1. / numSelEdges;
 		offsets.push_back(offset);
-	}lg_end_for;
+	}};
 
 //	apply offsets
 	size_t index = 0;
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		VecAppend(aaPos[vrt], offsets[index++]);
-	}lg_end_for;
+	}};
 }
 
 void MoveVerticesToEdgeLength(Mesh* obj, number edgeLen)
@@ -150,11 +150,11 @@ void MoveVerticesToEdgeLength(Mesh* obj, number edgeLen)
 //	both corners of an edge are selected)
 	vector<vector3>	offsets;
 	offsets.reserve(sel.num<Vertex>());
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		vector3 offset(0, 0, 0);
 		number numSelEdges = 0;
 		grid.associated_elements(edges, vrt);
-		for_each_in_vec(Edge* e, edges){
+		for(size_t _vfeI = 0; _vfeI < edges.size(); ++_vfeI){ Edge* e = edges[_vfeI];{
 			if(!sel.is_selected(e))
 				continue;
 			vector3 dir;
@@ -168,18 +168,18 @@ void MoveVerticesToEdgeLength(Mesh* obj, number edgeLen)
 				VecScaleAppend(offset, (len-edgeLen) / len, dir);
 				++numSelEdges;
 			}
-		}end_for;
+		}};
 
 		if(numSelEdges > 0)
 			offset *= 1. / numSelEdges;
 		offsets.push_back(offset);
-	}lg_end_for;
+	}};
 
 //	apply offsets
 	size_t index = 0;
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		VecAppend(aaPos[vrt], offsets[index++]);
-	}lg_end_for;
+	}};
 }
 
 
@@ -199,11 +199,11 @@ void MoveVerticesToProjectedEdgeLength (Mesh* obj,
 //	both corners of an edge are selected)
 	vector<vector3>	offsets;
 	offsets.reserve(sel.num<Vertex>());
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		vector3 offset(0, 0, 0);
 		number numSelEdges = 0;
 		grid.associated_elements(edges, vrt);
-		for_each_in_vec(Edge* e, edges){
+		for(size_t _vfeI = 0; _vfeI < edges.size(); ++_vfeI){ Edge* e = edges[_vfeI];{
 			if(!sel.is_selected(e))
 				continue;
 			vector3 dir;
@@ -223,18 +223,18 @@ void MoveVerticesToProjectedEdgeLength (Mesh* obj,
 				VecScaleAppend(offset, (plen - projEdgeLen) / plen, dir);
 				++numSelEdges;
 			}
-		}end_for;
+		}};
 
 		if(numSelEdges > 0)
 			offset *= 1. / numSelEdges;
 		offsets.push_back(offset);
-	}lg_end_for;
+	}};
 
 //	apply offsets
 	size_t index = 0;
-	lg_for_each(Vertex, vrt, sel){
+	for(Grid::traits<Vertex>::iterator _feI = sel.begin<Vertex>(); _feI != sel.end<Vertex>(); ++_feI){ Vertex* vrt = *_feI;{
 		VecAppend(aaPos[vrt], offsets[index++]);
-	}lg_end_for;
+	}};
 }
 
 

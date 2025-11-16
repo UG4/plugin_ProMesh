@@ -201,7 +201,7 @@ void CreateShrinkElements(
 			TElemIter elemsEnd)
 {
 	using namespace std;
-	typedef typename TElemIter::value_type elem_ptr_t;
+	using elem_ptr_t = typename TElemIter::value_type;
 	Grid& g = obj->grid();
 	Mesh::position_accessor_t aaPos = obj->position_accessor();
 
